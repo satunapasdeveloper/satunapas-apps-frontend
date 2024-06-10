@@ -1,0 +1,46 @@
+<section id="authentication" class="bg-indigo-100 h-screen">
+    <div class="flex w-full h-full gap-5">
+        <!-- Image -->
+        <div class="md:flex hidden w-8/12">
+
+        </div>
+
+        <!-- Form -->
+        <div
+            class="w-full md:w-4/12 flex flex-col flex-nowrap justify-center bg-white shadow-lg rounded-l-xl px-10 h-full">
+            <!-- Title -->
+            <div
+                class="flex flex-col items-center gap-1 pb-3 mb-5 border-b border-t-0 border-x-0 border border-dashed border-gray-300">
+                <!-- Title -->
+                <p class="text-blue-700 font-bold text-4xl">
+                    GRA<span class="text-yellow-400">HCIS</span>
+                </p>
+
+                <!-- Description -->
+                <p class="text-gray-700 text-sm">
+                    Masuk ke Akun Anda
+                </p>
+            </div>
+
+            <!-- Form -->
+            <div class="flex flex-col gap-2 mb-7">
+                <div class="w-full">
+                    <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+                </div>
+            </div>
+
+            <!-- Button -->
+            <div class="flex flex-col w-full mb-3">
+                <p-button styleClass="p-button-sm p-button-info w-full" label="Sign In" (onClick)="handleSignIn()">
+                </p-button>
+            </div>
+
+            <!-- Version -->
+            <div class="flex flex-col justify-center items-center">
+                <p class="text-gray-700 text-sm">
+                    Versi {{ Version }}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>

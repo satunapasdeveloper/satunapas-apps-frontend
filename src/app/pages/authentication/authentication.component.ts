@@ -1,0 +1,93 @@
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
+import { FormModel } from 'src/app/model/components/form.model';
+import { ButtonModule } from 'primeng/button';
+import { UtilityService } from 'src/app/services/utility/utility.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { Subject, takeUntil } from 'rxjs';
+import { Router } from '@angular/router';
+
+@Component({
+    selector: 'app-authentication',
+    standalone: true,
+    imports: [
+        CommonModule,
+        DynamicFormComponent,
+        ButtonModule,
+    ],
+    templateUrl: './authentication.component.html',
+    styleUrls: ['./authentication.component.scss']
+})
+export class AuthenticationComponent implements OnInit, OnDestroy {
+
+    Destroy$ = new Subject();
+
+    FormState: 'insert' | 'update' = 'insert';
+    FormProps: FormModel.IForm;
+    @ViewChild('FormComps') FormComps!: DynamicFormComponent;
+
+    Version = this._utilityService.getVersion();
+
+    constructor(
+        private _router: Router,
+        private _utilityService: UtilityService,
+        private _authenticationService: AuthenticationService,
+    ) {
+        this.FormProps = {
+            id: 'authentication',
+            fields: [
+                {
+                    id: 'user_name',
+                    label: 'Username',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                },
+                {
+                    id: 'password',
+                    label: 'Password',
+                    required: true,
+                    type: 'password',
+                    value: '',
+                },
+                {
+                    id: 'app_tipe',
+                    label: 'App Tipe',
+                    required: true,
+                    type: 'text',
+                    value: 'w',
+                    hidden: true
+                },
+            ],
+            style: 'not_inline',
+            class: 'grid-rows-2',
+            state: 'write',
+            defaultValue: null,
+        };
+    }
+
+    ngOnInit(): void {
+    }
+
+    ngOnDestroy(): void {
+        this.Destroy$.next(0);
+        this.Destroy$.complete();
+    }
+
+    handleSignIn() {
+        const formValue = this.FormComps.onGetFormValue();
+
+        if (formValue) {
+            this._authenticationService
+                .signIn(formValue)
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.responseResult) {
+                        this._router.navigateByUrl("beranda");
+                        this._authenticationService.setUserData();
+                    }
+                })
+        }
+    }
+}
