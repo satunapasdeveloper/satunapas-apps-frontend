@@ -10,6 +10,18 @@ const routes: Routes = [
         }
     },
     {
+        path: 'beranda',
+        loadComponent: async () => (await import('./pages/beranda/beranda.component')).BerandaComponent,
+        data: {
+            title: 'Beranda',
+            breadcrumbs: ['Beranda']
+        }
+    },
+    {
+        path: 'pis',
+        loadChildren: async () => (await import('./pages/pis/pis.routes')).pisRoutes
+    },
+    {
         path: '**',
         loadComponent: async () => (await import('./pages/wildcard-not-found/wildcard-not-found.component')).WildcardNotFoundComponent,
         data: {
