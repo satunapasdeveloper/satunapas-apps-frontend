@@ -1,8 +1,20 @@
 <section id="dashboard" class="h-screen overflow-hidden bg-gray-100">
     <div class="flex w-full h-full">
         <!-- Sidebar -->
-        <div id="sidebar" class="w-[5rem] bg-blue-500 shadow transition-all">
+        <div id="sidebar" class="w-[5rem] bg-blue-500 shadow transition-all flex flex-col pt-5 px-3 pb-5">
+            <!-- User -->
+            <div *ngIf="UserData$ | async as user" class="flex flex-col justify-center w-full items-center gap-0">
+                <img src="../../../../assets/icon/user.png" alt="user"
+                    class="transition-all mb-2 {{ ShowSidebar ? 'h-20 w-20' : 'h-10 w-10'}}">
 
+                <p class="{{ ShowSidebar ? 'text-gray-50' : 'text-transparent' }} text-base transition-all font-medium">
+                    {{ user?.full_name }}
+                </p>
+
+                <p class="{{ ShowSidebar ? 'text-gray-200' : 'text-transparent' }}  text-sm transition-all">
+                    {{ user?.nama_role }}
+                </p>
+            </div>
         </div>
 
         <!-- Navbar & Content -->
@@ -16,7 +28,7 @@
 
                     <div *ngIf="ButtonNavigation" class="flex gap-3">
                         <p-button *ngFor="let item of ButtonNavigation" styleClass="p-button-sm p-button-info"
-                            [label]="item.title" [icon]="item.icon">
+                            [label]="item.title" [icon]="item.icon" (onClick)="handleClickButtonNavigation(item)">
                         </p-button>
                     </div>
                 </div>

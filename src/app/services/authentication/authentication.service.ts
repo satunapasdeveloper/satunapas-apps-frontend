@@ -10,7 +10,7 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class AuthenticationService {
 
-    UserData$ = new BehaviorSubject(null);
+    UserData$ = new BehaviorSubject<AuthenticationModel.IAuthentication>({} as any);
 
     constructor(
         private _cookieService: CookieService,
@@ -30,12 +30,12 @@ export class AuthenticationService {
     }
 
     setUserData() {
-        const user_data = JSON.parse(this._cookieService.get("_CISUD_"));
-        this.UserData$.next(user_data);
+        const user_data = localStorage.getItem("_CISUD_")
+        this.UserData$.next(JSON.parse(user_data as any));
     }
 
     private handleSignIn(data: AuthenticationModel.IAuthentication) {
-        this._cookieService.deleteAll();
-        this._cookieService.set("_CISUD_", JSON.stringify(data));
+        localStorage.clear();
+        localStorage.setItem("_CISUD_", JSON.stringify(data));
     }
 }
