@@ -4,7 +4,7 @@
 
 export const environment = {
     production: false,
-    webApiUrl: 'http://103.24.149.107:8888/api'
+    webApiUrl: 'http://143.198.206.29:8888/api'
 };
 
 /*

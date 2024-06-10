@@ -8,6 +8,7 @@ export namespace AuthenticationModel {
         id_outlet: number
         nama_role: string
         user_name: string
+        id_tenant: number;
         full_name: string
         token: string
         menuJson: MenuJson

@@ -8,7 +8,7 @@ export class UtilityService {
 
     ShowLoading$ = new BehaviorSubject(false);
 
-    ShowSidebar$ = new BehaviorSubject(true);
+    ShowSidebar$ = new BehaviorSubject(false);
 
     constructor() { }
 

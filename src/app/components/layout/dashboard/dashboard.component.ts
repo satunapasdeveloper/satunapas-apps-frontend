@@ -7,7 +7,7 @@ import { UtilityService } from 'src/app/services/utility/utility.service';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 
 @Component({
     selector: 'app-dashboard',
@@ -31,15 +31,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this._authenticationService.UserData$
             .pipe(takeUntil(this.Destroy$));
 
+    IsBeranda = false;
+
     @Input('ButtonNavigation') ButtonNavigation: any[] = [];
 
     @Output('onClickButtonNavigation') onClickButtonNavigation = new EventEmitter<any>();
 
     constructor(
         private _router: Router,
+        private _activatedRoute: ActivatedRoute,
         private _utilityService: UtilityService,
         private _authenticationService: AuthenticationService,
     ) {
+        // ** Check if route is beranda
+        this._activatedRoute.url
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.IsBeranda = result[0].path == 'beranda';
+            })
+
         // ** Set Userdata if page is refreshed
         this._authenticationService.setUserData();
 

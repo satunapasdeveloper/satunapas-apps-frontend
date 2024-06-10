@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpRequestService } from '../http/http-request.service';
-import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map, of, tap } from 'rxjs';
 import { AuthenticationModel } from 'src/app/model/pages/authentication.model';
 import { environment } from 'src/environments/environment';
 import { CookieService } from 'ngx-cookie-service';
@@ -19,7 +19,7 @@ export class AuthenticationService {
 
     signIn(payload: AuthenticationModel.ISignIn): Observable<AuthenticationModel.SignIn> {
         return this._httpRequestService
-            .postRequest(`${environment.webApiUrl}/pis/Authentication/Login`, payload)
+            .postRequest(`${environment.webApiUrl}/pis/Authentication/LoginTenant`, payload)
             .pipe(
                 tap((result) => {
                     if (result.responseResult) {
@@ -27,6 +27,22 @@ export class AuthenticationService {
                     }
                 })
             )
+    }
+
+    getMainMenu(): AuthenticationModel.MainMenu[] {
+        this.setUserData();
+
+        return this.UserData$.value.menuJson.mainMenu;
+    }
+
+    getTopMenu(id_menu: number): AuthenticationModel.TopMenu[] {
+        const topMenu = this.UserData$.value.menuJson.topMenu;
+        return topMenu.filter(item => item.id_menu_parent == id_menu);
+    }
+
+    getSidebarMenu(id_top_menu: number): AuthenticationModel.SidebarMenu[] {
+        const sidebarMenu = this.UserData$.value.menuJson.sidebarMenu;
+        return sidebarMenu.filter(item => item.id_top_menu == id_top_menu);
     }
 
     setUserData() {
