@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './middleware/auth.guard';
 
 const routes: Routes = [
     {
@@ -11,6 +12,7 @@ const routes: Routes = [
     },
     {
         path: 'beranda',
+        canActivate: [AuthGuard],
         loadComponent: async () => (await import('./pages/beranda/beranda.component')).BerandaComponent,
         data: {
             title: 'Beranda',
@@ -19,6 +21,7 @@ const routes: Routes = [
     },
     {
         path: 'PIS',
+        canActivate: [AuthGuard],
         loadChildren: async () => (await import('./pages/pis/pis.routes')).pisRoutes
     },
     {
