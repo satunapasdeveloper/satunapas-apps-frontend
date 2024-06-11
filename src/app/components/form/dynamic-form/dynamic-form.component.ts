@@ -12,6 +12,7 @@ import { ToastModule } from 'primeng/toast';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { PasswordModule } from 'primeng/password';
 import { FormModel } from 'src/app/model/components/form.model';
+import { LookupDialogComponent } from '../../dialog/lookup-dialog/lookup-dialog.component';
 
 @Component({
     selector: 'app-dynamic-form',
@@ -28,7 +29,8 @@ import { FormModel } from 'src/app/model/components/form.model';
         CheckboxModule,
         ToastModule,
         InputTextareaModule,
-        PasswordModule
+        PasswordModule,
+        LookupDialogComponent,
     ],
     templateUrl: './dynamic-form.component.html',
     styleUrls: ['./dynamic-form.component.scss'],
@@ -148,6 +150,24 @@ export class DynamicFormComponent implements OnInit {
 
     handleFilterDropdown(args: any, fields: FormModel.IFormFields): any {
         return fields?.onFilter?.(args);
+    }
+
+    handleSelectDataLookup(props: FormModel.IFormFields, args: any): void {
+        const selectedValue = props.lookupProps?.selectedValue as any;
+
+        if (props.id == props.lookupProps?.selectedValue) {
+            this.FormGroup.get(selectedValue)?.setValue(args[selectedValue]);
+        } else {
+            this.FormGroup.get(props.id)?.setValue(args[selectedValue]);
+        };
+
+        if (props.lookupSetValueField?.length) {
+            props.lookupSetValueField?.forEach((item) => {
+                this.FormGroup.get(item)?.setValue(args[item]);
+            });
+        };
+
+        props.lookupProps?.callback?.(args);
     }
 
     onResetForm(): any {

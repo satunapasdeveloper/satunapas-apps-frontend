@@ -1,3 +1,5 @@
+import { LookupModel } from "./lookup.model";
+
 export namespace FormModel {
     export interface IForm {
         id: string;
@@ -43,7 +45,7 @@ export namespace FormModel {
 
     export interface IFormFields {
         id: string;
-        type: 'text' | 'date' | 'daterange' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'password';
+        type: 'text' | 'date' | 'daterange' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'password' | 'lookup';
         label: string;
         required: boolean;
         value: any;
@@ -53,6 +55,8 @@ export namespace FormModel {
         textareaRow?: number;
         hidden?: boolean;
         readonly?: boolean;
+        lookupProps?: LookupModel.ILookup;
+        lookupSetValueField?: any[]; // id_field yg lain yg mau di set value nya
         onChange?: (args: any) => any;
         onFilter?: (args: any) => any;
     }

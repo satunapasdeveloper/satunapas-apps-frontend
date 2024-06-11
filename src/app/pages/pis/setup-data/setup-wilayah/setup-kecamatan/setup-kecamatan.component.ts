@@ -7,6 +7,7 @@ import { GridComponent } from 'src/app/components/grid/grid.component';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { FormModel } from 'src/app/model/components/form.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'app-setup-kecamatan',
@@ -95,9 +96,33 @@ export class SetupKecamatanComponent implements OnInit, OnDestroy {
                     type: 'text',
                     value: '',
                 },
+                {
+                    id: 'lookup',
+                    label: 'Test Lookup',
+                    required: true,
+                    type: 'lookup',
+                    value: '',
+                    lookupProps: {
+                        id: 'lookupBedRom',
+                        title: 'Data Bed Room',
+                        columns: [
+                            { field: 'no_identitas', flex: 200, headerName: 'NO. IDENTITAS', sortable: true, resizable: true },
+                            { field: 'full_name', flex: 275, headerName: 'NAMA LENGKAP', sortable: true, resizable: true },
+                            { field: 'no_identitas', flex: 290, headerName: 'NO. RM', sortable: true, resizable: true },
+                        ],
+                        filter: [
+                            { id: 'no_identitas', title: 'No. Identitas', type: 'like', value: 'per.no_identitas' },
+                            { id: 'no_rekam_medis', title: 'No. Rekam Medis', type: 'like', value: 'p.no_rekam_medis' },
+                        ],
+                        label: 'Supplier',
+                        selectedField: 'nama_supplier',
+                        selectedValue: 'id_supplier',
+                        url: `${environment.webApiUrl}/pis/Person/PersonPasienGetAllByDynamicFilter`
+                    },
+                },
             ],
             style: 'inline',
-            class: 'grid-rows-4 grid-cols-2',
+            class: 'grid-rows-5 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };

@@ -99,6 +99,11 @@
             <p-password *ngIf="item.type == 'password'" formControlName="{{ item.id }}" [feedback]="false"
                 [toggleMask]="true" styleClass="p-inputtext-sm w-full">
             </p-password>
+
+            <!-- Lookup -->
+            <app-lookup-dialog *ngIf="item.type == 'lookup'" [props]="item.lookupProps!"
+                (onSelectData)="handleSelectDataLookup(item, $event)">
+            </app-lookup-dialog>
         </div>
     </div>
 </div>
