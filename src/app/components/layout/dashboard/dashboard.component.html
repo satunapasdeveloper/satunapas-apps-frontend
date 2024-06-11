@@ -73,7 +73,7 @@
 
                 <!-- Content -->
                 <div class="w-full p-2 overflow-x-auto {{ IsBeranda ? 'bg-transparent' : 'bg-white border-t-4 border-b-0 border-x-0 border-blue-500 border-solid shadow-md rounded-md' }} "
-                    style="height: calc(100vh - 6rem);">
+                    [style.height]="IsBeranda ? 'calc(100vh - 6rem)' : 'calc(100vh - 10rem)'">
                     <ng-content></ng-content>
                 </div>
             </div>

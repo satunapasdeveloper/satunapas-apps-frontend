@@ -18,7 +18,7 @@ const routes: Routes = [
         }
     },
     {
-        path: 'pis',
+        path: 'PIS',
         loadChildren: async () => (await import('./pages/pis/pis.routes')).pisRoutes
     },
     {
