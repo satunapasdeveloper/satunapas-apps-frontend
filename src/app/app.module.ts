@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { ToastModule } from 'primeng/toast';
 
@@ -10,6 +10,7 @@ import { LoadingDialogComponent } from './components/dialog/loading-dialog/loadi
 
 import { MessageService } from 'primeng/api';
 import { CookieService } from 'ngx-cookie-service';
+import { JwtInterceptor } from './middleware/jwt.interceptor';
 
 @NgModule({
     declarations: [
@@ -25,7 +26,8 @@ import { CookieService } from 'ngx-cookie-service';
     ],
     providers: [
         MessageService,
-        CookieService
+        CookieService,
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     ],
     bootstrap: [AppComponent]
 })
