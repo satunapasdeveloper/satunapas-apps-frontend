@@ -2,12 +2,13 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ButtonModule } from 'primeng/button';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { AuthenticationModel } from 'src/app/model/pages/authentication.model';
 
 @Component({
     selector: 'app-dashboard',
@@ -26,6 +27,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     Destroy$ = new Subject();
 
     ShowSidebar = false;
+
+    SidebarMenu$ =
+        this._authenticationService.SidebarMenu$
+            .pipe(
+                takeUntil(this.Destroy$),
+                tap((result) => {
+                    console.log(result);
+                })
+            );
 
     UserData$ =
         this._authenticationService.UserData$
@@ -67,6 +77,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.togglingSidebar();
     }
 
+    ngOnDestroy(): void {
+        this.Destroy$.next(0);
+        this.Destroy$.complete();
+    }
+
     private togglingSidebar() {
         this._utilityService.ShowSidebar$
             .pipe(takeUntil(this.Destroy$))
@@ -76,19 +91,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 const sidebarEl = document.getElementById('sidebar') as HTMLElement;
 
                 if (result) {
-                    sidebarEl.classList.replace("w-[5rem]", "w-[20rem]");
+                    sidebarEl.classList.replace("w-[5rem]", "w-[24rem]");
                 } else {
-                    sidebarEl.classList.replace("w-[20rem]", "w-[5rem]");
+                    sidebarEl.classList.replace("w-[24rem]", "w-[5rem]");
                 }
             });
-    }
-
-    ngOnDestroy(): void {
-        this.Destroy$.next(0);
-        this.Destroy$.complete();
     }
 
     handleClickButtonNavigation(item: LayoutModel.IButtonNavigation) {
         this.onClickButtonNavigation.emit(item);
     }
+
+    handleClickSidebarMenu(item: AuthenticationModel.SidebarMenu) {
+        console.log(item);
+
+        this._utilityService.ShowTopMenu$.next(false);
+        this._utilityService.ShowSidebar$.next(false);
+
+        this._router.navigateByUrl(item.url);
+    }
+
 }

@@ -43,11 +43,12 @@ export namespace AuthenticationModel {
         icon: string
         url: string
         is_parent: boolean
+        toggle_child: boolean
         id_menu_sidebar_parent: number
         id_top_menu: number
         button: Button[]
         fieldgrid: Fieldgrid[]
-        sidebarChild: string[]
+        sidebarChild: SidebarMenu[]
     }
 
     export interface Button {

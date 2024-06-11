@@ -4,6 +4,8 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { Subject, takeUntil } from 'rxjs';
+import { AuthenticationModel } from 'src/app/model/pages/authentication.model';
+import { UtilityService } from 'src/app/services/utility/utility.service';
 
 @Component({
     selector: 'app-beranda',
@@ -27,12 +29,18 @@ export class BerandaComponent implements OnDestroy {
 
     constructor(
         private _router: Router,
+        private _utilityService: UtilityService,
         private _authenticationService: AuthenticationService,
     ) { }
 
     ngOnDestroy(): void {
         this.Destroy$.next(0);
         this.Destroy$.complete();
+    }
+
+    handleClickMainMenu(data: AuthenticationModel.MainMenu) {
+        this._utilityService.ShowTopMenu$.next(true);
+        this._authenticationService.getTopMenu(data.id_menu);
     }
 
     handleNavigateToPendaftaranPasienBaru() {

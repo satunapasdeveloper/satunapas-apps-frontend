@@ -10,6 +10,8 @@ export class UtilityService {
 
     ShowSidebar$ = new BehaviorSubject(false);
 
+    ShowTopMenu$ = new BehaviorSubject(false);
+
     constructor() { }
 
     getVersion(): string {

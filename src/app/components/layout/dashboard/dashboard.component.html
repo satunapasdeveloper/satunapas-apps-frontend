@@ -1,19 +1,57 @@
 <section id="dashboard" class="h-screen overflow-hidden bg-gray-100">
     <div class="flex w-full h-full">
         <!-- Sidebar -->
-        <div id="sidebar" class="w-[5rem] bg-blue-500 shadow transition-all flex flex-col pt-5 px-3 pb-5">
+        <div id="sidebar" class="w-[5rem] bg-slate-800 shadow transition-all flex flex-col p-5">
             <!-- User -->
-            <div *ngIf="UserData$ | async as user" class="flex flex-col justify-center w-full items-center gap-0">
+            <div *ngIf="UserData$ | async as user" class="flex flex-col justify-center w-full items-center gap-0 mb-10">
                 <img src="../../../../assets/icon/user.png" alt="user"
                     class="transition-all mb-2 {{ ShowSidebar ? 'h-20 w-20' : 'h-10 w-10'}}">
 
-                <p class="{{ ShowSidebar ? 'text-gray-50' : 'text-transparent' }} text-base transition-all font-medium">
+                <p class="{{ ShowSidebar ? 'text-gray-50' : 'text-transparent' }} text-lg transition-all font-bold">
                     {{ user?.full_name }}
                 </p>
 
-                <p class="{{ ShowSidebar ? 'text-gray-200' : 'text-transparent' }}  text-sm transition-all">
+                <p class="{{ ShowSidebar ? 'text-gray-300' : 'text-transparent' }}  text-sm transition-all">
                     {{ user?.nama_role }}
                 </p>
+            </div>
+
+            <!-- Welcome -->
+            <div class="flex mb-5">
+                <p
+                    class="{{ ShowSidebar ? 'text-blue-400' : 'text-transparent' }} text-base transition-all font-semibold">
+                    Selamat Datang
+                </p>
+            </div>
+
+            <!-- Menu -->
+            <div *ngIf="SidebarMenu$ | async as sidebar_menu"
+                class="{{ ShowSidebar ? 'flex' : 'hidden' }} flex-col gap-3 overflow-x-auto"
+                style="height: calc(100vh - 10rem);">
+                <div *ngFor="let item of sidebar_menu" class="flex flex-col w-full"
+                    (click)="item.sidebarChild ? item.toggle_child = !item.toggle_child : handleClickSidebarMenu(item)">
+
+                    <div
+                        class="flex w-full items-center p-1 gap-2 cursor-pointer {{ item.sidebarChild && item.toggle_child ? 'mb-2' : 'mb-0' }}">
+                        <div *ngIf="item.sidebarChild" class="w-1/12">
+                            <i class="pi pi-chevron-right text-gray-50" style="font-size: 10px;"></i>
+                        </div>
+
+                        <div class="w-11/12 flex gap-2">
+                            <span class="text-gray-200 font-medium tracking-normal" style="font-size: 13px;">
+                                {{ item.caption }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="item.sidebarChild && item.toggle_child"
+                        class="w-full flex flex-col pl-7 py-2 gap-4 cursor-pointer">
+                        <span *ngFor="let child of item.sidebarChild" class="text-gray-300 font-medium tracking-normal"
+                            style="font-size: 13px;" (click)="handleClickSidebarMenu(child)">
+                            {{ child.caption }}
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -35,7 +73,7 @@
 
                 <!-- Content -->
                 <div class="w-full p-2 overflow-x-auto {{ IsBeranda ? 'bg-transparent' : 'bg-white border-t-4 border-b-0 border-x-0 border-blue-500 border-solid shadow-md rounded-md' }} "
-                    style="height: calc(100vh - 9.5rem);">
+                    style="height: calc(100vh - 6rem);">
                     <ng-content></ng-content>
                 </div>
             </div>
