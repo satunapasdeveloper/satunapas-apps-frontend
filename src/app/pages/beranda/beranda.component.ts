@@ -39,8 +39,7 @@ export class BerandaComponent implements OnDestroy {
     }
 
     handleClickMainMenu(data: AuthenticationModel.MainMenu) {
-        console.log("main menu =>", data);
-
+        localStorage.setItem("_CISMAINMENU_", JSON.stringify(data));
         this._utilityService.ShowTopMenu$.next(true);
         this._authenticationService.getTopMenu(data.id_menu);
     }

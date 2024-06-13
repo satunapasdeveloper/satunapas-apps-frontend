@@ -1,7 +1,8 @@
 <section id="dashboard" class="h-screen overflow-hidden bg-gray-100">
     <div class="flex w-full h-full">
         <!-- Sidebar -->
-        <div id="sidebar" class="w-[5rem] bg-slate-800 shadow transition-all flex flex-col p-5">
+        <div id="sidebar" class="w-[5rem] bg-slate-800 shadow transition-all flex flex-col p-5"
+            (mouseenter)="handleShowSidebarWhenMouseOver()" (mouseleave)="handleHideSidebarWhenMouseLeave()">
             <!-- User -->
             <div *ngIf="UserData$ | async as user" class="flex flex-col justify-center w-full items-center gap-0 mb-10">
                 <img src="../../../../assets/icon/user.png" alt="user"
@@ -26,16 +27,17 @@
 
             <!-- Menu -->
             <div *ngIf="SidebarMenu$ | async as sidebar_menu"
-                class="{{ ShowSidebar ? 'flex' : 'hidden' }} flex-col gap-3 overflow-x-auto"
+                class="{{ ShowSidebar ? 'flex' : 'hidden' }} flex-col gap-2 overflow-x-auto"
                 style="height: calc(100vh - 10rem);">
-                <div *ngFor="let item of sidebar_menu" class="flex flex-col w-full"
+                <div *ngFor="let item of sidebar_menu" class="flex flex-col w-full pr-3"
                     (click)="item.sidebarChild ? item.toggle_child = !item.toggle_child : handleClickSidebarMenu(item)">
 
                     <div
-                        class="flex w-full group items-center p-1 gap-2 cursor-pointer hover:bg-white rounded-sm {{ item.sidebarChild && item.toggle_child ? 'mb-2' : 'mb-0' }}">
+                        class="flex w-full group items-center p-2 gap-2 cursor-pointer hover:bg-white rounded-md transition-all duration-75 {{ item.sidebarChild && item.toggle_child ? 'mb-0' : 'mb-0' }}">
                         <div *ngIf="item.sidebarChild" class="w-1/12">
-                            <i class="pi pi-chevron-right text-gray-50 group-hover:text-gray-900"
-                                style="font-size: 10px;"></i>
+                            <i class="pi pi-chevron-{{ item.toggle_child ? 'down' : 'right' }} text-gray-50 group-hover:text-gray-900"
+                                style="font-size: 10px;">
+                            </i>
                         </div>
 
                         <div class="w-11/12 flex gap-2">
@@ -47,9 +49,9 @@
                     </div>
 
                     <div *ngIf="item.sidebarChild && item.toggle_child"
-                        class="w-full flex flex-col pl-7 py-2 gap-4 cursor-pointer">
+                        class="w-full flex flex-col pl-7 py-2 gap-2 cursor-pointer">
                         <span *ngFor="let child of item.sidebarChild"
-                            class="flex text-gray-300 hover:bg-white hover:rounded-sm h-6 items-center hover:text-black font-medium tracking-normal"
+                            class="flex text-gray-300 hover:bg-white hover:rounded-md p-2 items-center hover:text-black font-medium tracking-normal transition-all"
                             style="font-size: 13px;" (click)="handleClickSidebarMenu(child)">
                             <p class="ml-2 p-0 mt-0 mb-0"> {{ child.caption }}</p>
                         </span>

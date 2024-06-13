@@ -70,6 +70,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this._authenticationService.getSidebarMenu(data.id_menu);
     }
 
+    onBackToBeranda() {
+        this._router.navigateByUrl("/beranda");
+    }
+
     onSignOut() {
         this._utilityService.ShowLoading$.next(true);
 

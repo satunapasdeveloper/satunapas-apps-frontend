@@ -77,6 +77,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.Destroy$.complete();
     }
 
+    handleShowSidebarWhenMouseOver() {
+        this._utilityService.ShowSidebar$.next(true);
+        this.ShowSidebar = true;
+    }
+
+    handleHideSidebarWhenMouseLeave() {
+        this._utilityService.ShowSidebar$.next(false);
+        this.ShowSidebar = false;
+    }
+
     private togglingSidebar() {
         this._utilityService.ShowSidebar$
             .pipe(takeUntil(this.Destroy$))
