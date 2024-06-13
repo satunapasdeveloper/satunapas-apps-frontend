@@ -32,13 +32,15 @@
                     (click)="item.sidebarChild ? item.toggle_child = !item.toggle_child : handleClickSidebarMenu(item)">
 
                     <div
-                        class="flex w-full items-center p-1 gap-2 cursor-pointer {{ item.sidebarChild && item.toggle_child ? 'mb-2' : 'mb-0' }}">
+                        class="flex w-full group items-center p-1 gap-2 cursor-pointer hover:bg-white rounded-sm {{ item.sidebarChild && item.toggle_child ? 'mb-2' : 'mb-0' }}">
                         <div *ngIf="item.sidebarChild" class="w-1/12">
-                            <i class="pi pi-chevron-right text-gray-50" style="font-size: 10px;"></i>
+                            <i class="pi pi-chevron-right text-gray-50 group-hover:text-gray-900"
+                                style="font-size: 10px;"></i>
                         </div>
 
                         <div class="w-11/12 flex gap-2">
-                            <span class="text-gray-200 font-medium tracking-normal" style="font-size: 13px;">
+                            <span class="text-gray-200 font-medium tracking-normal group-hover:text-black"
+                                style="font-size: 13px;">
                                 {{ item.caption }}
                             </span>
                         </div>
@@ -46,9 +48,10 @@
 
                     <div *ngIf="item.sidebarChild && item.toggle_child"
                         class="w-full flex flex-col pl-7 py-2 gap-4 cursor-pointer">
-                        <span *ngFor="let child of item.sidebarChild" class="text-gray-300 font-medium tracking-normal"
+                        <span *ngFor="let child of item.sidebarChild"
+                            class="flex text-gray-300 hover:bg-white hover:rounded-sm h-6 items-center hover:text-black font-medium tracking-normal"
                             style="font-size: 13px;" (click)="handleClickSidebarMenu(child)">
-                            {{ child.caption }}
+                            <p class="ml-2 p-0 mt-0 mb-0"> {{ child.caption }}</p>
                         </span>
                     </div>
                 </div>
