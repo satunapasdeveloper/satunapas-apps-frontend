@@ -204,6 +204,8 @@ export class SetupProvinsiComponent implements OnInit, OnDestroy {
             .dispatch(new SetupWilayahActions.CreateProvinsi(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
+                console.log(result);
+
                 if (result.setup_wilayah.success) {
                     // ** Reset Form 
                     this.FormComps.onResetForm();
@@ -252,6 +254,8 @@ export class SetupProvinsiComponent implements OnInit, OnDestroy {
             .dispatch(new SetupWilayahActions.DeleteProvinsi(kode_wilayah))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
+                console.log("store =>", result);
+
                 if (result.setup_wilayah.success) {
 
                 }

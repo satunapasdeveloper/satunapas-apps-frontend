@@ -55,7 +55,7 @@ export class SetupWilayahState {
                     ctx.setState({
                         ...state,
                         provinsi: result.data,
-                    })
+                    });
                 })
             )
     }

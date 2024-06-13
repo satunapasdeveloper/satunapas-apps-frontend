@@ -134,6 +134,7 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
+                    console.log("get prov from setup kota =>", result);
                     const indexProvinsi = this.FormProps.fields.findIndex(item => item.id == 'kode_wilayah_parent');
                     this.FormProps.fields[indexProvinsi].dropdownProps.options = result;
                     this.ProvinsiDatasource = result;
