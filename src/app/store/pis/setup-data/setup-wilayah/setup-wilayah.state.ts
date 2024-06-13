@@ -7,6 +7,9 @@ import { WilayahModel } from "src/app/model/pages/pis/setup-data/setup-wilayah.m
 
 interface SetupWilayahStateModel {
     entities: WilayahModel.IWilayah[] | WilayahModel.IWilayah | any;
+    provinsi?: WilayahModel.IWilayah[] | WilayahModel.IWilayah | any;
+    kota?: WilayahModel.IWilayah[] | WilayahModel.IWilayah | any;
+    kecamatan?: WilayahModel.IWilayah[] | WilayahModel.IWilayah | any;
     success?: boolean;
 }
 
@@ -14,6 +17,10 @@ interface SetupWilayahStateModel {
     name: 'setup_wilayah',
     defaults: {
         entities: [],
+        provinsi: [],
+        kota: [],
+        kecamatan: [],
+        success: true
     }
 })
 @Injectable()
@@ -25,17 +32,17 @@ export class SetupWilayahState {
 
     @Selector()
     static provinsiEntities(state: SetupWilayahStateModel) {
-        return state.entities;
+        return state.provinsi;
     }
 
     @Selector()
     static kotaEntities(state: SetupWilayahStateModel) {
-        return state.entities;
+        return state.kota;
     }
 
     @Selector()
     static kecamatanEntities(state: SetupWilayahStateModel) {
-        return state.entities;
+        return state.kecamatan;
     }
 
     @Action(SetupWilayahActions.GetAllProvinsi)
@@ -47,7 +54,7 @@ export class SetupWilayahState {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        provinsi: result.data,
                     })
                 })
             )
@@ -63,7 +70,7 @@ export class SetupWilayahState {
                     if (result.responseResult) {
                         ctx.setState({
                             ...state,
-                            entities: result.data,
+                            provinsi: result.data,
                             success: true
                         })
                     } else {
@@ -93,7 +100,7 @@ export class SetupWilayahState {
                     if (result.responseResult) {
                         ctx.setState({
                             ...state,
-                            entities: result.data,
+                            provinsi: result.data,
                             success: true
                         })
                     } else {
@@ -123,7 +130,7 @@ export class SetupWilayahState {
                     if (result.responseResult) {
                         ctx.setState({
                             ...state,
-                            entities: result.data,
+                            provinsi: result.data,
                             success: true
                         })
                     } else {
@@ -152,7 +159,7 @@ export class SetupWilayahState {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        kota: result.data,
                     })
                 })
             )
@@ -168,7 +175,7 @@ export class SetupWilayahState {
                     if (result.responseResult) {
                         ctx.setState({
                             ...state,
-                            entities: result.data,
+                            kota: result.data,
                             success: true
                         })
                     } else {
@@ -198,7 +205,7 @@ export class SetupWilayahState {
                     if (result.responseResult) {
                         ctx.setState({
                             ...state,
-                            entities: result.data,
+                            kota: result.data,
                             success: true
                         })
                     } else {
@@ -228,7 +235,7 @@ export class SetupWilayahState {
                     if (result.responseResult) {
                         ctx.setState({
                             ...state,
-                            entities: result.data,
+                            kota: result.data,
                             success: true
                         })
                     } else {
@@ -257,7 +264,7 @@ export class SetupWilayahState {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        kecamatan: result.data,
                     })
                 })
             )
@@ -273,7 +280,7 @@ export class SetupWilayahState {
                     if (result.responseResult) {
                         ctx.setState({
                             ...state,
-                            entities: result.data,
+                            kecamatan: result.data,
                             success: true
                         })
                     } else {
@@ -303,7 +310,7 @@ export class SetupWilayahState {
                     if (result.responseResult) {
                         ctx.setState({
                             ...state,
-                            entities: result.data,
+                            kecamatan: result.data,
                             success: true
                         })
                     } else {
@@ -333,7 +340,7 @@ export class SetupWilayahState {
                     if (result.responseResult) {
                         ctx.setState({
                             ...state,
-                            entities: result.data,
+                            kecamatan: result.data,
                             success: true
                         })
                     } else {
