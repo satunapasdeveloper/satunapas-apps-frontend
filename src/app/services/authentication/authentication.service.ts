@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpRequestService } from '../http/http-request.service';
 import { BehaviorSubject, Observable, map, of, tap } from 'rxjs';
-import { AuthenticationModel } from 'src/app/model/pages/authentication.model';
 import { environment } from 'src/environments/environment';
 import { CookieService } from 'ngx-cookie-service';
+import { AuthenticationModel } from 'src/app/model/pages/authentication/authentication.model';
 
 @Injectable({
     providedIn: 'root'

@@ -16,5 +16,13 @@ export const pisSetupDataRoutes: Route[] = [
             title: 'Setup Kota',
             breadcrumbs: ["Beranda", "PIS", "Setup Data", "Setup Wilayah", "Setup Kota"]
         }
+    },
+    {
+        path: 'setup-provinsi',
+        loadComponent: async () => (await import('./setup-wilayah/setup-provinsi/setup-provinsi.component')).SetupProvinsiComponent,
+        data: {
+            title: 'Setup Kota',
+            breadcrumbs: ["Beranda", "PIS", "Setup Data", "Setup Wilayah", "Setup Provinsi"]
+        }
     }
 ]

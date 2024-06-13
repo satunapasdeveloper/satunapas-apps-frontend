@@ -2,12 +2,14 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { GridComponent } from 'src/app/components/grid/grid.component';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { environment } from 'src/environments/environment';
+import { Store } from '@ngxs/store';
+import { SetupWilayahState } from 'src/app/store/pis/setup-data/setup-wilayah';
 
 @Component({
     selector: 'app-setup-kecamatan',
@@ -54,7 +56,9 @@ export class SetupKecamatanComponent implements OnInit, OnDestroy {
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
 
-    constructor() {
+    constructor(
+        private _store: Store,
+    ) {
         this.FormProps = {
             id: 'authentication',
             fields: [
@@ -129,12 +133,23 @@ export class SetupKecamatanComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-
+        this.getAll();
     }
 
     ngOnDestroy(): void {
         this.Destroy$.next(0);
         this.Destroy$.complete();
+    }
+
+    private getAll() {
+        this._store
+            .select(SetupWilayahState.provinsiEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    console.log("get prov from setup kecamatan =>", result);
+                }
+            })
     }
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {

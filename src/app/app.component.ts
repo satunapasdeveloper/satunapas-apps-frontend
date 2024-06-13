@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Store } from '@ngxs/store';
+import { Subject, takeUntil } from 'rxjs';
+import { SetupWilayahActions } from './store/pis/setup-data/setup-wilayah';
 
 @Component({
     selector: 'app-root',
@@ -16,6 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
     isLoading = false;
 
     constructor(
+        private _store: Store,
         private _router: Router,
         private _renderer: Renderer2,
     ) {
@@ -36,7 +39,18 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        const isUserLoggedIn = localStorage.getItem('_CISUD_');
 
+        if (isUserLoggedIn) {
+            this.initAllNeededState();
+        }
+    }
+
+    private initAllNeededState() {
+        // ** Get All Provinsi
+        this._store
+            .dispatch(new SetupWilayahActions.GetAllProvinsi())
+            .pipe(takeUntil(this.Destroy$));
     }
 
     triggerAnimation() {

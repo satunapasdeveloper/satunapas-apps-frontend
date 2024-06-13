@@ -4,7 +4,7 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { Subject, takeUntil } from 'rxjs';
-import { AuthenticationModel } from 'src/app/model/pages/authentication.model';
+import { AuthenticationModel } from 'src/app/model/pages/authentication/authentication.model';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 
 @Component({

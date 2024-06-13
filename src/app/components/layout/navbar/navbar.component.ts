@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { AuthenticationModel } from 'src/app/model/pages/authentication.model';
+import { AuthenticationModel } from 'src/app/model/pages/authentication/authentication.model';
 
 @Component({
     selector: 'app-navbar',

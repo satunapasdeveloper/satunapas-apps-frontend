@@ -4,6 +4,7 @@ import { MessageService } from 'primeng/api';
 import { Observable, catchError, map } from 'rxjs';
 import { HttpBaseResponse } from 'src/app/model/http/http-request.model';
 import { UtilityService } from '../utility/utility.service';
+import { TitleCasePipe } from '@angular/common';
 
 @Injectable({
     providedIn: 'root'
@@ -12,10 +13,17 @@ export class HttpRequestService {
 
     constructor(
         private _httpClient: HttpClient,
+        private _titleCasePipe: TitleCasePipe,
         private _utilityService: UtilityService,
         private _messageService: MessageService,
     ) { }
 
+    /**
+     * @description Get Request Method
+     * @param url 
+     * @param queryString 
+     * @returns Observable<HttpBaseResponse>
+    */
     getRequest(url: string, queryString?: any): Observable<HttpBaseResponse> {
         this._utilityService.ShowLoading$.next(true);
 
@@ -31,6 +39,11 @@ export class HttpRequestService {
             map((result) => {
                 this._utilityService.ShowLoading$.next(false);
 
+                if (!result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(result.message) })
+                }
+
                 return result;
             }),
             catchError((error: any) => {
@@ -40,13 +53,33 @@ export class HttpRequestService {
         )
     }
 
-    postRequest(url: string, data: any): Observable<HttpBaseResponse> {
+    /**
+     * @description Post Request Method
+     * @param url 
+     * @param data 
+     * @param showSuccessNotif -> (Optional) jika ingin menampilkan notification success
+     * @returns Observable<HttpBaseResponse>
+    */
+    postRequest(url: string, data: any, showSuccessNotif?: boolean): Observable<HttpBaseResponse> {
         this._utilityService.ShowLoading$.next(true);
 
         return this._httpClient.post<HttpBaseResponse>(url, data)
             .pipe(
                 map((result) => {
+                    // ** Change state show loading
                     this._utilityService.ShowLoading$.next(false);
+
+                    // ** Show success notification
+                    if (result.responseResult && showSuccessNotif) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Success', detail: this._titleCasePipe.transform(result.message) });
+                    }
+
+                    // ** Jika responseResult = false
+                    if (!result.responseResult) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(result.message) })
+                    }
 
                     return result;
                 }),
@@ -57,13 +90,71 @@ export class HttpRequestService {
             )
     }
 
-    putRequest(url: string, data: any): Observable<HttpBaseResponse> {
+    /**
+     * @description Put Request Method
+     * @param url 
+     * @param data 
+     * @param showSuccessNotif -> (Optional) jika ingin menampilkan notification success
+     * @returns Observable<HttpBaseResponse>
+    */
+    putRequest(url: string, data: any, showSuccessNotif?: boolean): Observable<HttpBaseResponse> {
         this._utilityService.ShowLoading$.next(true);
 
         return this._httpClient.put<HttpBaseResponse>(url, data)
             .pipe(
                 map((result) => {
+                    // ** Change state show loading
                     this._utilityService.ShowLoading$.next(false);
+
+                    // ** Show success notification
+                    if (result.responseResult && showSuccessNotif) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Success', detail: this._titleCasePipe.transform(result.message) });
+                    }
+
+                    // ** Jika responseResult = false
+                    if (!result.responseResult) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(result.message) })
+                    }
+
+
+                    return result;
+                }),
+                catchError((error: any) => {
+                    this.handlingError(error);
+                    throw error;
+                })
+            )
+    }
+
+    /**
+     * @description Delete Request Method
+     * @param url 
+     * @param data 
+     * @param showSuccessNotif -> (Optional) jika ingin menampilkan notification success
+     * @returns Observable<HttpBaseResponse>
+    */
+    deleteRequest(url: string, showSuccessNotif?: boolean): Observable<HttpBaseResponse> {
+        this._utilityService.ShowLoading$.next(true);
+
+        return this._httpClient.delete<HttpBaseResponse>(url)
+            .pipe(
+                map((result) => {
+                    // ** Change state show loading
+                    this._utilityService.ShowLoading$.next(false);
+
+                    // ** Show success notification
+                    if (result.responseResult && showSuccessNotif) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Success', detail: this._titleCasePipe.transform(result.message) });
+                    }
+
+                    // ** Jika responseResult = false
+                    if (!result.responseResult) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(result.message) })
+                    }
 
                     return result;
                 }),
@@ -77,6 +168,6 @@ export class HttpRequestService {
     private handlingError(error: HttpErrorResponse): void {
         this._utilityService.ShowLoading$.next(false);
         this._messageService.clear();
-        this._messageService.add({ severity: 'error', summary: 'Oops', detail: error.message })
+        this._messageService.add({ severity: 'error', summary: 'Oops', detail: this._titleCasePipe.transform(error.message) })
     }
 }
