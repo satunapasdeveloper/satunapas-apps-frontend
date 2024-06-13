@@ -9,8 +9,6 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { AuthenticationModel } from 'src/app/model/pages/authentication/authentication.model';
-import { Store } from '@ngxs/store';
-import { SetupWilayahActions } from 'src/app/store/pis/setup-data/setup-wilayah';
 
 @Component({
     selector: 'app-dashboard',
@@ -45,7 +43,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     @Output('onClickButtonNavigation') onClickButtonNavigation = new EventEmitter<any>();
 
     constructor(
-        private _store: Store,
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _utilityService: UtilityService,
@@ -105,6 +102,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this._utilityService.ShowSidebar$.next(false);
         this._router.navigateByUrl(item.url);
     }
-
-
 }
