@@ -11,6 +11,8 @@ import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { WilayahModel } from 'src/app/model/pages/pis/setup-data/setup-wilayah.model';
 import { SetupWilayahState, SetupWilayahActions } from 'src/app/store/pis/setup-data/setup-wilayah';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'app-setup-kota',
@@ -19,7 +21,9 @@ import { SetupWilayahState, SetupWilayahActions } from 'src/app/store/pis/setup-
         CommonModule,
         DashboardComponent,
         GridComponent,
-        DynamicFormComponent
+        DynamicFormComponent,
+        DropdownModule,
+        ButtonModule,
     ],
     templateUrl: './setup-kota.component.html',
     styleUrls: ['./setup-kota.component.scss']
@@ -38,6 +42,8 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
         }
     ];
 
+    ProvinsiDatasource: WilayahModel.IWilayah[] = [];
+
     GridProps: GridModel.IGrid = {
         id: 'GridProvinsi',
         column: [
@@ -47,7 +53,7 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
             { field: 'nama_wilayah', headerName: 'NAMA WILAYAH', flex: 200, sortable: true, resizable: true },
         ],
         dataSource: [],
-        height: "calc(100vh - 14.5rem)",
+        height: "calc(100vh - 18rem)",
         toolbar: ['Delete'],
         showPaging: true,
     };
@@ -67,11 +73,20 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
             fields: [
                 {
                     id: 'kode_wilayah_parent',
-                    label: 'kode_wilayah_parent',
+                    label: 'Kode Provinsi',
                     required: true,
-                    type: 'text',
+                    type: 'select',
+                    dropdownProps: {
+                        options: [],
+                        optionName: 'nama_wilayah',
+                        optionValue: 'kode_wilayah',
+                        autoDisplayFirst: false
+                    },
                     value: '',
-                    hidden: true,
+                    hidden: false,
+                    onChange: (args: any) => {
+                        this.FormComps.FormGroup.get('kode_wilayah')?.setValue(args.kode_wilayah + ".");
+                    }
                 },
                 {
                     id: 'kode_tipe_wilayah',
@@ -83,14 +98,14 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
                 },
                 {
                     id: 'kode_wilayah',
-                    label: 'Kode Wilayah',
+                    label: 'Kode Kota',
                     required: true,
                     type: 'text',
                     value: '',
                 },
                 {
                     id: 'nama_wilayah',
-                    label: 'Nama Wilayah',
+                    label: 'Nama Kota',
                     required: true,
                     type: 'text',
                     value: '',
@@ -104,7 +119,8 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.getAll();
+        this.getAllProvinsi();
+        this.getAllKota({ value: "11" });
     }
 
     ngOnDestroy(): void {
@@ -112,14 +128,26 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
         this.Destroy$.complete();
     }
 
-    private getAll() {
+    private getAllProvinsi() {
         this._store
             .select(SetupWilayahState.provinsiEntities)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get prov from setup provinsi =>", result);
-                    this.GridProps.dataSource = result;
+                    const indexProvinsi = this.FormProps.fields.findIndex(item => item.id == 'kode_wilayah_parent');
+                    this.FormProps.fields[indexProvinsi].dropdownProps.options = result;
+                    this.ProvinsiDatasource = result;
+                }
+            })
+    }
+
+    getAllKota(args: any) {
+        this._store
+            .dispatch(new SetupWilayahActions.GetAllKotaByKodeProvinsi(args.value))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    this.GridProps.dataSource = result.setup_wilayah.kota;
                 }
             })
     }
@@ -157,12 +185,12 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
 
         if (data.id == 'save') {
             const formValue = this.FormComps.FormGroup.value;
-            this.saveProvinsi(formValue);
+            this.saveKota(formValue);
         };
 
         if (data.id == 'update') {
             const formValue = this.FormComps.FormGroup.value;
-            this.updateProvinsi(formValue);
+            this.updateKota(formValue);
         };
     }
 
@@ -196,13 +224,13 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
     onToolbarClicked(args: any): void {
         if (args.id == 'delete') {
             console.log(this.GridSelectedData);
-            this.deleteProvinsi(this.GridSelectedData.kode_wilayah);
+            this.deleteKota(this.GridSelectedData.kode_wilayah);
         }
     }
 
-    private saveProvinsi(data: WilayahModel.CreateWilayah) {
+    private saveKota(data: WilayahModel.CreateWilayah) {
         this._store
-            .dispatch(new SetupWilayahActions.CreateProvinsi(data))
+            .dispatch(new SetupWilayahActions.CreateKota(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_wilayah.success) {
@@ -224,9 +252,9 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
             })
     }
 
-    private updateProvinsi(data: WilayahModel.CreateWilayah) {
+    private updateKota(data: WilayahModel.CreateWilayah) {
         this._store
-            .dispatch(new SetupWilayahActions.UpdateProvinsi(data))
+            .dispatch(new SetupWilayahActions.UpdateKota(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_wilayah.success) {
@@ -248,9 +276,9 @@ export class SetupKotaComponent implements OnInit, OnDestroy {
             })
     }
 
-    private deleteProvinsi(kode_wilayah: string) {
+    private deleteKota(kode_wilayah: string) {
         this._store
-            .dispatch(new SetupWilayahActions.DeleteProvinsi(kode_wilayah))
+            .dispatch(new SetupWilayahActions.DeleteKota(kode_wilayah))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_wilayah.success) {

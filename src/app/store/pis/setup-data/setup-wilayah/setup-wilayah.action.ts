@@ -29,7 +29,7 @@ export namespace SetupWilayahActions {
 
     export class GetAllKotaByKodeProvinsi {
         static readonly type = '[SETUP WILAYAH] Get All Kota By Kode Provinsi';
-        constructor(public payload: { kode_wilayah: string }) { }
+        constructor(public payload: string) { }
     }
 
     export class CreateKota {
@@ -54,7 +54,7 @@ export namespace SetupWilayahActions {
 
     export class GetAllKecamatanByKodeKota {
         static readonly type = '[SETUP WILAYAH] Get All Kecamatan By Kode Kota';
-        constructor(public payload: { kode_wilayah: string }) { }
+        constructor(public payload: string) { }
     }
 
     export class CreateKecamatan {

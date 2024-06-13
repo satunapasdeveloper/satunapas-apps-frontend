@@ -33,7 +33,7 @@ export class SetupWilayahService {
 
     // ** Kota
     getAllKota(kode_wilayah_provinsi: string): Observable<WilayahModel.GetAllWilayah> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/pis/Wilayah/kotaGetAllByKodeProvinsi/${kode_wilayah_provinsi}`, true);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/pis/Wilayah/kotaGetAllByKodeProvinsi/${kode_wilayah_provinsi}`);
     }
 
     createKota(payload: WilayahModel.CreateWilayah): Observable<HttpBaseResponse> {

@@ -1,6 +1,27 @@
 <app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
     <!-- Grid -->
-    <div *ngIf="PageState == 'list'" class="grid w-full">
+    <div *ngIf="PageState == 'list'" class="grid gap-4 w-full">
+        <!-- Search -->
+        <div class="flex items-center w-5/12 gap-2">
+            <div class="w-4/12">
+                <p class="text-gray-700 font-medium">
+                    Pilih Provinsi
+                </p>
+            </div>
+            <div class="w-6/12">
+                <p-dropdown #DropdownProvinsi styleClass="p-inputtext-sm w-full" [options]="ProvinsiDatasource"
+                    optionLabel="nama_wilayah" optionValue="kode_wilayah" (onChange)="getAllKota($event)"
+                    appendTo="body" [filter]="true" [autoDisplayFirst]="false">
+                </p-dropdown>
+            </div>
+            <div class="w-2/12">
+                <p-button styleClass="p-button-sm p-button-secondary" label="Cari" [disabled]="!DropdownProvinsi.value"
+                    (onClick)="getAllKota({ value: DropdownProvinsi.value })">
+                </p-button>
+            </div>
+        </div>
+
+        <!-- Grid -->
         <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
             (rowDoubleClicked)="onRowDoubleClicked($event)" (toolbarClicked)="onToolbarClicked($event)">
         </app-grid>
