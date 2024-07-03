@@ -91,6 +91,44 @@ export class HttpRequestService {
     }
 
     /**
+     * @description Post Request Method For External API
+     * @param url 
+     * @param data 
+     * @param showSuccessNotif -> (Optional) jika ingin menampilkan notification success
+     * @returns Observable<any>
+    */
+    postRequestExternal(url: string, data: any, showSuccessNotif?: boolean): Observable<any> {
+        this._utilityService.ShowLoading$.next(true);
+
+        return this._httpClient.post<any>(url, data)
+            .pipe(
+                map((result) => {
+                    // ** Change state show loading
+                    this._utilityService.ShowLoading$.next(false);
+
+                    // ** Show success notification
+                    if (result && showSuccessNotif) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Success', detail: this._titleCasePipe.transform(result.message) });
+                    }
+
+                    // ** Jika responseResult = false
+                    if (!result) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(result.message) })
+                    }
+
+                    return result;
+                }),
+                catchError((error: any) => {
+                    this.handlingError(error);
+                    throw error;
+                })
+            )
+    }
+
+
+    /**
      * @description Put Request Method
      * @param url 
      * @param data 
