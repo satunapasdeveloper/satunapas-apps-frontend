@@ -8,12 +8,12 @@
 
         <div class="flex flex-col gap-0">
             <p class="text-slate-700 text-3xl font-semibold">
-                Selamat Datang, {{ user.nama }}
+                Selamat Datang, {{ user.nama | titlecase }}
             </p>
 
-            <p class="text-slate-600 text-base">
+            <p class="text-slate-600 text-sm">
                 <i class="pi pi-home"></i>
-                Klinik Anda {{ user.layanan }}
+                Nama Layanan Anda : {{ user.layanan }}
             </p>
         </div>
     </div>
