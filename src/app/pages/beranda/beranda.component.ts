@@ -25,7 +25,7 @@ export class BerandaComponent implements OnDestroy {
         this._authenticationService.UserData$
             .pipe(takeUntil(this.Destroy$));
 
-    Menu = this._authenticationService.getMainMenu();
+    Menu: any[] = [];
 
     constructor(
         private _router: Router,
@@ -38,10 +38,10 @@ export class BerandaComponent implements OnDestroy {
         this.Destroy$.complete();
     }
 
-    handleClickMainMenu(data: AuthenticationModel.MainMenu) {
-        localStorage.setItem("_CISMAINMENU_", JSON.stringify(data));
-        this._utilityService.ShowTopMenu$.next(true);
-        this._authenticationService.getTopMenu(data.id_menu);
+    handleClickMainMenu(data: any) {
+        // localStorage.setItem("_CISMAINMENU_", JSON.stringify(data));
+        // this._utilityService.ShowTopMenu$.next(true);
+        // this._authenticationService.getTopMenu(data.id_menu);
     }
 
     handleNavigateToPendaftaranPasienBaru() {

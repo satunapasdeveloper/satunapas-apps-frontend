@@ -24,10 +24,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     ShowTopMenu = false;
 
-    TopMenu$ =
-        this._authenticationService.TopMenu$
-            .pipe(takeUntil(this.Destroy$));
-
     constructor(
         private _router: Router,
         private _messageService: MessageService,
@@ -63,11 +59,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     handleToggleTopMenu() {
         this.ShowTopMenu = !this.ShowTopMenu;
         this._utilityService.ShowTopMenu$.next(this.ShowTopMenu);
-    }
-
-    handleClickTopMenu(data: AuthenticationModel.TopMenu) {
-        this._utilityService.ShowSidebar$.next(true);
-        this._authenticationService.getSidebarMenu(data.id_menu);
     }
 
     onBackToBeranda() {

@@ -28,8 +28,9 @@
                 </div>
                 <div class="w-8/12">
                     <p-dropdown #DropdownKota styleClass="p-inputtext-sm w-full" [options]="KotaDatasource"
-                        optionLabel="nama_wilayah" optionValue="kode_wilayah" (onChange)="getAllKecamatan($event)"
-                        appendTo="body" [filter]="true" [autoDisplayFirst]="false">
+                        optionLabel="nama_wilayah" optionValue="kode_wilayah"
+                        (onChange)="getAllKecamatan(DropdownKota.value)" appendTo="body" [filter]="true"
+                        [autoDisplayFirst]="false">
                     </p-dropdown>
                 </div>
             </div>

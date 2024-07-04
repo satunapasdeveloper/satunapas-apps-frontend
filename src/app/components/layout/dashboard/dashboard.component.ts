@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ButtonModule } from 'primeng/button';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
@@ -28,9 +28,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     ShowSidebar = false;
 
-    SidebarMenu$ =
-        this._authenticationService.SidebarMenu$
-            .pipe(takeUntil(this.Destroy$));
+    SidebarMenu$ = new BehaviorSubject<any[]>([]);
 
     UserData$ =
         this._authenticationService.UserData$
@@ -107,7 +105,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.onClickButtonNavigation.emit(item);
     }
 
-    handleClickSidebarMenu(item: AuthenticationModel.SidebarMenu) {
+    handleClickSidebarMenu(item: any) {
         this._utilityService.ShowTopMenu$.next(false);
         this._utilityService.ShowSidebar$.next(false);
         this._router.navigateByUrl(item.url);
