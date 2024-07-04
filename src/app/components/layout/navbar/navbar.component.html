@@ -24,13 +24,3 @@
         </span>
     </div>
 </div>
-
-<div id="top_menu" class="flex gap-2 w-full h-0 px-0 py-0 bg-gray-50 shadow transition-all">
-    <div *ngFor="let item of TopMenu$ | async"
-        class="{{ ShowTopMenu ? 'flex' : 'hidden' }} w-[7rem] h-full bg-blue-500 hover:bg-blue-600 rounded-md shadow items-center justify-center transition-all cursor-pointer p-1"
-        (click)="handleClickTopMenu(item)">
-        <p class="text-gray-50 text-sm text-center font-medium">
-            {{ item.caption }}
-        </p>
-    </div>
-</div>

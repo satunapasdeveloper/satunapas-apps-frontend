@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    webApiUrl: 'http://143.198.206.29:8888/api',
+    webApiUrl: 'https://apidev.satunapas.com/api/v1',
 };

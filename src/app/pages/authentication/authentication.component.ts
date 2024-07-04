@@ -29,6 +29,8 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
 
     Version = this._utilityService.getVersion();
 
+    Year = new Date().getFullYear();
+
     constructor(
         private _router: Router,
         private _utilityService: UtilityService,
@@ -38,26 +40,18 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
             id: 'authentication',
             fields: [
                 {
-                    id: 'user_name',
+                    id: 'username',
                     label: 'Username',
                     required: true,
                     type: 'text',
-                    value: '',
+                    value: 'triaCIS-2407-000001',
                 },
                 {
                     id: 'password',
                     label: 'Password',
                     required: true,
                     type: 'password',
-                    value: '',
-                },
-                {
-                    id: 'app_tipe',
-                    label: 'App Tipe',
-                    required: true,
-                    type: 'text',
-                    value: 'w',
-                    hidden: true
+                    value: 'yb8v5s9g',
                 },
             ],
             style: 'not_inline',

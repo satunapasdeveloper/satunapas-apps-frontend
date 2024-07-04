@@ -31,7 +31,7 @@
                         ],
                         "styles": [
                             "src/styles.scss",
-                            "node_modules/primeng/resources/themes/tailwind-light/theme.css",
+                            "node_modules/primeng/resources/themes/aura-light-blue/theme.css",
                             "node_modules/primeng/resources/primeng.min.css"
                         ],
                         "scripts": []
@@ -73,10 +73,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                          "buildTarget": "frontend-cis:build:production"
+                            "buildTarget": "frontend-cis:build:production"
                         },
                         "development": {
-                          "buildTarget": "frontend-cis:build:development"
+                            "buildTarget": "frontend-cis:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -84,7 +84,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                      "buildTarget": "frontend-cis:build"
+                        "buildTarget": "frontend-cis:build"
                     }
                 },
                 "test": {
@@ -110,6 +110,6 @@
         }
     },
     "cli": {
-      "analytics": "805b8fee-e214-4a16-9b6b-fa45b232d1c1"
+        "analytics": "805b8fee-e214-4a16-9b6b-fa45b232d1c1"
     }
 }
