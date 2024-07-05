@@ -27,6 +27,53 @@ export class BerandaComponent implements OnDestroy {
 
     Menu: any[] = [];
 
+    PasienTerlayani: number = 24;
+
+    TotalPasien: number = 155;
+
+    DokterPraktekHariIni: number = 3;
+
+    TindakanMedisHariIni: number = 10;
+
+    DokterPraktekHariIniDatasource: any[] = [
+        {
+            id: '1',
+            nama_dokter: 'dr. John Doe',
+            nama_poli: 'Poli Umum',
+            jam_praktek: '08.00 - 12.00'
+        },
+        {
+            id: '2',
+            nama_dokter: 'dr. Jane Doe',
+            nama_poli: 'Poli Umum',
+            jam_praktek: '13.00 - 15.00'
+        },
+        {
+            id: '3',
+            nama_dokter: 'dr. Lisa Manobal',
+            nama_poli: 'Poli Umum',
+            jam_praktek: '16.00 - 20.00'
+        },
+    ];
+
+    PenyakitTerpopuler: any[] = [
+        {
+            id: '1',
+            nama_penyakit: 'Cholera, unspecified',
+            jumlah: '4'
+        },
+        {
+            id: '2',
+            nama_penyakit: 'Congenital syphilis',
+            jumlah: '2'
+        },
+        {
+            id: '3',
+            nama_penyakit: 'Paratyphoid fever A',
+            jumlah: '2'
+        },
+    ];
+
     constructor(
         private _router: Router,
         private _utilityService: UtilityService,
