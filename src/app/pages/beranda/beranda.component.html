@@ -18,32 +18,165 @@
         </div>
     </div>
 
-    <!-- Pilihan Menu -->
-    <div class="flex flex-col w-full pt-5 my-5 border-b-0 border-t border-x-0 border-dashed border-gray-300">
-        <p class="text-slate-700 text-2xl font-semibold">
-            Pilihan Menu Untuk Anda
-        </p>
+    <!-- Counter -->
+    <div class="flex flex-row w-full mt-5 mb-7 gap-5">
+        <!-- List Dokter Praktek -->
+        <div class="flex flex-col w-8/12 bg-white rounded-lg shadow-sm p-3 gap-4 max-h-[17rem] overflow-y-auto">
+            <!-- Heading -->
+            <div class="flex flex-col">
+                <p class="text-gray-800 text-lg font-medium">
+                    Dokter Praktek Hari Ini
+                </p>
+                <p class="text-gray-600 text-sm">
+                    Menampilkan daftar dokter yang praktek hari ini
+                </p>
+            </div>
 
-        <p class="text-slate-700 text-base">
-            Pilih menu yang tersedia sesuai dengan role Anda
-        </p>
-    </div>
+            <div class="flex flex-col gap-2">
+                @for (item of DokterPraktekHariIniDatasource; track $index; let last = $last) {
+                <div
+                    class="flex flex-row justify-between gap-0 pb-2 {{ last ? '' : 'border-b border-dashed border-t-0 border-x-0 border-gray-300' }}">
+                    <div class="w-6/12">
+                        <p class="text-gray-700 text-base">
+                            {{ $index + 1 }})
+                            {{ item.nama_dokter }}
+                        </p>
+                    </div>
+                    <p class="text-gray-700 text-sm">
+                        {{ item.nama_poli }}
+                    </p>
+                    <p class="text-gray-700 text-sm">
+                        {{ item.jam_praktek }}
+                    </p>
+                </div>
 
-    <!-- Menu -->
-    <div *ngIf="Menu" class="grid grid-cols-3 gap-5">
-        <div *ngFor="let item of Menu"
-            class="flex w-full gap-3 justify-center p-5 rounded-lg shadow hover:bg-blue-500 hover:text-white bg-white text-gray-700 border-l-4 border-r-0 border-y-0 hover:border-yellow-400  border-blue-500 border-solid cursor-pointer"
-            (click)="handleClickMainMenu(item)">
-            <p class="text-base text-center font-medium">
-                {{ item.caption }}
-            </p>
+                }
+            </div>
+        </div>
+
+        <!-- Counting -->
+        <div class="grid grid-cols-2 grid-row-2 w-4/12 gap-4">
+            <!-- Pasien Terlayani -->
+            <div class="flex flex-col w-full rounded-lg shadow-sm bg-white p-3">
+                <div class="flex w-full items-start mb-3">
+                    <p class="text-sky-500 font-medium text-5xl text-center">
+                        {{ PasienTerlayani }}
+                    </p>
+
+                    <span class="ml-auto cursor-pointer">
+                        <i class="pi pi-arrow-up-right text-gray-600" style="font-size: 13px"></i>
+                    </span>
+                </div>
+
+                <p class="text-gray-700 text-sm">
+                    Pasien Terlayani Hari Ini
+                </p>
+            </div>
+
+            <!-- Total -->
+            <div class="flex flex-col w-full rounded-lg shadow-sm bg-white p-3 justify-center">
+                <div class="flex w-full items-start mb-3">
+                    <p class="text-sky-500 font-medium text-5xl text-center">
+                        {{ TotalPasien }}
+                    </p>
+
+                    <span class="ml-auto cursor-pointer">
+                        <i class="pi pi-arrow-up-right text-gray-600" style="font-size: 13px"></i>
+                    </span>
+                </div>
+
+                <p class="text-gray-700 text-sm">
+                    Total Pasien
+                </p>
+            </div>
+
+            <!-- Dokter Praktek Hari Ini -->
+            <div class="flex flex-col w-full rounded-lg shadow-sm bg-white p-3 justify-center">
+                <div class="flex w-full items-start mb-3">
+                    <p class="text-sky-500 font-medium text-5xl text-center">
+                        {{ DokterPraktekHariIni }}
+                    </p>
+
+                    <span class="ml-auto cursor-pointer">
+                        <i class="pi pi-arrow-up-right text-gray-600" style="font-size: 13px"></i>
+                    </span>
+                </div>
+
+                <p class="text-gray-700 text-sm">
+                    Dokter Praktek Hari Ini
+                </p>
+            </div>
+
+            <!-- Tindakan Medis Hari Ini -->
+            <div class="flex flex-col w-full rounded-lg shadow-sm bg-white p-3 justify-center">
+                <div class="flex w-full items-start mb-3">
+                    <p class="text-sky-500 font-medium text-5xl text-center">
+                        {{ TindakanMedisHariIni }}
+                    </p>
+
+                    <span class="ml-auto cursor-pointer">
+                        <i class="pi pi-arrow-up-right text-gray-600" style="font-size: 13px"></i>
+                    </span>
+                </div>
+
+                <p class="text-gray-700 text-sm">
+                    Tindakan Medis Hari Ini
+                </p>
+            </div>
         </div>
     </div>
 
-    <div class="flex mt-10 items-center gap-2">
-        <i class="pi pi-circle-fill text-green-500"></i>
-        <p class=" text-gray-600 text-sm">
-            Perangkat Anda Online
-        </p>
+    <!-- Chart -->
+    <div class="flex flex-row w-full gap-5">
+        <div class="flex flex-col gap-2 w-8/12 bg-white rounded-lg shadow-sm p-3">
+            <div class="flex flex-col">
+                <p class="text-lg text-gray-800 font-medium tracking-tight leading-6">
+                    Pendapatan
+                </p>
+                <p class="text-sm text-gray-600 tracking-tight leading-6">
+                    Menampilkan ringkasan pendapatan dalam 7 hari terakhir
+                </p>
+            </div>
+
+            <div class="flex flex-col w-full">
+                <apx-chart *ngIf="ChartPendapatan" class="flex-auto w-full h-80" [chart]="ChartPendapatan.chart"
+                    [colors]="ChartPendapatan.colors" [dataLabels]="ChartPendapatan.dataLabels"
+                    [grid]="ChartPendapatan.grid" [labels]="ChartPendapatan.labels" [legend]="ChartPendapatan.legend"
+                    [plotOptions]="ChartPendapatan.plotOptions" [series]="ChartPendapatan.series"
+                    [states]="ChartPendapatan.states" [stroke]="ChartPendapatan.stroke"
+                    [tooltip]="ChartPendapatan.tooltip" [xaxis]="ChartPendapatan.xaxis" [yaxis]="ChartPendapatan.yaxis">
+                </apx-chart>
+            </div>
+        </div>
+
+        <!-- List Penyakit Terpopuler -->
+        <div class="flex flex-col w-4/12 bg-white rounded-lg shadow-sm p-3 gap-4 max-h-[17rem] overflow-y-auto">
+            <!-- Heading -->
+            <div class="flex flex-col">
+                <p class="text-gray-800 text-lg font-medium">
+                    Penyakit Terpopuler
+                </p>
+                <p class="text-gray-600 text-sm">
+                    Menampilkan daftar penyakit terpopuler dalam 30 hari
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                @for (item of PenyakitTerpopuler; track $index; let last = $last) {
+                <div
+                    class="flex flex-row justify-between gap-0 pb-2 {{ last ? '' : 'border-b border-dashed border-t-0 border-x-0 border-gray-300' }}">
+                    <p class="text-gray-700 text-sm ">
+                        {{ $index + 1 }})
+                        {{ item.nama_penyakit }}
+                    </p>
+
+                    <p class="text-red-600 text-sm">
+                        {{ item.jumlah }}
+                    </p>
+                </div>
+
+                }
+            </div>
+        </div>
     </div>
 </app-dashboard>

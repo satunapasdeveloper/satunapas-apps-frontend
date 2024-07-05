@@ -25,6 +25,8 @@
         "aos": "^3.0.0-beta.6",
         "ngx-cookie-service": "^17.1.0",
         "primeicons": "^7.0.0",
+        "apexcharts": "3.44.0",
+        "ng-apexcharts": "1.8.0",
         "primeng": "^17.18.2",
         "rxjs": "~7.8.0",
         "tslib": "^2.3.0",
