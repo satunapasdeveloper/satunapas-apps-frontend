@@ -107,7 +107,7 @@ export class AuthenticationService {
             icon: 'pi pi-folder',
             toggle_child: false
         },
-    ])
+    ]);
 
     constructor(
         private _cookieService: CookieService,
