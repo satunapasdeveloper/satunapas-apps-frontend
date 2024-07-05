@@ -14,11 +14,19 @@ export class BreadcrumbsComponent {
 
     Destroy$ = new Subject();
 
-    Breadcrumbs$ = this._activatedRoute.data
-        .pipe(
-            takeUntil(this.Destroy$),
-            map(result => result['breadcrumbs'])
-        );
+    Title$ =
+        this._activatedRoute.data
+            .pipe(
+                takeUntil(this.Destroy$),
+                map(result => result['title'])
+            );
+
+    Breadcrumbs$ =
+        this._activatedRoute.data
+            .pipe(
+                takeUntil(this.Destroy$),
+                map(result => result['breadcrumbs'])
+            );
 
     constructor(
         private _router: Router,

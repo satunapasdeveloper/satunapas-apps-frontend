@@ -9,7 +9,7 @@ export namespace GridModel {
 
     export interface IGrid {
         id?: string;
-        column: ColDef[];
+        column: any[];
         dataSource: any[];
         height: string;
         showPaging: boolean;

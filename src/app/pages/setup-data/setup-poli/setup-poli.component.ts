@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { Subject } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
@@ -17,7 +18,8 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
         CommonModule,
         DashboardComponent,
         GridComponent,
-        DynamicFormComponent
+        DynamicFormComponent,
+        ButtonModule,
     ],
     templateUrl: './setup-poli.component.html',
     styleUrl: './setup-poli.component.scss'
@@ -39,13 +41,13 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'GridPoli',
         column: [
-            { field: 'kode_poli', headerName: 'KODE POLI', flex: 100, sortable: true, resizable: true },
-            { field: 'nama_poli', headerName: 'NAMA POLI', flex: 100, sortable: true, resizable: true },
-            { field: 'status_active', headerName: 'STATUS AKTIF', flex: 200, sortable: true, resizable: true },
+            { field: 'kode_poli', headerName: 'Kode Poli', },
+            { field: 'nama_poli', headerName: 'Nama Poli', },
+            { field: 'status_active', headerName: 'Status Aktif', renderAsCheckbox: true },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete'],
+        toolbar: ['Delete', 'Detail'],
         showPaging: true,
     };
     GridSelectedData: any;
@@ -76,8 +78,8 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
                     value: '',
                 },
             ],
-            style: 'inline',
-            class: 'grid-rows-2 grid-cols-2',
+            style: 'not_inline',
+            class: 'grid-rows-2 grid-cols-1',
             state: 'write',
             defaultValue: null,
         };
@@ -98,52 +100,63 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
         //     .pipe(takeUntil(this.Destroy$))
         //     .subscribe((result) => {
         //         if (result) {
-        //             console.log("get prov from setup provinsi =>", result);
+        //             console.log("get prov from setup poli =>", result);
         //             this.GridProps.dataSource = result;
         //         }
         //     })
+
+        this.GridProps.dataSource = [
+            {
+                kode_poli: 'DALAM',
+                nama_poli: 'POLI PENYAKIT DALAM',
+                status_active: true
+            },
+            {
+                kode_poli: 'KANDUNGAN',
+                nama_poli: 'POLI KANDUNGAN',
+                status_active: true
+            },
+            {
+                kode_poli: 'ANAK',
+                nama_poli: 'POLI ANAK',
+                status_active: true
+            },
+            {
+                kode_poli: 'UMUM',
+                nama_poli: 'POLI UMUM',
+                status_active: true
+            },
+        ]
     }
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'add') {
             this.PageState = 'form';
-            this.ButtonNavigation = [
-                {
-                    id: 'back',
-                    icon: 'pi pi-chevron-left',
-                    title: 'Kembali'
-                },
-                {
-                    id: 'save',
-                    icon: 'pi pi-save',
-                    title: 'Simpan'
-                },
-            ];
-        };
-
-        if (data.id == 'back') {
-            // ** Reset Form 
-            this.FormComps.onResetForm();
-
-            this.PageState = 'list';
-            this.ButtonNavigation = [
-                {
-                    id: 'add',
-                    title: 'Tambah',
-                    icon: 'pi pi-plus'
-                }
-            ];
+            this.ButtonNavigation = [];
         };
 
         if (data.id == 'save') {
             const formValue = this.FormComps.FormGroup.value;
-            this.saveProvinsi(formValue);
+            this.savePoli(formValue);
         };
 
         if (data.id == 'update') {
             const formValue = this.FormComps.FormGroup.value;
-            this.updateProvinsi(formValue);
+            this.updatePoli(formValue);
         };
+    }
+
+    handleBackToList() {
+        this.FormComps.onResetForm();
+
+        this.PageState = 'list';
+        this.ButtonNavigation = [
+            {
+                id: 'add',
+                title: 'Tambah',
+                icon: 'pi pi-plus'
+            }
+        ];
     }
 
     onCellClicked(args: any): void {
@@ -176,13 +189,13 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
     onToolbarClicked(args: any): void {
         if (args.id == 'delete') {
             console.log(this.GridSelectedData);
-            this.deleteProvinsi(this.GridSelectedData.kode_wilayah);
+            this.deletePoli(this.GridSelectedData.kode_wilayah);
         }
     }
 
-    private saveProvinsi(data: any) {
+    private savePoli(data: any) {
         // this._store
-        //     .dispatch(new SetupWilayahActions.CreateProvinsi(data))
+        //     .dispatch(new SetupWilayahActions.CreatePoli(data))
         //     .pipe(takeUntil(this.Destroy$))
         //     .subscribe((result) => {
         //         console.log(result);
@@ -206,9 +219,9 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
         //     })
     }
 
-    private updateProvinsi(data: any) {
+    private updatePoli(data: any) {
         // this._store
-        //     .dispatch(new SetupWilayahActions.UpdateProvinsi(data))
+        //     .dispatch(new SetupWilayahActions.UpdatePoli(data))
         //     .pipe(takeUntil(this.Destroy$))
         //     .subscribe((result) => {
         //         if (result.setup_wilayah.success) {
@@ -230,9 +243,9 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
         //     })
     }
 
-    private deleteProvinsi(kode_wilayah: string) {
+    private deletePoli(kode_wilayah: string) {
         // this._store
-        //     .dispatch(new SetupWilayahActions.DeleteProvinsi(kode_wilayah))
+        //     .dispatch(new SetupWilayahActions.DeletePoli(kode_wilayah))
         //     .pipe(takeUntil(this.Destroy$))
         //     .subscribe((result) => {
         //         console.log("store =>", result);

@@ -1,4 +1,4 @@
-<section id="dashboard" class="h-screen overflow-hidden bg-gray-50">
+<section id="dashboard" class="h-screen overflow-hidden bg-gray-100">
     <div class="flex w-full h-full">
         <!-- Sidebar -->
         <div id="sidebar" class="w-[5rem] bg-white transition-all flex flex-col p-5 shadow"
@@ -79,19 +79,19 @@
 
             <div class="flex flex-col gap-3 px-5">
                 <!-- Breadcrumbs & Buttons -->
-                <div *ngIf="!IsBeranda" class="flex w-full h-12 gap-2 justify-between items-center">
+                <div *ngIf="!IsBeranda" class="flex w-full h-14 gap-2 justify-between items-center">
                     <app-breadcrumbs></app-breadcrumbs>
 
                     <div *ngIf="ButtonNavigation" class="flex gap-3">
-                        <p-button *ngFor="let item of ButtonNavigation" styleClass="p-button-sm p-button-info"
+                        <p-button *ngFor="let item of ButtonNavigation" severity="info" styleClass="p-button-sm"
                             [label]="item.title" [icon]="item.icon" (onClick)="handleClickButtonNavigation(item)">
                         </p-button>
                     </div>
                 </div>
 
                 <!-- Content -->
-                <div class="w-full p-2 overflow-x-auto {{ IsBeranda ? 'bg-transparent' : 'bg-white border-t-4 border-b-0 border-x-0 border-blue-500 border-solid shadow-md rounded-md' }} "
-                    [style.height]="IsBeranda ? 'calc(100vh - 6rem)' : 'calc(100vh - 10rem)'">
+                <div class="w-full p-2 overflow-x-auto bg-transparent "
+                    [style.height]="IsBeranda ? 'calc(100vh - 6rem)' : '100%'">
                     <ng-content></ng-content>
                 </div>
             </div>
