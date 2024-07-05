@@ -18,7 +18,7 @@
             </div>
 
             <!-- Welcome -->
-            <div class="flex flex-col gap-1 mb-5">
+            <div class="{{ ShowSidebar ? 'flex' : 'hidden' }} flex-col gap-1 mb-5 transition-all">
                 <p
                     class="{{ ShowSidebar ? 'text-blue-500' : 'text-transparent' }} text-base transition-all font-semibold">
                     Selamat Datang
@@ -29,34 +29,44 @@
             </div>
 
             <!-- Menu -->
-            <div *ngIf="SidebarMenu$ | async as sidebar_menu"
-                class="{{ ShowSidebar ? 'flex' : 'hidden' }} flex-col gap-2 overflow-x-auto"
+            <div *ngIf="SidebarMenu$ | async as sidebar_menu" class="flex-col gap-2 overflow-x-auto"
                 style="height: calc(100vh - 10rem);">
                 <div *ngFor="let item of sidebar_menu" class="flex flex-col w-full pr-3"
                     (click)="item.sidebarChild ? item.toggle_child = !item.toggle_child : handleClickSidebarMenu(item)">
 
                     <div
-                        class="flex w-full group items-center p-2 gap-2 cursor-pointer hover:bg-white rounded-md transition-all duration-75 {{ item.sidebarChild && item.toggle_child ? 'mb-0' : 'mb-0' }}">
-                        <div *ngIf="item.sidebarChild" class="w-1/12">
-                            <i class="pi pi-chevron-{{ item.toggle_child ? 'down' : 'right' }} text-gray-50 group-hover:text-gray-900"
+                        class="flex w-full {{ ShowSidebar ? 'items-center' : '' }} p-2 gap-2 cursor-pointer hover:bg-sky-100 text-gray-700 hover:text-sky-700 rounded-md transition-all duration-75 {{ item.sidebarChild && item.toggle_child ? 'mb-0' : 'mb-0' }}">
+                        <div *ngIf="item.sidebarChild && ShowSidebar" class="w-1/12">
+                            <i class="pi pi-chevron-{{ item.toggle_child ? 'down' : 'right' }}"
                                 style="font-size: 10px;">
                             </i>
                         </div>
 
-                        <div class="w-11/12 flex gap-2">
-                            <span class="text-gray-200 font-medium tracking-normal group-hover:text-black"
-                                style="font-size: 13px;">
-                                {{ item.caption }}
+                        <div *ngIf="ShowSidebar" class="w-11/12 flex gap-2">
+                            <span class="text-gray-700 tracking-normal" style="font-size: 15px;">
+                                <i class="{{ item.icon }} mr-2" style="font-size: 13px;"></i>&nbsp;{{ item.caption }}
+                            </span>
+                        </div>
+
+                        <div *ngIf="!ShowSidebar" class="w-11/12 flex gap-2">
+                            <span class="text-gray-700 tracking-normal">
+                                <i class="{{ item.icon }} mr-2" style="font-size: 13px;"></i>
                             </span>
                         </div>
                     </div>
 
                     <div *ngIf="item.sidebarChild && item.toggle_child"
-                        class="w-full flex flex-col pl-7 py-2 gap-2 cursor-pointer">
+                        class="w-full flex flex-col pl-7 py-1 gap-2 cursor-pointer">
                         <span *ngFor="let child of item.sidebarChild"
-                            class="flex text-gray-300 hover:bg-white hover:rounded-md p-2 items-center hover:text-black font-medium tracking-normal transition-all"
-                            style="font-size: 13px;" (click)="handleClickSidebarMenu(child)">
-                            <p class="ml-2 p-0 mt-0 mb-0"> {{ child.caption }}</p>
+                            class="flex text-gray-700 hover:bg-sky-100 hover:rounded-md p-2 items-center hover:text-sky-700 tracking-normal transition-all"
+                            style="font-size: 14px;" (click)="handleClickSidebarMenu(child)">
+                            <p *ngIf="ShowSidebar" class="ml-2 p-0 mt-0 mb-0">
+                                <i class="{{ child.icon }} mr-2" style="font-size: 14px;"></i>&nbsp;{{ child.caption }}
+                            </p>
+
+                            <p *ngIf="!ShowSidebar" class="ml-2 p-0 mt-0 mb-0">
+                                <i class="{{ child.icon }} mr-2" style="font-size: 14px;"></i>
+                            </p>
                         </span>
                     </div>
                 </div>

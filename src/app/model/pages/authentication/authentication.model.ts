@@ -9,6 +9,13 @@ export namespace AuthenticationModel {
         token: string
     }
 
+    export interface ISidebarMenu {
+        id: string;
+        caption: string;
+        icon: string;
+        toggle_child: boolean;
+        sidebarChild?: ISidebarMenu[]
+    }
 
     export interface ISignIn {
         username: string

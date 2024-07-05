@@ -225,7 +225,7 @@ export class BerandaComponent implements OnInit, OnDestroy {
             },
             {
                 "tanggal": "2024-06-04T00:00:00",
-                "nominal": 0.0000
+                "nominal": 2000000.0000
             },
             {
                 "tanggal": "2024-06-05T00:00:00",
@@ -234,6 +234,10 @@ export class BerandaComponent implements OnInit, OnDestroy {
             {
                 "tanggal": "2024-06-06T00:00:00",
                 "nominal": 0.0000
+            },
+            {
+                "tanggal": "2024-06-07T00:00:00",
+                "nominal": 6000000
             }
         ];
 
