@@ -14,6 +14,7 @@ export namespace AuthenticationModel {
         caption: string;
         icon: string;
         toggle_child: boolean;
+        url?: string;
         sidebarChild?: ISidebarMenu[]
     }
 
