@@ -18,12 +18,46 @@
         </div>
     </div>
 
-    <!-- Dashboard -->
-    <div class="flex flex-row w-full my-5 gap-5">
+    <!-- Counter -->
+    <div class="flex flex-row w-full mt-5 mb-7 gap-5">
+        <!-- List Dokter Praktek -->
+        <div class="flex flex-col w-8/12 bg-white rounded-lg shadow-sm p-3 gap-4 max-h-[17rem] overflow-y-auto">
+            <!-- Heading -->
+            <div class="flex flex-col">
+                <p class="text-gray-800 text-lg font-medium">
+                    Dokter Praktek Hari Ini
+                </p>
+                <p class="text-gray-600 text-sm">
+                    Menampilkan daftar dokter yang praktek hari ini
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                @for (item of DokterPraktekHariIniDatasource; track $index; let last = $last) {
+                <div
+                    class="flex flex-row justify-between gap-0 pb-2 {{ last ? '' : 'border-b border-dashed border-t-0 border-x-0 border-gray-300' }}">
+                    <div class="w-6/12">
+                        <p class="text-gray-700 text-base">
+                            {{ $index + 1 }})
+                            {{ item.nama_dokter }}
+                        </p>
+                    </div>
+                    <p class="text-gray-700 text-sm">
+                        {{ item.nama_poli }}
+                    </p>
+                    <p class="text-gray-700 text-sm">
+                        {{ item.jam_praktek }}
+                    </p>
+                </div>
+
+                }
+            </div>
+        </div>
+
         <!-- Counting -->
         <div class="grid grid-cols-2 grid-row-2 w-4/12 gap-4">
             <!-- Pasien Terlayani -->
-            <div class="flex flex-col w-full rounded-lg shadow-sm bg-white p-3 justify-center">
+            <div class="flex flex-col w-full rounded-lg shadow-sm bg-white p-3">
                 <div class="flex w-full items-start mb-3">
                     <p class="text-sky-500 font-medium text-5xl text-center">
                         {{ PasienTerlayani }}
@@ -90,38 +124,28 @@
                 </p>
             </div>
         </div>
+    </div>
 
-        <!-- List Dokter Praktek -->
-        <div class="flex flex-col w-4/12 bg-white rounded-lg shadow-sm p-3 gap-4 max-h-[17rem] overflow-y-auto">
-            <!-- Heading -->
+    <!-- Chart -->
+    <div class="flex flex-row w-full gap-5">
+        <div class="flex flex-col gap-2 w-8/12 bg-white rounded-lg shadow-sm p-3">
             <div class="flex flex-col">
-                <p class="text-gray-800 text-lg font-medium">
-                    Dokter Praktek Hari Ini
+                <p class="text-lg text-gray-800 font-medium tracking-tight leading-6">
+                    Pendapatan
                 </p>
-                <p class="text-gray-600 text-sm">
-                    Menampilkan daftar dokter yang praktek hari ini
+                <p class="text-sm text-gray-600 tracking-tight leading-6">
+                    Menampilkan ringkasan pendapatan dalam 7 hari terakhir
                 </p>
             </div>
 
-            <div class="flex flex-col gap-2">
-                @for (item of DokterPraktekHariIniDatasource; track $index; let last = $last) {
-                <div
-                    class="flex flex-col gap-0 pb-2 {{ last ? '' : 'border-b border-dashed border-t-0 border-x-0 border-gray-300' }}">
-                    <p class="text-gray-700 text-base">
-                        {{ $index + 1 }})
-                        {{ item.nama_dokter }}
-                    </p>
-                    <div class="flex justify-between">
-                        <p class="text-gray-700 text-sm">
-                            {{ item.nama_poli }}
-                        </p>
-                        <p class="text-gray-700 text-sm">
-                            {{ item.jam_praktek }}
-                        </p>
-                    </div>
-                </div>
-
-                }
+            <div class="flex flex-col w-full">
+                <apx-chart *ngIf="ChartPendapatan" class="flex-auto w-full h-80" [chart]="ChartPendapatan.chart"
+                    [colors]="ChartPendapatan.colors" [dataLabels]="ChartPendapatan.dataLabels"
+                    [grid]="ChartPendapatan.grid" [labels]="ChartPendapatan.labels" [legend]="ChartPendapatan.legend"
+                    [plotOptions]="ChartPendapatan.plotOptions" [series]="ChartPendapatan.series"
+                    [states]="ChartPendapatan.states" [stroke]="ChartPendapatan.stroke"
+                    [tooltip]="ChartPendapatan.tooltip" [xaxis]="ChartPendapatan.xaxis" [yaxis]="ChartPendapatan.yaxis">
+                </apx-chart>
             </div>
         </div>
 
