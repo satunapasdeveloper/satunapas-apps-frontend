@@ -1,4 +1,4 @@
-<div *ngIf="props.toolbar?.length" class="flex bg-gray-100 w-full gap-5 px-3 py-3"
+<!-- <div *ngIf="props.toolbar?.length" class="flex bg-gray-100 w-full gap-5 px-3 py-3"
     style="border-top-right-radius: 10px; border-top-left-radius: 10px; border: 1px solid #e5e7eb">
     <span *ngFor="let item of gridToolbar" class="text-sm cursor-pointer" (click)="onToolbarClicked(item)">
         <i [class]="item.icon" style="font-size: 13px"></i> {{ item.title }}
@@ -11,4 +11,50 @@
         [animateRows]="true" [pagination]="props.showPaging" [paginationPageSize]="20" (gridReady)="onGridReady($event)"
         (cellClicked)="onCellClicked($event)" (rowDoubleClicked)="onRowDoubleClicked($event)">
     </ag-grid-angular>
+</div> -->
+
+<div class="grid w-full">
+    <p-table [value]="props.dataSource" [columns]="props.column" styleClass="p-datatable-striped"
+        [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header" let-columns>
+            <tr class="bg-gray-100">
+                <th *ngFor="let col of columns" class="text-sm">
+                    {{ col.headerName }}
+                </th>
+                <th *ngIf="props.toolbar" class="text-sm text-center">
+                    Aksi
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+                <td *ngFor="let col of columns" class="text-sm">
+                    <span *ngIf="col.renderAsCheckbox">
+                        <i class="pi {{ rowData[col.field] ? 'pi-check' : 'pi-times' }}"></i>
+                    </span>
+
+                    <span *ngIf="!col.renderAsCheckbox">
+                        {{ rowData[col.field] }}
+                    </span>
+                </td>
+                <td *ngIf="props.toolbar" class="text-center">
+                    <i class="pi pi-ellipsis-v" (click)="op.toggle($event)"></i>
+
+                    <p-overlayPanel #op>
+                        <div class="flex flex-col gap-2 w-[10rem]">
+                            @for (item of props.toolbar; track $index) {
+                            <div class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 transition-all rounded-md"
+                                (click)="onAksiClicked(item, rowData)">
+                                <i class="pi pi-info-circle" style="font-size: 13px"></i>
+                                <span class="font-medium text-sm text-gray-700">
+                                    {{ item }}
+                                </span>
+                            </div>
+                            }
+                        </div>
+                    </p-overlayPanel>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
 </div>

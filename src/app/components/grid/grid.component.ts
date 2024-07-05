@@ -3,13 +3,17 @@ import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { ColDef, GridApi, ColumnApi, GridReadyEvent } from 'ag-grid-community';
+import { TableModule } from 'primeng/table'
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @Component({
     selector: 'app-grid',
     standalone: true,
     imports: [
         CommonModule,
-        AgGridModule
+        // AgGridModule
+        TableModule,
+        OverlayPanelModule,
     ],
     templateUrl: './grid.component.html',
     styleUrls: ['./grid.component.scss']
@@ -22,9 +26,11 @@ export class GridComponent {
 
     @Output('rowDoubleClicked') rowDoubleClicked = new EventEmitter<any>();
 
-    @Output('toolbarClicked') toolbarClicked = new EventEmitter<GridModel.IGridToolbar>();
+    // @Output('toolbarClicked') toolbarClicked = new EventEmitter<GridModel.IGridToolbar>();
 
-    @Output('cellFinishEdited') cellFinishEdited = new EventEmitter<any>();
+    // @Output('cellFinishEdited') cellFinishEdited = new EventEmitter<any>();
+
+    @Output('aksiClicked') aksiClicked = new EventEmitter<any>();
 
     defaultColDef: ColDef = {
         sortable: true,
@@ -98,8 +104,12 @@ export class GridComponent {
         if (args.id == 'excel') {
             this.handleExportExcel();
         } else {
-            this.toolbarClicked.emit(args);
+            // this.toolbarClicked.emit(args);
         }
+    }
+
+    onAksiClicked(type: string, data: any) {
+        this.aksiClicked.emit({ type: type, data: data });
     }
 
     private handleExportExcel(): void {

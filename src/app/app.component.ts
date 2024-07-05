@@ -44,7 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const isUserLoggedIn = localStorage.getItem('_CISUD_');
 
         if (isUserLoggedIn) {
-            this.initAllNeededState();
+            // this.initAllNeededState();
         }
     }
 

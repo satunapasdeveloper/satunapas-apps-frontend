@@ -28,7 +28,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     ShowSidebar = false;
 
-    SidebarMenu$ = new BehaviorSubject<any[]>([]);
+    SidebarMenu$ =
+        this._authenticationService.SidebarMenu$
+            .pipe(takeUntil(this.Destroy$));
 
     UserData$ =
         this._authenticationService.UserData$

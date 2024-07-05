@@ -20,9 +20,9 @@ const routes: Routes = [
         }
     },
     {
-        path: 'PIS',
+        path: 'setup-data',
         canActivate: [AuthGuard],
-        loadChildren: async () => (await import('./pages/pis/pis.routes')).pisRoutes
+        loadChildren: async () => (await import('./pages/setup-data/setup-data.routes')).setupDataRoutes
     },
     {
         path: '**',
