@@ -15,7 +15,7 @@
 
 <div class="grid w-full">
     <p-table [value]="props.dataSource" [columns]="props.column" styleClass="p-datatable-striped"
-        [tableStyle]="{'min-width': '50rem'}">
+        [tableStyle]="{'min-width': '50rem'}" selectionMode="single" [(selection)]="SelectedRow">
         <ng-template pTemplate="header" let-columns>
             <tr class="bg-gray-100">
                 <th *ngFor="let col of columns" class="text-sm">
@@ -27,7 +27,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
-            <tr>
+            <tr [pSelectableRow]="rowData">
                 <td *ngFor="let col of columns" class="text-sm {{ col.class }}">
                     @switch (col.renderAsCheckbox){
                     @case (true) {
@@ -57,17 +57,17 @@
                     }
                     }
                 </td>
-                <td *ngIf=" props.toolbar" class="text-center">
+                <td *ngIf=" gridToolbar" class="text-center">
                     <i class="pi pi-ellipsis-v" (click)="op.toggle($event)"></i>
 
                     <p-overlayPanel #op>
                         <div class="flex flex-col gap-2 w-[10rem]">
-                            @for (item of props.toolbar; track $index) {
+                            @for (item of gridToolbar; track $index) {
                             <div class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 transition-all rounded-md"
-                                (click)="onAksiClicked(item, rowData)">
-                                <i class="pi pi-info-circle" style="font-size: 13px"></i>
+                                (click)="onAksiClicked(item.id, rowData)">
+                                <i class="pi {{ item.icon }}" style="font-size: 13px"></i>
                                 <span class="font-medium text-sm text-gray-700">
-                                    {{ item }}
+                                    {{ item.title }}
                                 </span>
                             </div>
                             }

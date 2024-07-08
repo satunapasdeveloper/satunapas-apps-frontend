@@ -44,6 +44,8 @@ export class GridComponent implements OnInit {
 
     gridToolbar: GridModel.IGridToolbar[] = [];
 
+    SelectedRow: any;
+
     constructor(
         // private _documentService: DocumentService,
     ) { };

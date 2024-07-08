@@ -30,5 +30,15 @@ export const setupDataRoutes: Route[] = [
                 "Beranda", "Setup Data", "Setup Tindakan Medis"
             ]
         }
+    },
+    {
+        path: 'setup-rekanan-penunjang',
+        loadComponent: async () => (await import('./setup-rekanan-penunjang/setup-rekanan-penunjang.component')).SetupRekananPenunjangComponent,
+        data: {
+            title: 'Setup Tindakan Medis',
+            breadcrumbs: [
+                "Beranda", "Setup Data", "Setup Rekanan Penunjang"
+            ]
+        }
     }
 ];

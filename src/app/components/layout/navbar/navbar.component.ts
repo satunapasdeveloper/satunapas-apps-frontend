@@ -32,23 +32,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        this._utilityService.ShowTopMenu$
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                this.ShowTopMenu = result;
 
-                const topMenuEl = document.getElementById("top_menu") as HTMLElement;
-
-                if (!result) {
-                    topMenuEl.classList.replace("h-[5rem]", "h-0");
-                    topMenuEl.classList.replace("px-5", "px-0");
-                    topMenuEl.classList.replace("py-2", "py-0");
-                } else {
-                    topMenuEl.classList.replace("h-0", "h-[5rem]");
-                    topMenuEl.classList.replace("px-0", "px-5");
-                    topMenuEl.classList.replace("py-0", "py-2");
-                }
-            });
     }
 
     handleToggleSidebar() {
