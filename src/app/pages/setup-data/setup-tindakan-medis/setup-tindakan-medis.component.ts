@@ -12,7 +12,7 @@ import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 
 @Component({
-    selector: 'app-setup-item',
+    selector: 'app-setup-tindakan-medis',
     standalone: true,
     imports: [
         CommonModule,
@@ -21,10 +21,10 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
         DynamicFormComponent,
         ButtonModule,
     ],
-    templateUrl: './setup-item.component.html',
-    styleUrl: './setup-item.component.scss'
+    templateUrl: './setup-tindakan-medis.component.html',
+    styleUrl: './setup-tindakan-medis.component.scss'
 })
-export class SetupItemComponent implements OnInit, OnDestroy {
+export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
 
     Destroy$ = new Subject();
 
@@ -39,14 +39,12 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     ];
 
     GridProps: GridModel.IGrid = {
-        id: 'GridItem',
+        id: 'GridTindakanMedis',
         column: [
-            { field: 'kode_item', headerName: 'Kode Item', class: 'font-semibold' },
-            { field: 'nama_item', headerName: 'Nama Item', },
-            { field: 'kategori', headerName: 'Kategori', },
-            { field: 'satuan', headerName: 'Satuan', },
-            { field: 'harga_jual', headerName: 'Harga Jual', format: 'currency' },
-            { field: 'status_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'nama_tindakan_medis', headerName: 'Nama Tindakan Medis', class: 'font-semibold' },
+            { field: 'nama_tindakan_icd_9', headerName: 'Nama Tindakan ICD-9', },
+            { field: 'harga_satuan', headerName: 'Harga Satuan', format: 'currency' },
+            { field: 'status_active', headerName: 'Status Aktif', renderAsCheckbox: true, },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
@@ -64,27 +62,18 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         private _messageService: MessageService,
     ) {
         this.FormProps = {
-            id: 'form_setup_item',
+            id: 'form_setup_tindakan_medis',
             fields: [
                 {
-                    id: 'kategori',
-                    label: 'Kategori',
+                    id: 'nama_tindakan_medis',
+                    label: 'Nama Tindakan Medis',
                     required: true,
-                    type: 'select',
-                    dropdownProps: {
-                        options: [
-                            { name: 'Obat', value: 'Obat' },
-                            { name: 'BMHP', value: 'BMHP' },
-                        ],
-                        optionName: 'name',
-                        optionValue: 'value',
-                        autoDisplayFirst: false
-                    },
+                    type: 'text',
                     value: '',
                 },
                 {
-                    id: 'nama_item',
-                    label: 'Nama Item',
+                    id: 'nama_tindakan_icd_9',
+                    label: 'Nama Tindakan ICD-9',
                     required: true,
                     type: 'select',
                     dropdownProps: {
@@ -99,31 +88,15 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     }
                 },
                 {
-                    id: 'kode_item',
-                    label: 'Kode Item KFA',
-                    required: false,
-                    type: 'text',
-                    value: '',
-                    readonly: true
-                },
-                {
-                    id: 'satuan',
-                    label: 'Satuan',
-                    required: false,
-                    type: 'text',
-                    value: '',
-                    readonly: true
-                },
-                {
-                    id: 'harga_jual',
-                    label: 'Harga Jual',
+                    id: 'harga_satuan',
+                    label: 'Harga Satuan',
                     required: false,
                     type: 'number',
                     value: 0,
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-5 grid-cols-1',
+            class: 'grid-rows-3 grid-cols-1',
             state: 'write',
             defaultValue: null,
         };
@@ -151,35 +124,9 @@ export class SetupItemComponent implements OnInit, OnDestroy {
 
         this.GridProps.dataSource = [
             {
-                kode_item: '92001142',
-                nama_item: 'Paracetamol 250 mg Sirup (OBAPA)',
-                kategori: 'Obat',
-                satuan: 'Botol Plastik',
-                harga_jual: 6000,
-                status_active: true
-            },
-            {
-                kode_item: '2048618',
-                nama_item: 'Latex Examination Glove (Free Powder) (LPF001, SHAMROCK SUPREME, XS, S, M, L, XL)',
-                kategori: 'BMHP',
-                satuan: 'Pieces',
-                harga_jual: 6000,
-                status_active: true
-            },
-            {
-                kode_item: '93000108',
-                nama_item: 'Gemcitabine Hydrochloride 1000 mg Serbuk Injeksi Liofilisasi (ABINGEM)',
-                kategori: 'Obat',
-                satuan: 'Vial',
-                harga_jual: 12000,
-                status_active: true
-            },
-            {
-                kode_item: '93000126',
-                nama_item: 'Diazepam 2 mg Tablet (VALISANBE)',
-                kategori: 'Obat',
-                satuan: 'Tablet',
-                harga_jual: 19000,
+                nama_tindakan_medis: 'Jahitan',
+                nama_tindakan_icd_9: 'Part Gastrec W Jej Anast',
+                harga_satuan: 30000,
                 status_active: true
             },
         ]
@@ -311,5 +258,6 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         //         }
         //     })
     }
+
 
 }

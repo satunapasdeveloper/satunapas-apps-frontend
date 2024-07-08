@@ -1,34 +1,32 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AgGridModule } from 'ag-grid-angular';
 import { GridModel } from 'src/app/model/components/grid.model';
-import { ColDef, GridApi, ColumnApi, GridReadyEvent } from 'ag-grid-community';
+import { ColDef, GridApi, ColumnApi } from 'ag-grid-community';
 import { TableModule } from 'primeng/table'
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'app-grid',
     standalone: true,
     imports: [
         CommonModule,
-        // AgGridModule
+        InputTextModule,
+        ButtonModule,
         TableModule,
         OverlayPanelModule,
     ],
     templateUrl: './grid.component.html',
     styleUrls: ['./grid.component.scss']
 })
-export class GridComponent {
+export class GridComponent implements OnInit {
 
     @Input('props') props!: GridModel.IGrid;
 
     @Output('cellClicked') cellClicked = new EventEmitter<any>();
 
     @Output('rowDoubleClicked') rowDoubleClicked = new EventEmitter<any>();
-
-    // @Output('toolbarClicked') toolbarClicked = new EventEmitter<GridModel.IGridToolbar>();
-
-    // @Output('cellFinishEdited') cellFinishEdited = new EventEmitter<any>();
 
     @Output('aksiClicked') aksiClicked = new EventEmitter<any>();
 
@@ -44,23 +42,30 @@ export class GridComponent {
 
     gridToolbar: GridModel.IGridToolbar[] = [];
 
+    gridDatasource: any[] = [];
+
+    SelectedRow: any;
+
     constructor(
         // private _documentService: DocumentService,
     ) { };
 
-    onGridReady(args: GridReadyEvent): void {
-        this.gridApi = args.api;
+    ngOnInit(): void {
+        this.onGridReady();
+    }
 
-        this.gridColumnApi = args.columnApi;
+    onGridReady(): void {
+        this.gridDatasource = this.props.dataSource;
 
         const column = this.props.column.map((item) => {
             return {
                 id: item.field,
+                renderAsCheckbox: item.renderAsCheckbox ? item.renderAsCheckbox : false,
                 ...item
             }
         });
 
-        this.props.column = column;
+        this.props.column = column as any;
 
         if (this.props.toolbar?.length) {
             this.props.toolbar.forEach((item) => {
@@ -106,6 +111,16 @@ export class GridComponent {
         } else {
             // this.toolbarClicked.emit(args);
         }
+    }
+
+    onSearchKeyword(search: string) {
+        if (search) {
+            this.props.dataSource = this.props.dataSource.filter((item) => {
+                return item.nama_rekanan.toLowerCase().includes(search.toLowerCase());
+            });
+        } else {
+            this.props.dataSource = this.gridDatasource;
+        };
     }
 
     onAksiClicked(type: string, data: any) {

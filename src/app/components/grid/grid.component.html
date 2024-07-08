@@ -1,53 +1,74 @@
-<!-- <div *ngIf="props.toolbar?.length" class="flex bg-gray-100 w-full gap-5 px-3 py-3"
-    style="border-top-right-radius: 10px; border-top-left-radius: 10px; border: 1px solid #e5e7eb">
-    <span *ngFor="let item of gridToolbar" class="text-sm cursor-pointer" (click)="onToolbarClicked(item)">
-        <i [class]="item.icon" style="font-size: 13px"></i> {{ item.title }}
-    </span>
+<div *ngIf="props.showSearch"
+    class="flex items-center justify-between w-full mb-4 pt-2 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+    <div class="flex w-5/12">
+        <input #KeywordSearch type="text" pInputText class="w-full p-inputtext-sm"
+            [placeholder]="props.searchPlaceholder">
+    </div>
+
+    <div class="flex gap-3">
+        <p-button severity="info" label="Cari" styleClass="p-button-sm"
+            (onClick)="onSearchKeyword(KeywordSearch.value)">
+        </p-button>
+
+        <p-button severity="secondary" label="Export" styleClass="p-button-sm"></p-button>
+    </div>
 </div>
-<div class="grid">
-    <ag-grid-angular [style.width]="'100%'" [style.height]="props.height"
-        class="ag-theme-alpine {{ props.toolbar?.length ? 'with_toolbar' : 'no_toolbar'}}" [columnDefs]="props.column"
-        [headerHeight]="40" [defaultColDef]="defaultColDef" [rowData]="props.dataSource" [rowSelection]="'single'"
-        [animateRows]="true" [pagination]="props.showPaging" [paginationPageSize]="20" (gridReady)="onGridReady($event)"
-        (cellClicked)="onCellClicked($event)" (rowDoubleClicked)="onRowDoubleClicked($event)">
-    </ag-grid-angular>
-</div> -->
 
 <div class="grid w-full">
     <p-table [value]="props.dataSource" [columns]="props.column" styleClass="p-datatable-striped"
-        [tableStyle]="{'min-width': '50rem'}">
+        [tableStyle]="{'min-width': '50rem'}" selectionMode="single" [(selection)]="SelectedRow" sortMode="multiple">
         <ng-template pTemplate="header" let-columns>
             <tr class="bg-gray-100">
-                <th *ngFor="let col of columns" class="text-sm">
-                    {{ col.headerName }}
+                <th *ngFor="let col of columns" class="text-sm" [pSortableColumn]="col.field">
+                    {{ col.headerName }} <p-sortIcon [field]="col.field" style="font-size: 12px" />
                 </th>
                 <th *ngIf="props.toolbar" class="text-sm text-center">
                     Aksi
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns">
-            <tr>
+        <ng-template *ngIf="props.dataSource" pTemplate="body" let-rowData let-columns="columns">
+            <tr [pSelectableRow]="rowData">
                 <td *ngFor="let col of columns" class="text-sm {{ col.class }}">
-                    <span *ngIf="col.renderAsCheckbox">
-                        <i class="pi {{ rowData[col.field] ? 'pi-check' : 'pi-times' }}"></i>
-                    </span>
-
-                    <span *ngIf="!col.renderAsCheckbox">
-                        {{ rowData[col.field] }}
-                    </span>
+                    @switch (col.renderAsCheckbox){
+                    @case (true) {
+                    <i class="pi {{ rowData[col.field] ? 'pi-check' : 'pi-times' }}"></i>
+                    }
+                    @case (false) {
+                    @switch (col.format) {
+                    @case ('currency') {
+                    {{ rowData[col.field] | currency: 'Rp. ' }}
+                    }
+                    @case ('date') {
+                    {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
+                    }
+                    @case ('number') {
+                    {{ rowData[col.field] | number: '' }}
+                    }
+                    @case (undefined) {
+                    {{ rowData[col.field] }}
+                    }
+                    @default {
+                    {{ rowData[col.field] }}
+                    }
+                    }
+                    }
+                    @default {
+                    {{ rowData[col.field] }}
+                    }
+                    }
                 </td>
-                <td *ngIf="props.toolbar" class="text-center">
+                <td *ngIf=" gridToolbar" class="text-center">
                     <i class="pi pi-ellipsis-v" (click)="op.toggle($event)"></i>
 
                     <p-overlayPanel #op>
                         <div class="flex flex-col gap-2 w-[10rem]">
-                            @for (item of props.toolbar; track $index) {
+                            @for (item of gridToolbar; track $index) {
                             <div class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 transition-all rounded-md"
-                                (click)="onAksiClicked(item, rowData)">
-                                <i class="pi pi-info-circle" style="font-size: 13px"></i>
+                                (click)="onAksiClicked(item.id, rowData)">
+                                <i class="pi {{ item.icon }}" style="font-size: 13px"></i>
                                 <span class="font-medium text-sm text-gray-700">
-                                    {{ item }}
+                                    {{ item.title }}
                                 </span>
                             </div>
                             }
@@ -55,6 +76,13 @@
                     </p-overlayPanel>
                 </td>
             </tr>
+        </ng-template>
+        <ng-template *ngIf="!props.dataSource">
+            <div class="flex w-full justify-center">
+                <p class="text-sm font-medium text-gray-700">
+                    Tidak ada data
+                </p>
+            </div>
         </ng-template>
     </p-table>
 </div>
