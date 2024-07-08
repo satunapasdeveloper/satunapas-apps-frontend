@@ -16,7 +16,7 @@ export namespace GridModel {
     }
 
     export interface IGrid {
-        id?: string;
+        id: string;
         column: IGridColumn[];
         dataSource: any[];
         height: string;

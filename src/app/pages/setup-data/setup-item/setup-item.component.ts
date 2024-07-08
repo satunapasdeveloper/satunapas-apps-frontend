@@ -39,7 +39,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     ];
 
     GridProps: GridModel.IGrid = {
-        id: 'GridItem',
+        id: 'Setup_Item',
         column: [
             { field: 'kode_item', headerName: 'Kode Item', class: 'font-semibold' },
             { field: 'nama_item', headerName: 'Nama Item', },
@@ -52,6 +52,9 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         height: "calc(100vh - 14.5rem)",
         toolbar: ['Delete', 'Detail'],
         showPaging: true,
+        showSearch: true,
+        searchKeyword: 'nama_item',
+        searchPlaceholder: 'Cari Nama Item Disini'
     };
     GridSelectedData: any;
 
