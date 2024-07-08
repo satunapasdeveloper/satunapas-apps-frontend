@@ -51,6 +51,9 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
         height: "calc(100vh - 14.5rem)",
         toolbar: ['Delete', 'Detail'],
         showPaging: true,
+        showSearch: true,
+        searchKeyword: 'nama_rekanan',
+        searchPlaceholder: 'Cari Nama Rekananan Disini'
     };
     GridSelectedData: any;
 

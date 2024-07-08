@@ -21,6 +21,9 @@ export namespace GridModel {
         dataSource: any[];
         height: string;
         showPaging: boolean;
+        showSearch?: boolean;
+        searchKeyword?: string;
+        searchPlaceholder?: string;
         toolbar?: string[];
     }
 }

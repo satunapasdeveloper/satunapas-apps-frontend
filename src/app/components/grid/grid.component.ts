@@ -1,17 +1,19 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AgGridModule } from 'ag-grid-angular';
 import { GridModel } from 'src/app/model/components/grid.model';
-import { ColDef, GridApi, ColumnApi, GridReadyEvent } from 'ag-grid-community';
+import { ColDef, GridApi, ColumnApi } from 'ag-grid-community';
 import { TableModule } from 'primeng/table'
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'app-grid',
     standalone: true,
     imports: [
         CommonModule,
-        // AgGridModule
+        InputTextModule,
+        ButtonModule,
         TableModule,
         OverlayPanelModule,
     ],
@@ -25,10 +27,6 @@ export class GridComponent implements OnInit {
     @Output('cellClicked') cellClicked = new EventEmitter<any>();
 
     @Output('rowDoubleClicked') rowDoubleClicked = new EventEmitter<any>();
-
-    // @Output('toolbarClicked') toolbarClicked = new EventEmitter<GridModel.IGridToolbar>();
-
-    // @Output('cellFinishEdited') cellFinishEdited = new EventEmitter<any>();
 
     @Output('aksiClicked') aksiClicked = new EventEmitter<any>();
 
@@ -44,6 +42,8 @@ export class GridComponent implements OnInit {
 
     gridToolbar: GridModel.IGridToolbar[] = [];
 
+    gridDatasource: any[] = [];
+
     SelectedRow: any;
 
     constructor(
@@ -55,6 +55,8 @@ export class GridComponent implements OnInit {
     }
 
     onGridReady(): void {
+        this.gridDatasource = this.props.dataSource;
+
         const column = this.props.column.map((item) => {
             return {
                 id: item.field,
@@ -64,8 +66,6 @@ export class GridComponent implements OnInit {
         });
 
         this.props.column = column as any;
-
-        console.log("column =>", this.props.column);
 
         if (this.props.toolbar?.length) {
             this.props.toolbar.forEach((item) => {
@@ -111,6 +111,16 @@ export class GridComponent implements OnInit {
         } else {
             // this.toolbarClicked.emit(args);
         }
+    }
+
+    onSearchKeyword(search: string) {
+        if (search) {
+            this.props.dataSource = this.props.dataSource.filter((item) => {
+                return item.nama_rekanan.toLowerCase().includes(search.toLowerCase());
+            });
+        } else {
+            this.props.dataSource = this.gridDatasource;
+        };
     }
 
     onAksiClicked(type: string, data: any) {
