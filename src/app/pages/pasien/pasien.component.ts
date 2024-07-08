@@ -521,7 +521,20 @@ export class PasienComponent implements OnInit, OnDestroy {
     }
 
     handleBackToList() {
-        this.FormIdentitasComps.onResetForm();
+        if (this.IsBayiLahir) {
+            this.FormIdentitasBayiComps.onResetForm();
+        } else {
+            this.FormIdentitasComps.onResetForm();
+        };
+
+        this.FormAlamatDomisiliComps.onResetForm();
+
+        if (!this.IsAlamatDomisiliSame) {
+            this.FormAlamatDomisiliComps.onResetForm();
+        }
+
+        this.FormKontakComps.onResetForm();
+        this.FormLainLainComps.onResetForm();
 
         this.PageState = 'list';
         this.ButtonNavigation = [
