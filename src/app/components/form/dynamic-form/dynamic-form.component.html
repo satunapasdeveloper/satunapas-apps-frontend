@@ -104,6 +104,14 @@
             <app-lookup-dialog *ngIf="item.type == 'lookup'" [props]="item.lookupProps!"
                 (onSelectData)="handleSelectDataLookup(item, $event)">
             </app-lookup-dialog>
+
+            <!-- Input Text Split -->
+            <div *ngIf="item.type == 'text_split'" class="flex gap-4 items-center">
+                <input *ngFor="let text of item.splitProps" type="text" pInputText
+                    class="p-inputtext-sm w-full {{ props.state == 'read' || text.readonly ? 'readonlyState' : '' }}"
+                    formControlName="{{ text.id }}" [readonly]="props.state == 'read'"
+                    (change)="handleChangeInputText($event, text)" [value]="text.value" />
+            </div>
         </div>
     </div>
 </div>
