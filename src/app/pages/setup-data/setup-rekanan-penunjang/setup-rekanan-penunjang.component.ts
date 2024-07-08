@@ -39,7 +39,7 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
     ];
 
     GridProps: GridModel.IGrid = {
-        id: 'GridRekananPenunjang',
+        id: 'Setup_Rekanan_Penunjang',
         column: [
             { field: 'kode_rekanan', headerName: 'Kode Rekanan', class: 'font-semibold' },
             { field: 'nama_rekanan', headerName: 'Nama Rekanan', },
@@ -53,7 +53,7 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
         showPaging: true,
         showSearch: true,
         searchKeyword: 'nama_rekanan',
-        searchPlaceholder: 'Cari Nama Rekananan Disini'
+        searchPlaceholder: 'Cari Nama Rekanan Disini'
     };
     GridSelectedData: any;
 

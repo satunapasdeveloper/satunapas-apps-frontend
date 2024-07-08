@@ -60,7 +60,9 @@
                                 }
                             ],
                             "allowedCommonJsDependencies": [
-                                "apexcharts"
+                                "apexcharts",
+                                "file-saver",
+                                "exceljs"
                             ]
                         },
                         "development": {

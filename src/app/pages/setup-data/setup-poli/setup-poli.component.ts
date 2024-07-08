@@ -39,7 +39,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
     ];
 
     GridProps: GridModel.IGrid = {
-        id: 'GridPoli',
+        id: 'Setup_Poli',
         column: [
             { field: 'kode_poli', headerName: 'Kode Poli', },
             { field: 'nama_poli', headerName: 'Nama Poli', },
@@ -49,6 +49,9 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
         height: "calc(100vh - 14.5rem)",
         toolbar: ['Delete', 'Detail'],
         showPaging: true,
+        showSearch: true,
+        searchKeyword: 'nama_poli',
+        searchPlaceholder: 'Cari Nama Poli Disini'
     };
     GridSelectedData: any;
 

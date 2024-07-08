@@ -39,7 +39,7 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
     ];
 
     GridProps: GridModel.IGrid = {
-        id: 'GridTindakanMedis',
+        id: 'Setup_Tindakan_Medis',
         column: [
             { field: 'nama_tindakan_medis', headerName: 'Nama Tindakan Medis', class: 'font-semibold' },
             { field: 'nama_tindakan_icd_9', headerName: 'Nama Tindakan ICD-9', },
@@ -50,6 +50,9 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
         height: "calc(100vh - 14.5rem)",
         toolbar: ['Delete', 'Detail'],
         showPaging: true,
+        showSearch: true,
+        searchKeyword: 'nama_tindakan_medis',
+        searchPlaceholder: 'Cari Nama Tindakan Medis Disini'
     };
     GridSelectedData: any;
 
