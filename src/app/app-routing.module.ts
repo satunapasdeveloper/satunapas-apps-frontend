@@ -36,6 +36,17 @@ const routes: Routes = [
         }
     },
     {
+        path: 'dokter',
+        canActivate: [AuthGuard],
+        loadComponent: async () => (await import('./pages/dokter/dokter.component')).DokterComponent,
+        data: {
+            title: 'Dokter',
+            breadcrumbs: [
+                "Beranda", "Dokter"
+            ]
+        }
+    },
+    {
         path: '**',
         loadComponent: async () => (await import('./pages/wildcard-not-found/wildcard-not-found.component')).WildcardNotFoundComponent,
         data: {
