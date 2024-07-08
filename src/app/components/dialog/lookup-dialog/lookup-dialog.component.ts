@@ -53,6 +53,7 @@ export class LookupDialogComponent implements OnInit, OnDestroy {
         });
 
         this.GridProps = {
+            id: '',
             column: [],
             dataSource: [],
             height: 'calc(100vh - 19rem)',

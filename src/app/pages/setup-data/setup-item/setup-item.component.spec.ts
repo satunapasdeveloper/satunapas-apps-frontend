@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SetupKotaComponent } from './setup-kota.component';
+import { SetupItemComponent } from './setup-item.component';
 
-describe('SetupKotaComponent', () => {
-  let component: SetupKotaComponent;
-  let fixture: ComponentFixture<SetupKotaComponent>;
+describe('SetupItemComponent', () => {
+  let component: SetupItemComponent;
+  let fixture: ComponentFixture<SetupItemComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ SetupKotaComponent ]
+      imports: [SetupItemComponent]
     })
     .compileComponents();
-
-    fixture = TestBed.createComponent(SetupKotaComponent);
+    
+    fixture = TestBed.createComponent(SetupItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

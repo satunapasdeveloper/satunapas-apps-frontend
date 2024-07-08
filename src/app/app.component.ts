@@ -22,29 +22,29 @@ export class AppComponent implements OnInit, OnDestroy {
         private _router: Router,
         private _renderer: Renderer2,
     ) {
-        this._router.events
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe(event => {
-                if (event instanceof NavigationStart) {
-                    this.isLoading = true;
-                    this.triggerAnimation();
-                } else if (
-                    event instanceof NavigationEnd ||
-                    event instanceof NavigationCancel ||
-                    event instanceof NavigationError
-                ) {
-                    setTimeout(() => {
-                        this.isLoading = false;
-                    }, 2000);
-                }
-            });
+        // this._router.events
+        //     .pipe(takeUntil(this.Destroy$))
+        //     .subscribe(event => {
+        //         if (event instanceof NavigationStart) {
+        //             this.isLoading = true;
+        //             this.triggerAnimation();
+        //         } else if (
+        //             event instanceof NavigationEnd ||
+        //             event instanceof NavigationCancel ||
+        //             event instanceof NavigationError
+        //         ) {
+        //             setTimeout(() => {
+        //                 this.isLoading = false;
+        //             }, 2000);
+        //         }
+        //     });
     }
 
     ngOnInit(): void {
         const isUserLoggedIn = localStorage.getItem('_CISUD_');
 
         if (isUserLoggedIn) {
-            this.initAllNeededState();
+            // this.initAllNeededState();
         }
     }
 

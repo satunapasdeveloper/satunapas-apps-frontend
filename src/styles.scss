@@ -7,9 +7,13 @@
 @import "ag-grid-community/styles/ag-theme-alpine.css";
 
 body {
-  font-family: "Inter var" !important;
+  font-family: "Fira Sans", sans-serif;
   margin: 0;
-  overflow-x: hidden;
+  overflow-x: hidden !important;
+}
+
+.font-lora {
+  font-family: "Lora", serif !important;
 }
 
 p {

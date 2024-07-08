@@ -43,15 +43,23 @@ export namespace FormModel {
         value: string;
     }
 
+    export interface FormSplitProps {
+        id: string;
+        required: boolean;
+        value: any;
+        onChange?: (args: any) => any;
+    }
+
     export interface IFormFields {
         id: string;
-        type: 'text' | 'date' | 'daterange' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'password' | 'lookup';
+        type: 'text' | 'date' | 'daterange' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'password' | 'lookup' | 'text_split';
         label: string;
         required: boolean;
         value: any;
         dropdownProps?: DropdownProps | any;
         radioButtonProps?: RadioButtonProps[] | any;
         checkBoxProps?: CheckBoxProps[] | any;
+        splitProps?: FormSplitProps[] | any;
         textareaRow?: number;
         hidden?: boolean;
         readonly?: boolean;

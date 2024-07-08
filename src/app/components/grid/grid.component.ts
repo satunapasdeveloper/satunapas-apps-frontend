@@ -1,20 +1,27 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AgGridModule } from 'ag-grid-angular';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CommonModule, formatDate } from '@angular/common';
 import { GridModel } from 'src/app/model/components/grid.model';
-import { ColDef, GridApi, ColumnApi, GridReadyEvent } from 'ag-grid-community';
+import { ColDef, GridApi, ColumnApi } from 'ag-grid-community';
+import { TableModule } from 'primeng/table'
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import * as FileSaver from 'file-saver';
 
 @Component({
     selector: 'app-grid',
     standalone: true,
     imports: [
         CommonModule,
-        AgGridModule
+        InputTextModule,
+        ButtonModule,
+        TableModule,
+        OverlayPanelModule,
     ],
     templateUrl: './grid.component.html',
     styleUrls: ['./grid.component.scss']
 })
-export class GridComponent {
+export class GridComponent implements OnInit {
 
     @Input('props') props!: GridModel.IGrid;
 
@@ -22,9 +29,7 @@ export class GridComponent {
 
     @Output('rowDoubleClicked') rowDoubleClicked = new EventEmitter<any>();
 
-    @Output('toolbarClicked') toolbarClicked = new EventEmitter<GridModel.IGridToolbar>();
-
-    @Output('cellFinishEdited') cellFinishEdited = new EventEmitter<any>();
+    @Output('aksiClicked') aksiClicked = new EventEmitter<any>();
 
     defaultColDef: ColDef = {
         sortable: true,
@@ -38,23 +43,30 @@ export class GridComponent {
 
     gridToolbar: GridModel.IGridToolbar[] = [];
 
+    gridDatasource: any[] = [];
+
+    SelectedRow: any;
+
     constructor(
         // private _documentService: DocumentService,
     ) { };
 
-    onGridReady(args: GridReadyEvent): void {
-        this.gridApi = args.api;
+    ngOnInit(): void {
+        this.onGridReady();
+    }
 
-        this.gridColumnApi = args.columnApi;
+    onGridReady(): void {
+        this.gridDatasource = this.props.dataSource;
 
         const column = this.props.column.map((item) => {
             return {
                 id: item.field,
+                renderAsCheckbox: item.renderAsCheckbox ? item.renderAsCheckbox : false,
                 ...item
             }
         });
 
-        this.props.column = column;
+        this.props.column = column as any;
 
         if (this.props.toolbar?.length) {
             this.props.toolbar.forEach((item) => {
@@ -95,36 +107,72 @@ export class GridComponent {
     }
 
     onToolbarClicked(args: GridModel.IGridToolbar): void {
-        if (args.id == 'excel') {
-            this.handleExportExcel();
-        } else {
-            this.toolbarClicked.emit(args);
-        }
+        // if (args.id == 'excel') {
+        //     this.handleExportExcel();
+        // } else {
+        //    this.toolbarClicked.emit(args);
+        // }
     }
 
-    private handleExportExcel(): void {
-        const dataSource: any[] = this.props.dataSource;
+    onSearchKeyword(search: string) {
+        if (search) {
+            this.props.dataSource = this.props.dataSource.filter((item) => {
+                return item[this.props.searchKeyword!].toLowerCase().includes(search.toLowerCase());
+            });
+        } else {
+            this.props.dataSource = this.gridDatasource;
+        };
+    }
 
-        const worksheetName = this.props.id ? this.props.id : 'mini-erp';
+    onAksiClicked(type: string, data: any) {
+        this.aksiClicked.emit({ type: type, data: data });
+    }
 
-        if (dataSource.length) {
-            let column = [];
+    onExportExcel(): void {
+        import('xlsx').then((xslx) => {
+            let colSize: number[] = [];
 
-            for (const data of Object.keys(dataSource[0])) {
-                column.push({
-                    header: data.replace(/_/g, " ").toUpperCase(),
-                    key: data,
-                    width: 20,
-                });
-            }
+            const data = this.props.dataSource.map((item) => {
+                let object: any = {};
 
-            console.log("Exporting to excel...");
+                for (const col of this.props.column) {
+                    let header = "", value = "";
 
-            // this._documentService.exportToExcel({
-            //     worksheetName: worksheetName,
-            //     columns: column,
-            //     dataSource: dataSource
-            // });
-        }
+                    header = col.headerName;
+
+                    if (col.format) {
+                        if (col.format == 'date') {
+                            value = formatDate(item[col.field], 'dd-MM-yyyy', 'EN');
+                        }
+                    } else {
+                        value = item[col.field];
+                    };
+
+                    object[header] = value;
+                }
+
+                colSize.push(15);
+
+                return object;
+            });
+
+            const wscols = colSize.map(width => ({ width }));
+
+            const worksheet = xslx.utils.json_to_sheet(data);
+            worksheet['!cols'] = wscols;
+
+            const workbook = { Sheets: { data: worksheet, }, SheetNames: ['data'] };
+            const excelBuffer: any = xslx.write(workbook, { bookType: 'xlsx', type: 'array' });
+            this.saveAsExcelFile(excelBuffer, this.props.id);
+        });
+    }
+
+    private saveAsExcelFile(buffer: any, fileName: string): void {
+        let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        let EXCEL_EXTENSION = '.xlsx';
+        const data: Blob = new Blob([buffer], {
+            type: EXCEL_TYPE
+        });
+        FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
     }
 }

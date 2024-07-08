@@ -20,9 +20,31 @@ const routes: Routes = [
         }
     },
     {
-        path: 'PIS',
+        path: 'setup-data',
         canActivate: [AuthGuard],
-        loadChildren: async () => (await import('./pages/pis/pis.routes')).pisRoutes
+        loadChildren: async () => (await import('./pages/setup-data/setup-data.routes')).setupDataRoutes
+    },
+    {
+        path: 'pasien',
+        canActivate: [AuthGuard],
+        loadComponent: async () => (await import('./pages/pasien/pasien.component')).PasienComponent,
+        data: {
+            title: 'Pasien',
+            breadcrumbs: [
+                "Beranda", "Pasien"
+            ]
+        }
+    },
+    {
+        path: 'dokter',
+        canActivate: [AuthGuard],
+        loadComponent: async () => (await import('./pages/dokter/dokter.component')).DokterComponent,
+        data: {
+            title: 'Dokter',
+            breadcrumbs: [
+                "Beranda", "Dokter"
+            ]
+        }
     },
     {
         path: '**',
