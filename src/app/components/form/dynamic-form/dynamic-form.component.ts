@@ -93,6 +93,12 @@ export class DynamicFormComponent implements OnInit {
                     this.FormGroup.addControl(item.id, new FormControl("", [Validators.required]));
                 }
             };
+
+            if (item.type == 'text_split') {
+                item.splitProps.forEach((text: any) => {
+                    this.FormGroup.addControl(text.id, new FormControl("", [Validators.required]));
+                })
+            };
         });
     };
 
@@ -116,6 +122,12 @@ export class DynamicFormComponent implements OnInit {
                 this._messageService.add({ severity: 'error', summary: 'Oops', detail: `${item.label} Tidak Boleh Kosong` });
                 invalidArr.push(item);
             };
+
+            if (item.required && item.type == 'text_split' && this.FormGroup.get(item.id)?.invalid) {
+                item.splitProps.forEach((text: any) => {
+                    this.FormGroup.addControl(item.id, new FormControl("", [Validators.required]));
+                })
+            };
         });
 
         return invalidArr.length ? false : this.FormGroup.value;
@@ -127,6 +139,8 @@ export class DynamicFormComponent implements OnInit {
             if (item.includes('tanggal') || item.includes('tgl')) {
                 this.FormGroup.get(item)?.setValue(new Date(this.props.defaultValue[item]));
             }
+
+
 
             this.FormGroup.get(item)?.setValue(this.props.defaultValue[item]);
         }

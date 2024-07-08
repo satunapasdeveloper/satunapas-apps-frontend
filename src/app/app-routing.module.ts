@@ -25,6 +25,17 @@ const routes: Routes = [
         loadChildren: async () => (await import('./pages/setup-data/setup-data.routes')).setupDataRoutes
     },
     {
+        path: 'pasien',
+        canActivate: [AuthGuard],
+        loadComponent: async () => (await import('./pages/pasien/pasien.component')).PasienComponent,
+        data: {
+            title: 'Pasien',
+            breadcrumbs: [
+                "Beranda", "Pasien"
+            ]
+        }
+    },
+    {
         path: '**',
         loadComponent: async () => (await import('./pages/wildcard-not-found/wildcard-not-found.component')).WildcardNotFoundComponent,
         data: {
