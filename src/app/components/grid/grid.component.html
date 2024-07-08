@@ -29,15 +29,35 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr>
                 <td *ngFor="let col of columns" class="text-sm {{ col.class }}">
-                    <span *ngIf="col.renderAsCheckbox">
-                        <i class="pi {{ rowData[col.field] ? 'pi-check' : 'pi-times' }}"></i>
-                    </span>
-
-                    <span *ngIf="!col.renderAsCheckbox">
-                        {{ rowData[col.field] }}
-                    </span>
+                    @switch (col.renderAsCheckbox){
+                    @case (true) {
+                    <i class="pi {{ rowData[col.field] ? 'pi-check' : 'pi-times' }}"></i>
+                    }
+                    @case (false) {
+                    @switch (col.format) {
+                    @case ('currency') {
+                    {{ rowData[col.field] | currency: 'Rp. ' }}
+                    }
+                    @case ('date') {
+                    {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
+                    }
+                    @case ('number') {
+                    {{ rowData[col.field] | number: '' }}
+                    }
+                    @case (undefined) {
+                    {{ rowData[col.field] }}
+                    }
+                    @default {
+                    {{ rowData[col.field] }}
+                    }
+                    }
+                    }
+                    @default {
+                    {{ rowData[col.field] }}
+                    }
+                    }
                 </td>
-                <td *ngIf="props.toolbar" class="text-center">
+                <td *ngIf=" props.toolbar" class="text-center">
                     <i class="pi pi-ellipsis-v" (click)="op.toggle($event)"></i>
 
                     <p-overlayPanel #op>

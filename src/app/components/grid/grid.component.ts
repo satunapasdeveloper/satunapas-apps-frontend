@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { GridModel } from 'src/app/model/components/grid.model';
@@ -18,7 +18,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     templateUrl: './grid.component.html',
     styleUrls: ['./grid.component.scss']
 })
-export class GridComponent {
+export class GridComponent implements OnInit {
 
     @Input('props') props!: GridModel.IGrid;
 
@@ -48,19 +48,22 @@ export class GridComponent {
         // private _documentService: DocumentService,
     ) { };
 
-    onGridReady(args: GridReadyEvent): void {
-        this.gridApi = args.api;
+    ngOnInit(): void {
+        this.onGridReady();
+    }
 
-        this.gridColumnApi = args.columnApi;
-
+    onGridReady(): void {
         const column = this.props.column.map((item) => {
             return {
                 id: item.field,
+                renderAsCheckbox: item.renderAsCheckbox ? item.renderAsCheckbox : false,
                 ...item
             }
         });
 
-        this.props.column = column;
+        this.props.column = column as any;
+
+        console.log("column =>", this.props.column);
 
         if (this.props.toolbar?.length) {
             this.props.toolbar.forEach((item) => {

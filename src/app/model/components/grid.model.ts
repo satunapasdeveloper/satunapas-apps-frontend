@@ -7,9 +7,17 @@ export namespace GridModel {
         icon: string;
     }
 
+    export interface IGridColumn {
+        field: string;
+        headerName: string;
+        format?: 'date' | 'number' | 'currency';
+        class?: string;
+        renderAsCheckbox?: boolean;
+    }
+
     export interface IGrid {
         id?: string;
-        column: any[];
+        column: IGridColumn[];
         dataSource: any[];
         height: string;
         showPaging: boolean;

@@ -39,13 +39,13 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     ];
 
     GridProps: GridModel.IGrid = {
-        id: 'GridPoli',
+        id: 'GridItem',
         column: [
-            { field: 'kode_item', headerName: 'Kode Item', },
+            { field: 'kode_item', headerName: 'Kode Item', class: 'font-semibold' },
             { field: 'nama_item', headerName: 'Nama Item', },
             { field: 'kategori', headerName: 'Kategori', },
             { field: 'satuan', headerName: 'Satuan', },
-            { field: 'harga_jual', headerName: 'Harga Jual', },
+            { field: 'harga_jual', headerName: 'Harga Jual', format: 'currency' },
             { field: 'status_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
@@ -64,7 +64,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         private _messageService: MessageService,
     ) {
         this.FormProps = {
-            id: 'form_setup_poli',
+            id: 'form_setup_item',
             fields: [
                 {
                     id: 'kategori',
