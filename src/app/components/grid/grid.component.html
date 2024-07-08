@@ -28,7 +28,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr>
-                <td *ngFor="let col of columns" class="text-sm">
+                <td *ngFor="let col of columns" class="text-sm {{ col.class }}">
                     <span *ngIf="col.renderAsCheckbox">
                         <i class="pi {{ rowData[col.field] ? 'pi-check' : 'pi-times' }}"></i>
                     </span>

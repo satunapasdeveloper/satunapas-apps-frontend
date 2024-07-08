@@ -10,5 +10,15 @@ export const setupDataRoutes: Route[] = [
                 "Beranda", "Setup Data", "Setup Poli"
             ]
         }
+    },
+    {
+        path: 'setup-item',
+        loadComponent: async () => (await import('./setup-item/setup-item.component')).SetupItemComponent,
+        data: {
+            title: 'Setup Item',
+            breadcrumbs: [
+                "Beranda", "Setup Data", "Setup Item"
+            ]
+        }
     }
 ];
