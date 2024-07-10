@@ -135,6 +135,7 @@
         </p-table>
     </div>
 
+    <!-- Dialog Call Pasien -->
     <p-dialog header="Memanggil Pasien" [modal]="true" [(visible)]="ShowModalPanggilPasien" [style]="{ width: '30rem' }"
         [draggable]="false" [resizable]="false" [showHeader]="false">
         <div class="flex flex-col items-center">
@@ -169,4 +170,7 @@
         </div>
     </p-dialog>
 
+    <!-- Dialog Search Pasien -->
+    <app-search-pasien-dialog #SearchPasienDialogComps (onSelect)="handleSelectLookupPasien($event)">
+    </app-search-pasien-dialog>
 </app-dashboard>

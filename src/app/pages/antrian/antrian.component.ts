@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
@@ -8,8 +9,11 @@ import { DropdownModule } from 'primeng/dropdown';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { TableModule } from 'primeng/table';
 import { Subject } from 'rxjs';
+import { LookupDialogComponent } from 'src/app/components/dialog/lookup-dialog/lookup-dialog.component';
+import { SearchPasienDialogComponent } from 'src/app/components/dialog/search-pasien-dialog/search-pasien-dialog.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { LookupModel } from 'src/app/model/components/lookup.model';
 
 @Component({
     selector: 'app-antrian',
@@ -24,7 +28,7 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
         FormsModule,
         OverlayPanelModule,
         DialogModule,
-
+        SearchPasienDialogComponent,
     ],
     templateUrl: './antrian.component.html',
     styleUrl: './antrian.component.scss'
@@ -174,7 +178,11 @@ export class AntrianComponent implements OnInit, OnDestroy {
 
     ShowModalPanggilPasien: boolean = false;
 
-    constructor() { }
+    @ViewChild('SearchPasienDialogComps') SearchPasienDialogComps!: SearchPasienDialogComponent;
+
+    constructor(
+        private _router: Router,
+    ) { }
 
     ngOnInit(): void {
         this.handleSearchPoli(this.SelectedPoli);
@@ -187,7 +195,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'add') {
-
+            this.SearchPasienDialogComps.ShowDialog = true;
         };
     }
 
@@ -313,5 +321,10 @@ export class AntrianComponent implements OnInit, OnDestroy {
 
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(msg);
+    }
+
+    handleSelectLookupPasien(args: any) {
+        localStorage.setItem('_SPSH_', JSON.stringify(args));
+        this._router.navigateByUrl(`/antrian/tambah?no_rm=${args.no_rekam_medis}`)
     }
 }

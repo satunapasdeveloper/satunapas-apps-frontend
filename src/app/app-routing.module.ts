@@ -55,7 +55,17 @@ const routes: Routes = [
             breadcrumbs: [
                 "Beranda", "Antrian"
             ]
-        }
+        },
+    },
+    {
+        path: 'antrian/tambah',
+        loadComponent: async () => (await import('./pages/antrian/tambah-antrian/tambah-antrian.component')).TambahAntrianComponent,
+        data: {
+            title: 'Buat Antrian Baru',
+            breadcrumbs: [
+                "Beranda", "Antrian", "Buat Antrian Baru"
+            ]
+        },
     },
     {
         path: '**',
