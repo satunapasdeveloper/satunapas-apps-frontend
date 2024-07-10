@@ -293,5 +293,25 @@ export class AntrianComponent implements OnInit, OnDestroy {
     handleOpenDialogPanggil(data: any) {
         this.SelectedPasien = data;
         this.ShowModalPanggilPasien = true;
+
+        setTimeout(() => {
+            this.onCallAntrian(data);
+        }, 200);
+    }
+
+    onCallAntrian(data: any) {
+        const voice: any = speechSynthesis.getVoices();
+        const msg = new window.SpeechSynthesisUtterance();
+
+        msg.volume = 1;
+        msg.rate = 0.9;
+        msg.pitch = 1;
+        msg.lang = "id-ID";
+        msg.voice = voice.find((item: any) => { return item.name == 'Google Bahasa Indonesia' });
+
+        msg.text = `Panggilan....Kepada....Nomor....antrian....${data.no_antrian},....pasien....${data.nama_pasien},....menuju....${data.nama_poli}`;
+
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(msg);
     }
 }
