@@ -47,6 +47,17 @@ const routes: Routes = [
         }
     },
     {
+        path: 'antrian',
+        canActivate: [AuthGuard],
+        loadComponent: async () => (await import('./pages/antrian/antrian.component')).AntrianComponent,
+        data: {
+            title: 'Antrian',
+            breadcrumbs: [
+                "Beranda", "Antrian"
+            ]
+        }
+    },
+    {
         path: '**',
         loadComponent: async () => (await import('./pages/wildcard-not-found/wildcard-not-found.component')).WildcardNotFoundComponent,
         data: {

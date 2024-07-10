@@ -1,0 +1,136 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="grid w-full gap-2 mb-5">
+        <div class="flex flex-col gap-0">
+            <p class="text-xl font-medium text-gray-800">
+                Dalam Pemeriksaan
+            </p>
+            <p class="text-sm text-gray-600">
+                Daftar pasien dalam pemeriksaan poli
+            </p>
+        </div>
+
+        <div class="flex w-full gap-5">
+            @for (item of AntrianDalamPemeriksaan; track $index) {
+            <div class="flex flex-col items-center w-3/12 bg-white rounded-lg shadow-sm p-3">
+                <p class="text-sm text-gray-700">
+                    {{ item.nama_poli }}
+                </p>
+
+                <p
+                    class="text-sm text-gray-700 font-medium pb-2 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                    {{ item.nama_dokter }}
+                </p>
+
+                <div class="flex gap-1 cursor-pointer">
+                    <p class="text-3xl font-medium text-sky-500 mb-1 hover:text-sky-700 transition-all">
+                        {{ item.no_antrian }}
+                    </p>
+                    <span class="text-gray-700">
+                        <i class="pi pi-arrow-up-right" style="font-size: 10px"></i>
+                    </span>
+                </div>
+
+                <p class="text-sm text-gray-700 text-center">
+                    Pasien<br>
+                    <span class="font-medium">
+                        {{ item.nama_pasien }}
+                    </span>
+                </p>
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="grid w-full bg-white rounded-xl shadow p-2">
+        <!-- Search & Aksi -->
+        <div class="flex justify-between mb-2 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <div class="flex items-center w-6/12 gap-3">
+                <!-- Dropdown Poli -->
+                <div class="w-5/12">
+                    <p-dropdown styleClass="p-inputtext-sm w-full" placeholder="Pilih Poli" [options]="PoliDatasource"
+                        optionLabel="label" optionValue="value" appendTo="body" [(ngModel)]="SelectedPoli">
+                    </p-dropdown>
+                </div>
+
+                <!-- Calendar Tanggal -->
+                <div class="w-5/12">
+                    <p-calendar styleClass="p-inputtext-sm w-full" placeholder="Pilih Tanggal" appendTo="body"
+                        [(ngModel)]="SelectedTanggal">
+                    </p-calendar>
+                </div>
+
+                <!-- Button -->
+                <div class="w-2/12">
+                    <p-button severity="info" label="Cari" styleClass="p-button-sm"
+                        (onClick)="handleSearchPoli(SelectedPoli)">
+                    </p-button>
+                </div>
+            </div>
+        </div>
+
+        <p-table [value]="AntrianDatasource" styleClass="p-datatable-striped" [tableStyle]="{'min-width': '50rem'}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="text-sm">No. Antrian</th>
+                    <th class="text-sm">Nama Pasien</th>
+                    <th class="text-sm">Nama Poli</th>
+                    <th class="text-sm">Nama Dokter</th>
+                    <th class="text-sm text-center">Status</th>
+                    <th class="text-sm text-center">Aksi</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-antrian>
+                <tr>
+                    <td class="text-sm">{{ antrian.no_antrian }}</td>
+                    <td class="text-sm">{{ antrian.nama_pasien }}</td>
+                    <td class="text-sm">{{ antrian.nama_poli }}</td>
+                    <td class="text-sm">{{ antrian.nama_dokter }}</td>
+                    <td class="text-center">
+                        <span
+                            class="py-1 px-2 text-xs {{ handleFormatStatusAntrian(antrian.status) }} rounded-lg font-medium">
+                            {{ antrian.status }}
+                        </span>
+                    </td>
+                    <td class="text-sm text-center">
+                        <span (click)="op.toggle($event)">
+                            <i class="pi pi-ellipsis-v"></i>
+                        </span>
+
+                        <p-overlayPanel #op>
+                            <div class="flex flex-col gap-3 w-[12rem] p-2">
+                                <span
+                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                                    <i class="pi pi-file-o" style="font-size: 12px"></i>
+                                    Mulai Assesment
+                                </span>
+
+                                <span
+                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                                    <i class="pi pi-megaphone" style="font-size: 12px"></i>
+                                    Panggil
+                                </span>
+
+                                <span
+                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                                    <i class="pi pi-play" style="font-size: 12px"></i>
+                                    Mulai Periksa
+                                </span>
+
+                                <span
+                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                                    <i class="pi pi-info-circle" style="font-size: 12px"></i>
+                                    Detail Antrian
+                                </span>
+
+                                <span class="text-sm text-gray-700">
+                                    <i class="pi pi-trash" style="font-size: 12px"></i>
+                                    Hapus
+                                </span>
+                            </div>
+                        </p-overlayPanel>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</app-dashboard>
