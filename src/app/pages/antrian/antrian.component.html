@@ -105,7 +105,8 @@
                                 </span>
 
                                 <span
-                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer"
+                                    (click)="handleOpenDialogPanggil(antrian)">
                                     <i class="pi pi-megaphone" style="font-size: 12px"></i>
                                     Panggil
                                 </span>
@@ -133,4 +134,39 @@
             </ng-template>
         </p-table>
     </div>
+
+    <p-dialog header="Memanggil Pasien" [modal]="true" [(visible)]="ShowModalPanggilPasien" [style]="{ width: '30rem' }"
+        [draggable]="false" [resizable]="false" [showHeader]="false">
+        <div class="flex flex-col items-center">
+            <img src="../../../assets/gif/loading.gif" alt="loading">
+
+            <p class="text-xl font-semibold text-gray-800 mb-2">
+                Memanggil Pasien
+            </p>
+
+            <p class="text-4xl text-sky-500 mb-1 font-medium">
+                {{ SelectedPasien?.no_antrian }}
+            </p>
+
+            <p class="text-base text-gray-700 font-medium mb-1">
+                {{ SelectedPasien?.nama_pasien }}
+            </p>
+
+            <p class="text-sm text-gray-700 mb-5">
+                {{ SelectedPasien?.nama_poli }}
+            </p>
+
+            <div class="flex justify-center gap-3 pt-5 border-t border-x-0 border-b-0 border-dashed border-gray-400">
+                <p-button label="Tidak Hadir" severity="danger" styleClass="p-button-sm"
+                    (click)="ShowModalPanggilPasien = false" />
+
+                <p-button label="Mulai Periksa" severity="info" styleClass="p-button-sm"
+                    (click)="ShowModalPanggilPasien = false" />
+
+                <p-button label="Panggil Ulang" severity="success" styleClass="p-button-sm"
+                    (click)="ShowModalPanggilPasien = false" />
+            </div>
+        </div>
+    </p-dialog>
+
 </app-dashboard>

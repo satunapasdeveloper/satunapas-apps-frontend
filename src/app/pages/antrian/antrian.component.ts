@@ -24,6 +24,7 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
         FormsModule,
         OverlayPanelModule,
         DialogModule,
+
     ],
     templateUrl: './antrian.component.html',
     styleUrl: './antrian.component.scss'
@@ -169,6 +170,10 @@ export class AntrianComponent implements OnInit, OnDestroy {
 
     SelectedTanggal = new Date();
 
+    SelectedPasien: any;
+
+    ShowModalPanggilPasien: boolean = false;
+
     constructor() { }
 
     ngOnInit(): void {
@@ -283,5 +288,10 @@ export class AntrianComponent implements OnInit, OnDestroy {
         }
 
         return classColor;
+    }
+
+    handleOpenDialogPanggil(data: any) {
+        this.SelectedPasien = data;
+        this.ShowModalPanggilPasien = true;
     }
 }
