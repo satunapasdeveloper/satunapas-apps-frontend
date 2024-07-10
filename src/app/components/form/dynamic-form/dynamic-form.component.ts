@@ -100,6 +100,8 @@ export class DynamicFormComponent implements OnInit {
                 })
             };
         });
+
+        console.log(this.FormGroup.value);
     };
 
     onGetFormValue(): any {

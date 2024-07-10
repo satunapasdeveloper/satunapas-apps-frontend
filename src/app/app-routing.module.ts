@@ -47,6 +47,37 @@ const routes: Routes = [
         }
     },
     {
+        path: 'antrian',
+        canActivate: [AuthGuard],
+        loadComponent: async () => (await import('./pages/antrian/antrian.component')).AntrianComponent,
+        data: {
+            title: 'Antrian',
+            breadcrumbs: [
+                "Beranda", "Antrian"
+            ]
+        },
+    },
+    {
+        path: 'antrian/tambah',
+        loadComponent: async () => (await import('./pages/antrian/tambah-antrian/tambah-antrian.component')).TambahAntrianComponent,
+        data: {
+            title: 'Buat Antrian Baru',
+            breadcrumbs: [
+                "Beranda", "Antrian", "Buat Antrian Baru"
+            ]
+        },
+    },
+    {
+        path: 'antrian/assesment-awal',
+        loadComponent: async () => (await import('./pages/assesment-awal/assesment-awal.component')).AssesmentAwalComponent,
+        data: {
+            title: 'Buat Assesment Awal',
+            breadcrumbs: [
+                "Beranda", "Antrian", "Buat Assesment Awal"
+            ]
+        },
+    },
+    {
         path: '**',
         loadComponent: async () => (await import('./pages/wildcard-not-found/wildcard-not-found.component')).WildcardNotFoundComponent,
         data: {
