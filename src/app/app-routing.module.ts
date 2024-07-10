@@ -68,6 +68,16 @@ const routes: Routes = [
         },
     },
     {
+        path: 'antrian/assesment-awal',
+        loadComponent: async () => (await import('./pages/assesment-awal/assesment-awal.component')).AssesmentAwalComponent,
+        data: {
+            title: 'Buat Assesment Awal',
+            breadcrumbs: [
+                "Beranda", "Antrian", "Buat Assesment Awal"
+            ]
+        },
+    },
+    {
         path: '**',
         loadComponent: async () => (await import('./pages/wildcard-not-found/wildcard-not-found.component')).WildcardNotFoundComponent,
         data: {

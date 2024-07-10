@@ -327,4 +327,9 @@ export class AntrianComponent implements OnInit, OnDestroy {
         localStorage.setItem('_SPSH_', JSON.stringify(args));
         this._router.navigateByUrl(`/antrian/tambah?no_rm=${args.no_rekam_medis}`)
     }
+
+    handleGoToAssesmentAwal(args: any) {
+        localStorage.setItem('_SPSH_', JSON.stringify(args));
+        this._router.navigateByUrl(`/antrian/assesment-awal?id=${args.id}`)
+    }
 }

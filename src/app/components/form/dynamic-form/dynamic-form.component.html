@@ -73,10 +73,10 @@
             <!-- Radio Button -->
             <div *ngIf="item.type == 'radio'" class="flex flex-wrap gap-3">
                 <div *ngFor="let radio of item.radioButtonProps; let i = index" class="flex align-items-center">
-                    <p-radioButton [name]="item.id" [value]="radio.value" [inputId]="radio.id"
-                        formControlName="{{ item.id }}">
+                    <p-radioButton [value]="radio.value" [name]="radio.id" formControlName="{{ item.id }}"
+                        styleClass="p-inputtext-sm">
                     </p-radioButton>
-                    <label for="{{ radio.id }}" class="ml-2">
+                    <label for="{{ radio.id }}" class="ml-2 text-sm">
                         {{ radio.label }}
                     </label>
                 </div>
