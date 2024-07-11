@@ -1,8 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
+import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 
 @Component({
     selector: 'app-pemeriksaan-fisik',
@@ -11,11 +16,15 @@ import { FormModel } from 'src/app/model/components/form.model';
         CommonModule,
         DashboardComponent,
         DynamicFormComponent,
+        FormsModule,
+        InputTextModule,
+        DropdownModule,
+        ButtonModule
     ],
     templateUrl: './pemeriksaan-fisik.component.html',
     styleUrl: './pemeriksaan-fisik.component.scss'
 })
-export class PemeriksaanFisikComponent {
+export class PemeriksaanFisikComponent implements OnInit {
 
 
     FormState: 'insert' | 'update' = 'insert';
@@ -28,7 +37,13 @@ export class PemeriksaanFisikComponent {
     FormVitalSignProps: FormModel.IForm;
     @ViewChild('FormVitalSignComps') FormVitalSignComps!: DynamicFormComponent;
 
-    constructor() {
+    BodyParts: any[] = this._rekamMedisService.BodyParts;
+
+    CatatanKondisiTubuh: any[] = [];
+
+    constructor(
+        private _rekamMedisService: RekamMedisService
+    ) {
         this.FormProps = {
             id: 'form_assesment_pasien',
             fields: [
@@ -229,5 +244,24 @@ export class PemeriksaanFisikComponent {
             state: 'write',
             defaultValue: null,
         };
+    }
+
+    ngOnInit(): void {
+        this.handleAddCatatanTubuh();
+    }
+
+    handleAddCatatanTubuh() {
+        this.CatatanKondisiTubuh.push({
+            id: 0,
+            label: '',
+            body: '',
+            keterangan: ''
+        })
+    };
+
+    handleDeleteCatatanTubuh(index: number) {
+        if (this.CatatanKondisiTubuh.length > 0) {
+            this.CatatanKondisiTubuh.splice(index, 1);
+        }
     }
 }   
