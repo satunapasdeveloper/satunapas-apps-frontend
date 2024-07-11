@@ -78,6 +78,31 @@ const routes: Routes = [
         },
     },
     {
+        path: 'rekam-medis',
+        children: [
+            {
+                path: 'data',
+                loadComponent: async () => (await import('./pages/rekam-medis/history-rekam-medis/history-rekam-medis.component')).HistoryRekamMedisComponent,
+                data: {
+                    title: 'Data Rekam Medis',
+                    breadcrumbs: [
+                        "Beranda", "Rekam Medis", "Data Rekam Medis"
+                    ]
+                },
+            },
+            {
+                path: 'baru',
+                loadComponent: async () => (await import('./pages/rekam-medis/input-rekam-medis/input-rekam-medis.component')).InputRekamMedisComponent,
+                data: {
+                    title: 'Buat Rekam Medis',
+                    breadcrumbs: [
+                        "Beranda", "Rekam Medis", "Buat Rekam Medis"
+                    ]
+                },
+            }
+        ]
+    },
+    {
         path: '**',
         loadComponent: async () => (await import('./pages/wildcard-not-found/wildcard-not-found.component')).WildcardNotFoundComponent,
         data: {
