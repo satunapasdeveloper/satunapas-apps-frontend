@@ -13,6 +13,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { PasswordModule } from 'primeng/password';
 import { FormModel } from 'src/app/model/components/form.model';
 import { LookupDialogComponent } from '../../dialog/lookup-dialog/lookup-dialog.component';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @Component({
     selector: 'app-dynamic-form',
@@ -31,6 +32,7 @@ import { LookupDialogComponent } from '../../dialog/lookup-dialog/lookup-dialog.
         InputTextareaModule,
         PasswordModule,
         LookupDialogComponent,
+        InputSwitchModule,
     ],
     templateUrl: './dynamic-form.component.html',
     styleUrls: ['./dynamic-form.component.scss'],
@@ -65,6 +67,15 @@ export class DynamicFormComponent implements OnInit {
     };
 
     ngOnInit(): void {
+        this.props.fields = this.props.fields.map((item) => {
+            return {
+                ...item,
+                hideLabel: item.hideLabel ? item.hideLabel : false
+            }
+        });
+
+        console.log("fields =>", this.props.fields);
+
         this.props.fields.forEach((item) => {
             if (item.type == 'number') {
                 if (item.required) {
@@ -86,18 +97,22 @@ export class DynamicFormComponent implements OnInit {
                 this.FormGroup.addControl(item.id, new FormControl(0, [Validators.required]));
             };
 
+            if (item.type == 'text_split') {
+                item.splitProps.forEach((text: any) => {
+                    this.FormGroup.addControl(text.id, new FormControl("", [Validators.required]));
+                })
+            };
+
+            if (item.type == 'switch') {
+                this.FormGroup.addControl(item.id, new FormControl(false, [Validators.required]));
+            }
+
             if (item.type != 'number' && item.type != 'date' && item.type != 'select') {
                 if (item.value) {
                     this.FormGroup.addControl(item.id, new FormControl(item.value, [Validators.required]));
                 } else {
                     this.FormGroup.addControl(item.id, new FormControl("", [Validators.required]));
                 }
-            };
-
-            if (item.type == 'text_split') {
-                item.splitProps.forEach((text: any) => {
-                    this.FormGroup.addControl(text.id, new FormControl("", [Validators.required]));
-                })
             };
         });
 
@@ -184,6 +199,15 @@ export class DynamicFormComponent implements OnInit {
         };
 
         props.lookupProps?.callback?.(args);
+    }
+
+    handleChangeCheckbox(args: any, fields: FormModel.IFormFields): any {
+        return fields?.onChange?.(args);
+    }
+
+    handleChangeSwitch(args: any, fields: FormModel.IFormFields): any {
+        console.log(args);
+        return fields?.onChange?.(args);
     }
 
     onResetForm(): any {
