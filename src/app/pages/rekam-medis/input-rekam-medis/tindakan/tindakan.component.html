@@ -1,1 +1,175 @@
-<p>tindakan works!</p>
+<div class="flex flex-col w-full">
+    <!-- KIE -->
+    <div class="grid w-full">
+        <p class="text-gray-700 text-xl font-semibold">
+            KIE & Tindakan
+        </p>
+        <p class="text-gray-700 text-sm mb-4">
+            Mohon isi data kie dan tindakan pasien
+        </p>
+
+        <!-- Is Ada KIE -->
+        <div [formGroup]="FormTindakan"
+            class="flex flex-col w-full gap-2 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <div class="flex w-full items-center gap-2">
+                <p-inputSwitch formControlName="is_ada_kie" />
+                <p class="text-gray-700 text-sm">
+                    Apakah ada KIE (Komunikasi, Informasi dan Edukasi)
+                </p>
+            </div>
+
+            <div *ngIf="is_ada_kie.value" class="flex w-full flex-col">
+                <textarea pInputTextarea rows="4" class="p-inputtext-sm w-full"
+                    placeholder="Tulis KIE yang disarankan"></textarea>
+            </div>
+        </div>
+
+        <!-- Is Ada Tindakan -->
+        <div class="flex flex-col w-full gap-3 mb-5">
+            <div class="flex w-full items-center gap-2" [formGroup]="FormTindakan">
+                <p-inputSwitch formControlName="is_ada_tindakan" />
+                <p class="text-gray-700 text-sm">
+                    Apakah ada tindakan
+                </p>
+            </div>
+
+            <div *ngIf="is_ada_tindakan.value" class="flex flex-row gap-2 w-full mb-2" [formGroup]="FormTindakan">
+                <div class="w-3/12 flex flex-col gap-1">
+                    <p class="text-gray-700 text-sm">
+                        Tanggal Tindakan
+                    </p>
+                    <p-calendar styleClass="p-inputtext-sm w-full" dateFormat="dd MM yy"
+                        formControlName="tanggal_tindakan"></p-calendar>
+                </div>
+                <div class="w-2/12 flex flex-col gap-1">
+                    <p class="text-gray-700 text-sm">
+                        Jam Tindakan
+                    </p>
+                    <p-calendar styleClass="p-inputtext-sm w-full" formControlName="waktu_tindakan"
+                        [timeOnly]="true"></p-calendar>
+                </div>
+            </div>
+
+            <div *ngIf="is_ada_tindakan.value"
+                class="flex w-full flex-col gap-0 border border-dashed border-gray-400 p-2 rounded-lg">
+                <div class="flex flex-row gap-2 items-center mb-0">
+                    <div class="w-4/12">
+                        <p class="text-gray-700 text-sm font-medium">
+                            Nama Tindakan
+                        </p>
+                    </div>
+                    <div class="w-3/12">
+                        <p class="text-gray-700 text-sm font-medium">
+                            Petugas
+                        </p>
+                    </div>
+                    <div class="w-1/12">
+                        <p class="text-gray-700 text-sm font-medium">
+                            Qty
+                        </p>
+                    </div>
+                    <div class="w-3/12">
+                        <p class="text-gray-700 text-sm font-medium">
+                            Harga Total
+                        </p>
+                    </div>
+                    <div class="w-1/12">
+                        <p class="text-gray-700 text-sm font-medium">
+
+                        </p>
+                    </div>
+                </div>
+
+                <div *ngFor="let item of TindakanForSave; let i = index; let last = last"
+                    class="flex flex-row gap-2 items-center mb-2">
+                    <div class="w-4/12">
+                        <p-dropdown [options]="TindakanMedisDatasource" optionLabel="nama_tindakan_medis"
+                            optionValue="nama_tindakan_medis" styleClass="p-inputtext-sm w-full"
+                            placeholder="Pilih Tindakan Medis" [autoDisplayFirst]="false" [filter]="true"
+                            [(ngModel)]="item.nama_tindakan_medis" appendTo="body">
+                        </p-dropdown>
+                    </div>
+                    <div class="w-3/12">
+                        <p-dropdown [options]="PetugasDatasource" optionLabel="label" optionValue="value"
+                            styleClass="p-inputtext-sm w-full" placeholder="Pilih Petugas" [autoDisplayFirst]="false"
+                            [filter]="true" [(ngModel)]="item.petugas" appendTo="body">
+                        </p-dropdown>
+                    </div>
+                    <div class="w-1/12 flex">
+                        <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.qty"></p-inputNumber>
+                    </div>
+                    <div class="w-2/12 flex">
+                        <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.total" [disabled]="true">
+                        </p-inputNumber>
+                    </div>
+                    <div class="w-2/12">
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                            styleClass="p-button-sm" (onClick)="handleDeleteTindakan(i)" />
+
+                        <p-button *ngIf="last" icon="pi pi-plus" [rounded]="true" [text]="true" severity="info"
+                            styleClass="p-button-sm" (onClick)="handleAddTindakan()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BMHP -->
+        <div class="flex flex-col w-full gap-3 mb-3 ">
+            <div class="flex w-full items-center gap-2">
+                <p class="text-gray-700 text-sm">
+                    Bahan Medis Habis Pakai
+                </p>
+            </div>
+
+            <div class="flex w-full flex-col gap-0 border border-dashed border-gray-400 p-2 rounded-lg">
+                <div class="flex flex-row gap-2 items-center mb-0">
+                    <div class="w-4/12">
+                        <p class="text-gray-700 text-sm font-medium">
+                            Nama Item
+                        </p>
+                    </div>
+                    <div class="w-2/12">
+                        <p class="text-gray-700 text-sm font-medium">
+                            Qty
+                        </p>
+                    </div>
+                    <div class="w-3/12">
+                        <p class="text-gray-700 text-sm font-medium">
+                            Harga Total
+                        </p>
+                    </div>
+                    <div class="w-2/12">
+                        <p class="text-gray-700 text-sm font-medium">
+
+                        </p>
+                    </div>
+                </div>
+
+                <div *ngFor="let item of TindakanForSave; let i = index; let last = last"
+                    class="flex flex-row gap-2 items-center mb-2">
+                    <div class="w-4/12">
+                        <p-dropdown [options]="BmhpDatasource" optionLabel="nama_tindakan_medis"
+                            optionValue="nama_tindakan_medis" styleClass="p-inputtext-sm w-full"
+                            placeholder="Pilih Item" [autoDisplayFirst]="false" [filter]="true"
+                            [(ngModel)]="item.nama_item" appendTo="body">
+                        </p-dropdown>
+                    </div>
+                    <div class="w-2/12 flex">
+                        <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.qty"></p-inputNumber>
+                    </div>
+                    <div class="w-3/12 flex">
+                        <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.total" [disabled]="true">
+                        </p-inputNumber>
+                    </div>
+                    <div class="w-2/12">
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                            styleClass="p-button-sm" (onClick)="handleDeleteTindakan(i)" />
+
+                        <p-button *ngIf="last" icon="pi pi-plus" [rounded]="true" [text]="true" severity="info"
+                            styleClass="p-button-sm" (onClick)="handleAddTindakan()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
