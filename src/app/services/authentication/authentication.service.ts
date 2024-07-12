@@ -64,11 +64,18 @@ export class AuthenticationService {
             url: '/dokter'
         },
         {
+            id: '4',
+            caption: 'Antrian',
+            icon: 'pi pi-list-check',
+            toggle_child: false,
+            url: '/antrian'
+        },
+        {
             id: '5',
             caption: 'Rekam Medis',
             icon: 'pi pi-file-edit',
             toggle_child: false,
-            url: '/rekam-medis'
+            url: '/rekam-medis/data'
         },
         {
             id: '7',

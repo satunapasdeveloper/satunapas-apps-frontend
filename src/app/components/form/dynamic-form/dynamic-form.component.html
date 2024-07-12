@@ -1,16 +1,16 @@
-<div [id]="props.id" class="hidden md:grid {{ props.class }} grid-flow-col gap-4 items-start" [formGroup]="FormGroup">
+<div [id]="props.id" class="hidden md:grid {{ props.class }} gap-4 grid-flow-col items-start" [formGroup]="FormGroup">
     <div *ngFor="let item of props.fields"
         class="flex {{ props.style == 'inline' ? 'flex-row' : 'flex-col' }} {{ item.type == 'textarea' ? 'items-start' : 'items-center' }} gap-1"
         [class.hidden]="item.hidden">
         <!-- Label -->
-        <div *ngIf="item.id !== 'just_gap'" class="{{ props.style == 'inline' ? 'w-4/12' : 'w-full'  }}">
+        <div *ngIf="!item.hideLabel" class="{{ props.style == 'inline' ? 'w-4/12' : 'w-full'  }}">
             <p class="text-sm text-gray-600 font-medium {{ item.type == 'textarea' ? 'pt-3' : '' }}">
                 {{ item.label }}
                 <span *ngIf="item.required" class="text-xs text-red-500">*</span>
             </p>
         </div>
 
-        <div *ngIf="item.id !== 'just_gap'" class="{{ props.style == 'inline' ? 'w-8/12' : 'w-full'  }}">
+        <div class="{{ props.style == 'inline' ? 'w-8/12' : 'w-full'  }}">
             <!-- Text -->
             <input *ngIf="item.type == 'text'" type="text" pInputText
                 class="p-inputtext-sm w-full {{ props.state == 'read' || item.readonly ? 'readonlyState' : '' }}"
@@ -73,10 +73,10 @@
             <!-- Radio Button -->
             <div *ngIf="item.type == 'radio'" class="flex flex-wrap gap-3">
                 <div *ngFor="let radio of item.radioButtonProps; let i = index" class="flex align-items-center">
-                    <p-radioButton [name]="item.id" [value]="radio.value" [inputId]="radio.id"
-                        formControlName="{{ item.id }}">
+                    <p-radioButton [value]="radio.value" [name]="radio.id" formControlName="{{ item.id }}"
+                        styleClass="p-inputtext-sm">
                     </p-radioButton>
-                    <label for="{{ radio.id }}" class="ml-2">
+                    <label for="{{ radio.id }}" class="ml-2 text-sm">
                         {{ radio.label }}
                     </label>
                 </div>
@@ -86,7 +86,7 @@
             <div *ngIf="item.type == 'checkbox'" class="flex items-center flex-row gap-3">
                 <div *ngFor="let check of item.checkBoxProps" class="flex align-items-center gap-1">
                     <p-checkbox [name]="item.id" [value]="check.value" formControlName="{{ item.id }}"
-                        inputId="{{ check.name }}_check">
+                        inputId="{{ check.name }}_check" (onChange)="handleChangeCheckbox($event, item)">
                     </p-checkbox>
 
                     <label for="{{ check.name }}_check" class="text-sm">
@@ -111,6 +111,14 @@
                     class="p-inputtext-sm w-full {{ props.state == 'read' || text.readonly ? 'readonlyState' : '' }}"
                     formControlName="{{ text.id }}" [readonly]="props.state == 'read'"
                     (change)="handleChangeInputText($event, text)" [value]="text.value" />
+            </div>
+
+            <!-- Switch -->
+            <div *ngIf="item.type == 'switch'" class="flex w-full items-center gap-4">
+                <p-inputSwitch formControlName="{{ item.id }}" (onChange)="handleChangeSwitch($event, item)" />
+                <p class="text-gray-700 text-sm">
+                    {{ item.label }}
+                </p>
             </div>
         </div>
     </div>
