@@ -37,5 +37,28 @@ export class RekamMedisService {
         { id: 'lainnya', label: 'Lainnya', keterangan: '' }
     ];
 
+    WaktuPemberianObat: any[] = [
+        { label: 'Pagi', value: 'Pagi' },
+        { label: 'Siang', value: 'Siang' },
+        { label: 'Sore', value: 'Sore' },
+        { label: 'Lain - Lain', value: 'Lain - Lain' },
+    ];
+
+    WaktuSpesifikPemberianObat: any[] = [
+        { label: 'Sebelum Makan', value: 'Sebelum Makan' },
+        { label: 'Sesudah Makan', value: 'Sesudah Makan' },
+        { label: 'Bersamaan Makan', value: 'Bersamaan Makan' },
+        { label: 'Lain - Lain', value: 'Lain - Lain' },
+    ];
+
+    RutePemberianObat: any[] = [
+        { label: 'Injeksi', value: 'Injeksi' },
+        { label: 'Oral', value: 'Oral' },
+        { label: 'Suppositoria', value: 'Suppositoria' },
+        { label: 'Topikal', value: 'Topikal' },
+        { label: 'Sublingual', value: 'Sublingual' },
+        { label: 'Inhalasi', value: 'Inhalasi' },
+    ];
+
     constructor() { }
 }

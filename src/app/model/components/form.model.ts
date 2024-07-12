@@ -66,6 +66,7 @@ export namespace FormModel {
         lookupProps?: LookupModel.ILookup;
         lookupSetValueField?: any[]; // id_field yg lain yg mau di set value nya
         hideLabel?: boolean;
+        placeholder?: string;
         onChange?: (args: any) => any;
         onFilter?: (args: any) => any;
     }
