@@ -15,7 +15,8 @@
             <input *ngIf="item.type == 'text'" type="text" pInputText
                 class="p-inputtext-sm w-full {{ props.state == 'read' || item.readonly ? 'readonlyState' : '' }}"
                 formControlName="{{ item.id }}" [readonly]="props.state == 'read' || item.readonly "
-                (change)="handleChangeInputText($event, item)" [value]="item.value" />
+                (change)="handleChangeInputText($event, item)" [value]="item.value"
+                placeholder="{{ item.placeholder ? item.placeholder : '' }}" />
 
             <!-- Textarea -->
             <textarea *ngIf="item.type == 'textarea'" rows="{{ item.textareaRow }}" pInputTextarea
