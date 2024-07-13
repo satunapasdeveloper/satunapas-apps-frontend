@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { FormModel } from 'src/app/model/components/form.model';
@@ -12,7 +12,7 @@ import { FormModel } from 'src/app/model/components/form.model';
     templateUrl: './anamesis.component.html',
     styleUrl: './anamesis.component.scss'
 })
-export class AnamesisComponent implements OnInit, OnDestroy {
+export class AnamesisComponent implements OnInit, AfterViewInit, OnDestroy {
 
     Destroy$ = new Subject();
 
@@ -126,10 +126,20 @@ export class AnamesisComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        console.log(this.FormComps.FormGroup.value);
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            const data: any = localStorage.getItem('anamesis');
+            if (data) {
+                this.FormComps.FormGroup.setValue(JSON.parse(data));
+            }
+        }, 100);
     }
 
     ngOnDestroy(): void {
+        localStorage.setItem("anamesis", JSON.stringify(this.FormComps.FormGroup.value));
+
         this.Destroy$.next(0);
         this.Destroy$.complete();
     }

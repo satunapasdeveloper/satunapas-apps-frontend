@@ -4,11 +4,9 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { Dropdown, DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
-import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
-import { FormModel } from 'src/app/model/components/form.model';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 
 @Component({
@@ -31,6 +29,8 @@ import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.serv
 export class DialogResepNonRacikanComponent implements OnInit {
 
     ShowDialog = false;
+
+    @ViewChild('DropdownObatComps') DropdownObatComps!: Dropdown;
 
     ObatDatasource: any[] = [
         {
@@ -93,6 +93,10 @@ export class DialogResepNonRacikanComponent implements OnInit {
                 waktu_spesifik_pemberian_obat: [[], []],
                 rute_pemberian_obat: ["", []],
             });
+
+            setTimeout(() => {
+                this.DropdownObatComps.clear();
+            }, 100);
         }
 
         this.ShowDialog = true;
@@ -103,10 +107,12 @@ export class DialogResepNonRacikanComponent implements OnInit {
     }
 
     handleChangeObat(args: any) {
-        this.SelectedObat = args.value;
-        this.FormResep.get('qty')?.setValue(1);
-        this.FormResep.get('total')?.setValue(args.value.harga);
-        this.FormResep.get('nama_obat')?.setValue(args.value.nama_obat);
+        if (args.value) {
+            this.SelectedObat = args.value;
+            this.FormResep.get('qty')?.setValue(1);
+            this.FormResep.get('total')?.setValue(args.value.harga);
+            this.FormResep.get('nama_obat')?.setValue(args.value.nama_obat);
+        }
     }
 
     handleChangeQty(args: any) {
