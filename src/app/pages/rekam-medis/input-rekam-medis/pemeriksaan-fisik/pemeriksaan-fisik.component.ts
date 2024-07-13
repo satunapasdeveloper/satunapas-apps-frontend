@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
@@ -24,8 +24,7 @@ import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.serv
     templateUrl: './pemeriksaan-fisik.component.html',
     styleUrl: './pemeriksaan-fisik.component.scss'
 })
-export class PemeriksaanFisikComponent implements OnInit {
-
+export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestroy {
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -248,6 +247,29 @@ export class PemeriksaanFisikComponent implements OnInit {
 
     ngOnInit(): void {
         this.handleAddCatatanTubuh();
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            const pemeriksaan_fisik = localStorage.getItem('pemeriksaan_fisik') as any;
+            if (pemeriksaan_fisik) {
+                this.FormComps.FormGroup.setValue(JSON.parse(pemeriksaan_fisik).assesment_awal);
+                this.FormKeadaanUmumComps.FormGroup.setValue(JSON.parse(pemeriksaan_fisik).keadaan_umum);
+                this.FormVitalSignComps.FormGroup.setValue(JSON.parse(pemeriksaan_fisik).vital_sign);
+                this.CatatanKondisiTubuh = JSON.parse(pemeriksaan_fisik).catatan_tubuh;
+            }
+        }, 100);
+    }
+
+    ngOnDestroy(): void {
+        const pemeriksaan_fisik = {
+            assesment_awal: this.FormComps.FormGroup.value,
+            keadaan_umum: this.FormVitalSignComps.FormGroup.value,
+            vital_sign: this.FormVitalSignComps.FormGroup.value,
+            catatan_tubuh: this.CatatanKondisiTubuh
+        }
+
+        localStorage.setItem('pemeriksaan_fisik', JSON.stringify(pemeriksaan_fisik));
     }
 
     handleAddCatatanTubuh() {
