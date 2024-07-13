@@ -10,7 +10,7 @@
 
         <div class="flex flex-col gap-2 p-2 rounded-lg border-dashed border-gray-300 border">
             @if (ResepNonRacikan.length) {
-            <div *ngFor="let item of ResepNonRacikan" class="flex flex-col gap-2">
+            <div *ngFor="let item of ResepNonRacikan; let i = index;" class="flex flex-col gap-2">
                 <p class="text-base text-gray-800 font-medium">
                     {{ item.nama_obat }}
                 </p>
@@ -34,9 +34,10 @@
                     </div>
                     <div class="w-2/12 flex gap-0">
                         <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
-                            styleClass="p-button-sm" />
+                            styleClass="p-button-sm" (onClick)="handleDeleteObatNonRacikan(i)" />
 
-                        <p-button icon="pi pi-file-edit" [rounded]="true" [text]="true" severity="warning" />
+                        <p-button icon="pi pi-file-edit" [rounded]="true" [text]="true" severity="warning"
+                            (onClick)="handleOpenDialogResepNonRacikan('update', i, item)" />
                     </div>
                 </div>
 

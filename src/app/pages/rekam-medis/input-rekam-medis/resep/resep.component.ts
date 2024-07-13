@@ -33,8 +33,12 @@ export class ResepComponent implements OnInit {
 
     }
 
-    handleOpenDialogResepNonRacikan(state: 'insert' | 'update') {
-        this.DialogResepNonRacikanComps.handleOpenDialog(state);
+    handleOpenDialogResepNonRacikan(state: 'insert' | 'update', index?: number, data?: any) {
+        if (state == 'insert') {
+            this.DialogResepNonRacikanComps.handleOpenDialog(state);
+        } else {
+            this.DialogResepNonRacikanComps.handleOpenDialog(state, index, data);
+        }
     }
 
     onFormatAturanPakai(data: any) {
@@ -53,5 +57,9 @@ export class ResepComponent implements OnInit {
         } else {
             this.ResepNonRacikan[args.index] = args.data;
         }
+    }
+
+    handleDeleteObatNonRacikan(index: number) {
+        this.ResepNonRacikan.splice(index, 1);
     }
 }
