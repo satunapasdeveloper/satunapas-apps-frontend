@@ -7,8 +7,6 @@ import { DialogModule } from 'primeng/dialog';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
-import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
-import { FormModel } from 'src/app/model/components/form.model';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 
 @Component({
