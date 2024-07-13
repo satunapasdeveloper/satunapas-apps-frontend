@@ -27,15 +27,14 @@ export class ResepComponent implements OnInit {
 
     ResepRacikan: any[] = [];
 
+    @ViewChild('DialogResepRacikanComps') DialogResepRacikanComps!: DialogResepRacikanComponent;
+
     ResepManual: any[] = [];
 
     ngOnInit(): void {
 
     }
 
-    handleOpenDialogResepNonRacikan(state: 'insert' | 'update') {
-        this.DialogResepNonRacikanComps.handleOpenDialog(state);
-    }
 
     onFormatAturanPakai(data: any) {
         const aturan_pakai = data.aturan_pakai;
@@ -47,11 +46,45 @@ export class ResepComponent implements OnInit {
         return `${aturan_pakai} | ${waktu_spesifik_pemberian_obat} | ${waktu_pemberian_obat}`;
     }
 
+    handleOpenDialogResepNonRacikan(state: 'insert' | 'update', index?: number, data?: any) {
+        if (state == 'insert') {
+            this.DialogResepNonRacikanComps.handleOpenDialog(state);
+        } else {
+            this.DialogResepNonRacikanComps.handleOpenDialog(state, index, data);
+        }
+    }
+
     handleSaveObatNonRacikan(args: any) {
         if (args.state == 'insert') {
             this.ResepNonRacikan.push(args.data);
         } else {
             this.ResepNonRacikan[args.index] = args.data;
         }
+    }
+
+    handleDeleteObatNonRacikan(index: number) {
+        this.ResepNonRacikan.splice(index, 1);
+    }
+
+    handleOpenDialogResepRacikan(state: 'insert' | 'update', index?: number, data?: any) {
+        if (state == 'insert') {
+            this.DialogResepRacikanComps.handleOpenDialog(state);
+        } else {
+            this.DialogResepRacikanComps.handleOpenDialog(state, index, data);
+        }
+    }
+
+
+    handleSaveObatRacikan(args: any) {
+        if (args.state == 'insert') {
+            console.log(args);
+            this.ResepRacikan.push(args.data);
+        } else {
+            this.ResepRacikan[args.index] = args.data;
+        }
+    }
+
+    handleDeleteObatRacikan(index: number) {
+        this.ResepRacikan.splice(index, 1);
     }
 }
