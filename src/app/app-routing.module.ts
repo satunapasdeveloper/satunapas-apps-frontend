@@ -12,7 +12,7 @@ const routes: Routes = [
     },
     {
         path: 'beranda',
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         loadComponent: async () => (await import('./pages/beranda/beranda.component')).BerandaComponent,
         data: {
             title: 'Beranda',
@@ -21,12 +21,12 @@ const routes: Routes = [
     },
     {
         path: 'setup-data',
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         loadChildren: async () => (await import('./pages/setup-data/setup-data.routes')).setupDataRoutes
     },
     {
         path: 'pasien',
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         loadComponent: async () => (await import('./pages/pasien/pasien.component')).PasienComponent,
         data: {
             title: 'Pasien',
@@ -37,7 +37,7 @@ const routes: Routes = [
     },
     {
         path: 'dokter',
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         loadComponent: async () => (await import('./pages/dokter/dokter.component')).DokterComponent,
         data: {
             title: 'Dokter',
@@ -48,7 +48,7 @@ const routes: Routes = [
     },
     {
         path: 'antrian',
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         loadComponent: async () => (await import('./pages/antrian/antrian.component')).AntrianComponent,
         data: {
             title: 'Antrian',
