@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
@@ -25,7 +25,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     templateUrl: './tindakan.component.html',
     styleUrl: './tindakan.component.scss'
 })
-export class TindakanComponent implements OnInit, OnDestroy {
+export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
 
     FormTindakan: FormGroup;
 
@@ -76,11 +76,39 @@ export class TindakanComponent implements OnInit, OnDestroy {
     };
 
     ngOnInit(): void {
-        this.handleAddTindakan();
+
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            const form_tindakan = localStorage.getItem('form_tindakan');
+            const tindakan = localStorage.getItem('tindakan');
+            const bmhp = localStorage.getItem('bmhp');
+
+            if (form_tindakan) {
+                let data = JSON.parse(form_tindakan);
+                data.tanggal_tindakan = new Date(data.tanggal_tindakan);
+                data.waktu_tindakan = new Date(data.waktu_tindakan);
+
+                this.FormTindakan.patchValue(data);
+            };
+
+            if (tindakan) {
+                this.TindakanForSave = JSON.parse(tindakan);
+            } else {
+                this.handleAddTindakan();
+            }
+
+            if (bmhp) {
+                this.BmhpForSave = JSON.parse(bmhp);
+            };
+        }, 100);
     }
 
     ngOnDestroy(): void {
-
+        localStorage.setItem('form_tindakan', JSON.stringify(this.FormTindakan.value));
+        localStorage.setItem('tindakan', JSON.stringify(this.TindakanForSave));
+        localStorage.setItem('bmhp', JSON.stringify(this.BmhpForSave));
     }
 
     handleAddTindakan() {

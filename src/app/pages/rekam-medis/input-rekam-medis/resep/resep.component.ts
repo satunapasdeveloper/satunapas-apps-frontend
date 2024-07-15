@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogResepNonRacikanComponent } from './dialog-resep-non-racikan/dialog-resep-non-racikan.component';
 import { DialogResepRacikanComponent } from './dialog-resep-racikan/dialog-resep-racikan.component';
@@ -19,7 +19,7 @@ import { DialogResepManualComponent } from './dialog-resep-manual/dialog-resep-m
     templateUrl: './resep.component.html',
     styleUrl: './resep.component.scss'
 })
-export class ResepComponent implements OnInit {
+export class ResepComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ResepNonRacikan: any[] = [];
 
@@ -35,6 +35,25 @@ export class ResepComponent implements OnInit {
 
     }
 
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            const resep_non_racikan = localStorage.getItem('resep_non_racikan');
+            const resep_racikan = localStorage.getItem('resep_racikan');
+
+            if (resep_non_racikan) {
+                this.ResepNonRacikan = JSON.parse(resep_non_racikan)
+            };
+
+            if (resep_racikan) {
+                this.ResepRacikan = JSON.parse(resep_racikan)
+            };
+        }, 100);
+    }
+
+    ngOnDestroy(): void {
+        localStorage.setItem('resep_non_racikan', JSON.stringify(this.ResepNonRacikan));
+        localStorage.setItem('resep_racikan', JSON.stringify(this.ResepRacikan));
+    }
 
     onFormatAturanPakai(data: any) {
         const aturan_pakai = data.aturan_pakai;
@@ -74,10 +93,8 @@ export class ResepComponent implements OnInit {
         }
     }
 
-
     handleSaveObatRacikan(args: any) {
         if (args.state == 'insert') {
-            console.log(args);
             this.ResepRacikan.push(args.data);
         } else {
             this.ResepRacikan[args.index] = args.data;
