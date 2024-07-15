@@ -15,6 +15,8 @@ import { ResepComponent } from './resep/resep.component';
 import { StatusComponent } from './status/status.component';
 import { BillingComponent } from './billing/billing.component';
 import { InformasiPasienComponent } from './informasi-pasien/informasi-pasien.component';
+import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
     selector: 'app-input-rekam-medis',
@@ -32,6 +34,7 @@ import { InformasiPasienComponent } from './informasi-pasien/informasi-pasien.co
         ResepComponent,
         StatusComponent,
         BillingComponent,
+        DialogModule,
     ],
     templateUrl: './input-rekam-medis.component.html',
     styleUrl: './input-rekam-medis.component.scss'
@@ -53,6 +56,7 @@ export class InputRekamMedisComponent {
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
+        private _rekamMedisService: RekamMedisService,
     ) { }
 
     ngOnInit(): void {

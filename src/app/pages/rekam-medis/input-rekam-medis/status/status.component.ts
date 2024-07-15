@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 
 @Component({
     selector: 'app-status',
@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
     templateUrl: './status.component.html',
     styleUrl: './status.component.scss'
 })
-export class StatusComponent {
+export class StatusComponent implements AfterViewInit, OnDestroy {
 
     Status: any[] = [
         {
@@ -36,4 +36,20 @@ export class StatusComponent {
     ];
 
     SelectedStatus: 'pulang' | 'rujuk_rajal' | 'rujuk_ranap' | 'meninggal' = 'pulang';
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            const status: any = localStorage.getItem('status');
+
+            if (status) {
+                this.SelectedStatus = status;
+            } else {
+                this.SelectedStatus = 'pulang';
+            }
+        }, 100);
+    }
+
+    ngOnDestroy(): void {
+        localStorage.setItem('status', this.SelectedStatus);
+    }
 }
