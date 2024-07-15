@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -61,4 +62,22 @@ export class RekamMedisService {
     ];
 
     constructor() { }
+
+    getRekamMedisPasien() {
+        const tindakan: any = localStorage.getItem('tindakan');
+        const bmhp: any = localStorage.getItem('bmhp');
+        const resep_non_racikan: any = localStorage.getItem('resep_non_racikan');
+        const resep_racikan: any = localStorage.getItem('resep_racikan');
+
+        let data_billing = {
+            tindakan: JSON.parse(tindakan),
+            bmhp: JSON.parse(bmhp),
+            resep: [
+                ...JSON.parse(resep_non_racikan),
+                ...JSON.parse(resep_racikan),
+            ],
+        };
+
+        return of(data_billing);
+    }
 }
