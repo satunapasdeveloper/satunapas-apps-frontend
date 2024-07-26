@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { Subject, takeUntil } from 'rxjs';
-import { SetupWilayahActions } from './store/pis/setup-data/setup-wilayah';
+import { SetupPoliActions } from './store/setup-data/setup-poli';
 
 @Component({
     selector: 'app-root',
@@ -44,14 +44,14 @@ export class AppComponent implements OnInit, OnDestroy {
         const isUserLoggedIn = localStorage.getItem('_CISUD_');
 
         if (isUserLoggedIn) {
-            // this.initAllNeededState();
+            this.initAllNeededState();
         }
     }
 
     private initAllNeededState() {
-        // ** Get All Provinsi
+        // ** Get All Poli
         this._store
-            .dispatch(new SetupWilayahActions.GetAllProvinsi())
+            .dispatch(new SetupPoliActions.GetAllPoli())
             .pipe(takeUntil(this.Destroy$));
     }
 

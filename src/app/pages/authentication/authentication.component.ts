@@ -44,7 +44,7 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                     label: 'Username',
                     required: true,
                     type: 'text',
-                    value: 'triaCIS-2407-000001',
+                    value: 'admin',
                 },
                 {
                     id: 'password',
