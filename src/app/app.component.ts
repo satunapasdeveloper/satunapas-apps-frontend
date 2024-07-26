@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { Subject, takeUntil } from 'rxjs';
 import { SetupPoliActions } from './store/setup-data/setup-poli';
+import { SetupTindakanMedisActions } from './store/setup-data/tindakan-medis';
+import { SetupItemActions } from './store/setup-data/item';
 
 @Component({
     selector: 'app-root',
@@ -52,6 +54,16 @@ export class AppComponent implements OnInit, OnDestroy {
         // ** Get All Poli
         this._store
             .dispatch(new SetupPoliActions.GetAllPoli())
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Tindakan Medis
+        this._store
+            .dispatch(new SetupTindakanMedisActions.GetAllTindakanMedis())
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Item
+        this._store
+            .dispatch(new SetupItemActions.GetAllItem())
             .pipe(takeUntil(this.Destroy$));
     }
 
