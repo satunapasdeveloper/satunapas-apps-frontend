@@ -35,7 +35,7 @@ export class TindakanMedisService {
     }
 
     update(payload: TindakanMedisModel.UpdateTindakanMedis): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Tindakan/Update`, payload);
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Tindakan/Update/${payload.uuid}`, payload);
     }
 
     updateStatus(uuid: string): Observable<HttpBaseResponse> {
