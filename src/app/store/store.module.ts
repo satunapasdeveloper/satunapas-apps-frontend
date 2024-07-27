@@ -1,10 +1,11 @@
 import { NgModule, ModuleWithProviders } from "@angular/core";
 import { NgxsModule } from "@ngxs/store";
 import { environment } from "src/environments/environment";
-import { PIS_STATE } from "./pis";
+import { SETUP_DATA_STATE } from "./setup-data";
+import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
 
 const STATES = [
-    ...PIS_STATE
+    ...SETUP_DATA_STATE
 ];
 
 @NgModule({
@@ -12,6 +13,7 @@ const STATES = [
         NgxsModule.forRoot([...STATES], {
             developmentMode: !environment.production,
         }),
+        NgxsLoggerPluginModule.forRoot(),
     ],
 })
 export class StateModule {

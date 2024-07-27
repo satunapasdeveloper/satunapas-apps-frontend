@@ -3,13 +3,14 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { SetupPoliState } from 'src/app/store/setup-data/setup-poli';
 
 @Component({
     selector: 'app-setup-poli',
@@ -42,7 +43,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
         id: 'Setup_Poli',
         column: [
             { field: 'kode_poli', headerName: 'Kode Poli', },
-            { field: 'nama_poli', headerName: 'Nama Poli', },
+            { field: 'poli', headerName: 'Nama Poli', },
             { field: 'status_active', headerName: 'Status Aktif', renderAsCheckbox: true },
         ],
         dataSource: [],
@@ -98,38 +99,15 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
     }
 
     private getAll() {
-        // this._store
-        //     .select(SetupWilayahState.provinsiEntities)
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result) {
-        //             console.log("get prov from setup poli =>", result);
-        //             this.GridProps.dataSource = result;
-        //         }
-        //     })
-
-        this.GridProps.dataSource = [
-            {
-                kode_poli: 'DALAM',
-                nama_poli: 'POLI PENYAKIT DALAM',
-                status_active: true
-            },
-            {
-                kode_poli: 'KANDUNGAN',
-                nama_poli: 'POLI KANDUNGAN',
-                status_active: true
-            },
-            {
-                kode_poli: 'ANAK',
-                nama_poli: 'POLI ANAK',
-                status_active: true
-            },
-            {
-                kode_poli: 'UMUM',
-                nama_poli: 'POLI UMUM',
-                status_active: true
-            },
-        ]
+        this._store
+            .select(SetupPoliState.poliEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    console.log("get from setup poli =>", result);
+                    this.GridProps.dataSource = result;
+                }
+            });
     }
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
