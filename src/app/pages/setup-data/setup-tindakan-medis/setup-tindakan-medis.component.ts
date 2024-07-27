@@ -1,15 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { Subject } from 'rxjs';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { TindakanMedisService } from 'src/app/services/setup-data/tindakan-medis.service';
+import { SetupPoliActions, SetupPoliState } from 'src/app/store/setup-data/setup-poli';
+import { SetupTindakanMedisActions, SetupTindakanMedisState } from 'src/app/store/setup-data/tindakan-medis';
 
 @Component({
     selector: 'app-setup-tindakan-medis',
@@ -20,6 +25,7 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
+        ConfirmDialogModule
     ],
     templateUrl: './setup-tindakan-medis.component.html',
     styleUrl: './setup-tindakan-medis.component.scss'
@@ -41,14 +47,15 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'Setup_Tindakan_Medis',
         column: [
-            { field: 'nama_tindakan_medis', headerName: 'Nama Tindakan Medis', class: 'font-semibold' },
-            { field: 'nama_tindakan_icd_9', headerName: 'Nama Tindakan ICD-9', },
-            { field: 'harga_satuan', headerName: 'Harga Satuan', format: 'currency' },
-            { field: 'status_active', headerName: 'Status Aktif', renderAsCheckbox: true, },
+            { field: 'tindakan', headerName: 'Nama Tindakan Medis', class: 'font-semibold' },
+            { field: 'nama_icd_9', headerName: 'Nama ICD-9', },
+            { field: 'poli', headerName: 'Poli', },
+            { field: 'harga', headerName: 'Harga', format: 'currency' },
+            { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Delete', "Ubah Status", 'Detail'],
         showPaging: true,
         showSearch: true,
         searchKeyword: 'nama_tindakan_medis',
@@ -60,53 +67,103 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
 
+    KfaKeywordSearch$ = new BehaviorSubject(null);
+
     constructor(
         private _store: Store,
+        private _router: Router,
         private _messageService: MessageService,
+        private _confirmationService: ConfirmationService,
+        private _tindakanMedisService: TindakanMedisService,
     ) {
         this.FormProps = {
             id: 'form_setup_tindakan_medis',
             fields: [
                 {
-                    id: 'nama_tindakan_medis',
+                    id: 'tindakan',
                     label: 'Nama Tindakan Medis',
                     required: true,
                     type: 'text',
                     value: '',
                 },
                 {
-                    id: 'nama_tindakan_icd_9',
-                    label: 'Nama Tindakan ICD-9',
+                    id: 'icd9',
+                    label: 'Display ICD 9',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true
+                },
+                {
+                    id: 'kode_icd9',
+                    label: 'Kode ICD 9',
                     required: true,
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'value',
+                        optionName: 'nama_icd_9',
+                        optionValue: 'kode_icd_9',
                         autoDisplayFirst: false
                     },
                     value: '',
                     onFilter: (args) => {
-                        console.log(args);
+                        this.KfaKeywordSearch$.next(args.filter);
+                    },
+                    onChange: (args) => {
+                        this.FormComps.FormGroup.get('icd9')?.setValue(args ? args.nama_icd_9 : null);
                     }
                 },
                 {
-                    id: 'harga_satuan',
-                    label: 'Harga Satuan',
+                    id: 'id_poli',
+                    label: 'Nama Poli',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [],
+                        optionName: 'poli',
+                        optionValue: 'id_poli',
+                        autoDisplayFirst: false,
+                        customField: {
+                            title: 'poli',
+                            subtitle: 'kode_poli',
+                            footer: {
+                                label: 'Tambah Poli',
+                                method: () => { this._router.navigateByUrl('setup-data/setup-poli') }
+                            }
+                        }
+                    },
+                    value: '',
+                },
+                {
+                    id: 'harga',
+                    label: 'Harga',
                     required: false,
                     type: 'number',
                     value: 0,
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-3 grid-cols-1',
+            class: 'grid-rows-4 grid-cols-1',
             state: 'write',
             defaultValue: null,
         };
+
+        this.KfaKeywordSearch$
+            .pipe(
+                takeUntil(this.Destroy$),
+                debounceTime(300),
+                distinctUntilChanged()
+            )
+            .subscribe((result) => {
+                if (result) {
+                    this.getAllIc9(result);
+                }
+            })
     }
 
     ngOnInit(): void {
         this.getAll();
+        this.getAllPoli();
     }
 
     ngOnDestroy(): void {
@@ -115,54 +172,63 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
     }
 
     private getAll() {
-        // this._store
-        //     .select(SetupWilayahState.provinsiEntities)
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result) {
-        //             console.log("get prov from setup poli =>", result);
-        //             this.GridProps.dataSource = result;
-        //         }
-        //     })
-
-        this.GridProps.dataSource = [
-            {
-                nama_tindakan_medis: 'Jahitan',
-                nama_tindakan_icd_9: 'Part Gastrec W Jej Anast',
-                harga_satuan: 30000,
-                status_active: true
-            },
-        ]
+        this._store
+            .select(SetupTindakanMedisState.TindakanMedisEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    console.log("get from setup tindakan medis =>", result);
+                    this.GridProps.dataSource = result;
+                }
+            });
     }
+
+    private getAllPoli() {
+        this._store
+            .select(SetupPoliState.poliEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_poli');
+                    this.FormProps.fields[index].dropdownProps.options = result;
+                }
+            });
+    }
+
+    private getAllIc9(keyword: string) {
+        this._tindakanMedisService
+            .getAllIcd9(keyword)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'kode_icd9');
+                    this.FormProps.fields[index].dropdownProps.options = result.data;
+                }
+            });
+    }
+
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'add') {
             this.PageState = 'form';
             this.ButtonNavigation = [];
         };
-
-        if (data.id == 'save') {
-            const formValue = this.FormComps.FormGroup.value;
-            this.savePoli(formValue);
-        };
-
-        if (data.id == 'update') {
-            const formValue = this.FormComps.FormGroup.value;
-            this.updatePoli(formValue);
-        };
     }
 
     handleBackToList() {
         this.FormComps.onResetForm();
 
-        this.PageState = 'list';
-        this.ButtonNavigation = [
-            {
-                id: 'add',
-                title: 'Tambah',
-                icon: 'pi pi-plus'
-            }
-        ];
+        setTimeout(() => {
+            this.PageState = 'list';
+            this.FormState = 'insert';
+            this.ButtonNavigation = [
+                {
+                    id: 'add',
+                    title: 'Tambah',
+                    icon: 'pi pi-plus'
+                }
+            ];
+        }, 100);
     }
 
     onCellClicked(args: any): void {
@@ -171,96 +237,107 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
 
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
-
-        // ** Ganti button navigation bar data
-        this.ButtonNavigation = [
-            {
-                id: 'back',
-                icon: 'pi pi-chevron-left',
-                title: 'Kembali'
-            },
-            {
-                id: 'update',
-                icon: 'pi pi-save',
-                title: 'Update'
-            },
-        ];
-
+        this.FormState = 'update';
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            this.FormComps.FormGroup.patchValue(args);
+            this.getAllIc9(args.nama_item);
+            setTimeout(() => {
+                this.FormComps.FormGroup.patchValue(args);
+            }, 500);
         }, 100);
     }
 
     onToolbarClicked(args: any): void {
-        if (args.id == 'delete') {
-            console.log(this.GridSelectedData);
-            this.deletePoli(this.GridSelectedData.kode_wilayah);
+        if (args.type == 'delete') {
+            this._confirmationService.confirm({
+                target: (<any>event).target as EventTarget,
+                message: 'Data yang dihapus tidak bisa dikembalikan',
+                header: 'Apakah Anda Yakin?',
+                icon: 'pi pi-info-circle',
+                acceptButtonStyleClass: "p-button-danger p-button-sm",
+                rejectButtonStyleClass: "p-button-secondary p-button-sm",
+                acceptIcon: "none",
+                acceptLabel: 'Iya Saya Yakin',
+                rejectIcon: "none",
+                rejectLabel: 'Tidak, Kembali',
+                accept: () => {
+                    this.deleteTindakanMedis(args.data.uuid);
+                }
+            });
+        }
+
+        if (args.type == 'ubah status') {
+            this._confirmationService.confirm({
+                target: (<any>event).target as EventTarget,
+                message: 'Data akan diubah statusnya',
+                header: 'Apakah Anda Yakin?',
+                icon: 'pi pi-info-circle',
+                acceptButtonStyleClass: "p-button-danger p-button-sm",
+                rejectButtonStyleClass: "p-button-secondary p-button-sm",
+                acceptIcon: "none",
+                acceptLabel: 'Iya Saya Yakin',
+                rejectIcon: "none",
+                rejectLabel: 'Tidak, Kembali',
+                accept: () => {
+                    this.updateStatusItem(args.data.uuid);
+                }
+            });
+        }
+
+        if (args.type == 'detail') {
+            this.onRowDoubleClicked(args.data);
         }
     }
 
-    private savePoli(data: any) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.CreatePoli(data))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         console.log(result);
-
-        //         if (result.setup_wilayah.success) {
-        //             // ** Reset Form 
-        //             this.FormComps.onResetForm();
-
-        //             // ** Kembali ke list
-        //             this.PageState = 'list';
-
-        //             // ** Reset Button Navigation
-        //             this.ButtonNavigation = [
-        //                 {
-        //                     id: 'add',
-        //                     title: 'Tambah',
-        //                     icon: 'pi pi-plus'
-        //                 }
-        //             ];
-        //         }
-        //     })
+    saveTindakanMedis(data: any) {
+        this._store
+            .dispatch(new SetupTindakanMedisActions.CreateTindakanMedis(data))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_tindakan_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Disimpan' });
+                    this.handleBackToList();
+                }
+            })
     }
 
-    private updatePoli(data: any) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.UpdatePoli(data))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result.setup_wilayah.success) {
-        //             // ** Reset Form 
-        //             this.FormComps.onResetForm();
-
-        //             // ** Kembali ke list
-        //             this.PageState = 'list';
-
-        //             // ** Reset Button Navigation
-        //             this.ButtonNavigation = [
-        //                 {
-        //                     id: 'add',
-        //                     title: 'Tambah',
-        //                     icon: 'pi pi-plus'
-        //                 }
-        //             ];
-        //         }
-        //     })
+    updateTindakanMedis(data: any) {
+        this._store
+            .dispatch(new SetupTindakanMedisActions.UpdateTindakanMedis(data))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_tindakan_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
+                    this.handleBackToList();
+                }
+            })
     }
 
-    private deletePoli(kode_wilayah: string) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.DeletePoli(kode_wilayah))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         console.log("store =>", result);
-
-        //         if (result.setup_wilayah.success) {
-
-        //         }
-        //     })
+    private updateStatusItem(uuid: string) {
+        this._store
+            .dispatch(new SetupTindakanMedisActions.UpdateStatusTindakanMedis(uuid))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_tindakan_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
+                    this.handleBackToList();
+                }
+            })
     }
 
-
+    private deleteTindakanMedis(uuid: string) {
+        this._store
+            .dispatch(new SetupTindakanMedisActions.DeleteTindakanMedis(uuid))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_tindakan_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this.handleBackToList();
+                }
+            })
+    }
 }
