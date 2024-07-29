@@ -5,6 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { SetupPoliActions } from './store/setup-data/setup-poli';
 import { SetupTindakanMedisActions } from './store/setup-data/tindakan-medis';
 import { SetupItemActions } from './store/setup-data/item';
+import { ManajemenUserActions } from './store/setup-data/manajemen-user';
 
 @Component({
     selector: 'app-root',
@@ -64,6 +65,16 @@ export class AppComponent implements OnInit, OnDestroy {
         // ** Get All Item
         this._store
             .dispatch(new SetupItemActions.GetAllItem())
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All User
+        this._store
+            .dispatch(new ManajemenUserActions.GetAllUser())
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All User Dokter
+        this._store
+            .dispatch(new ManajemenUserActions.GetAllUserDokter())
             .pipe(takeUntil(this.Destroy$));
     }
 
