@@ -40,5 +40,15 @@ export const setupDataRoutes: Route[] = [
                 "Beranda", "Setup Data", "Setup Rekanan Penunjang"
             ]
         }
+    },
+    {
+        path: 'manajemen-user',
+        loadComponent: async () => (await import('./manajemen-user/manajemen-user.component')).ManajemenUserComponent,
+        data: {
+            title: 'Manajemen User',
+            breadcrumbs: [
+                "Beranda", "Setup Data", "Manajemen User"
+            ]
+        }
     }
 ];

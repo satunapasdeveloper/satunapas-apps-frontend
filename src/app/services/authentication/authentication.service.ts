@@ -47,6 +47,13 @@ export class AuthenticationService {
                     toggle_child: false,
                     url: '/setup-data/setup-rekanan-penunjang'
                 },
+                {
+                    id: '15',
+                    caption: 'Manajemen User',
+                    icon: 'pi pi-users',
+                    toggle_child: false,
+                    url: '/setup-data/manajemen-user'
+                },
             ]
         },
         {
@@ -56,13 +63,13 @@ export class AuthenticationService {
             toggle_child: false,
             url: '/pasien'
         },
-        {
-            id: '3',
-            caption: 'Dokter',
-            icon: 'pi pi-shield',
-            toggle_child: false,
-            url: '/dokter'
-        },
+        // {
+        //     id: '3',
+        //     caption: 'Dokter',
+        //     icon: 'pi pi-shield',
+        //     toggle_child: false,
+        //     url: '/dokter'
+        // },
         {
             id: '4',
             caption: 'Antrian',
