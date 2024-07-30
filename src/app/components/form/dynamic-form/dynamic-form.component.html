@@ -40,6 +40,11 @@
                 dateFormat="dd MM yy" [showClear]="true" selectionMode="range" formControlName="{{ item.id }}">
             </p-calendar>
 
+            <!-- Time -->
+            <p-calendar *ngIf="item.type == 'time'" appendTo="body" styleClass="p-inputtext-sm w-full" [timeOnly]="true"
+                [showClear]="true" formControlName="{{ item.id }}" [readonlyInput]="true">
+            </p-calendar>
+
             <!-- Dropdown -->
             <p-dropdown *ngIf="item.type == 'select'" [options]="item.dropdownProps.options"
                 [optionLabel]="item.dropdownProps.optionName"

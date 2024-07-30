@@ -52,7 +52,7 @@ export namespace FormModel {
 
     export interface IFormFields {
         id: string;
-        type: 'text' | 'date' | 'daterange' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'password' | 'lookup' | 'text_split' | 'switch';
+        type: 'text' | 'date' | 'daterange' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'password' | 'lookup' | 'text_split' | 'switch' | 'time';
         label: string;
         required: boolean;
         value: any;

@@ -74,8 +74,6 @@ export class DynamicFormComponent implements OnInit {
             }
         });
 
-        console.log("fields =>", this.props.fields);
-
         this.props.fields.forEach((item) => {
             if (item.type == 'number') {
                 if (item.required) {
@@ -115,8 +113,6 @@ export class DynamicFormComponent implements OnInit {
                 }
             };
         });
-
-        console.log(this.FormGroup.value);
     };
 
     onGetFormValue(): any {

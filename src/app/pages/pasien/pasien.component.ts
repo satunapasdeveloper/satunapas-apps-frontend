@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
@@ -13,6 +13,7 @@ import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { PasienService } from 'src/app/services/pasien/pasien.service';
 
 @Component({
     selector: 'app-pasien',
@@ -49,10 +50,10 @@ export class PasienComponent implements OnInit, OnDestroy {
         column: [
             { field: 'no_rekam_medis', headerName: 'No. Rekam Medis', class: 'font-semibold' },
             { field: 'nama_lengkap', headerName: 'Nama Lengkap', },
-            { field: 'no_identitas', headerName: 'NIK', },
-            { field: 'umur', headerName: 'Umur', },
-            { field: 'alamat', headerName: 'Alamat', },
-            { field: 'status_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'nik', headerName: 'NIK', },
+            { field: 'tanggal_lahir', headerName: 'Tgl. Lahir', format: 'date' },
+            { field: 'alamat_lengkap', headerName: 'Alamat', },
+            { field: 'is_pasien_bayi', headerName: 'Pasien Bayi', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
@@ -93,13 +94,14 @@ export class PasienComponent implements OnInit, OnDestroy {
 
     constructor(
         private _store: Store,
+        private _pasienService: PasienService,
         private _messageService: MessageService,
     ) {
         this.FormIdentitasProps = {
             id: 'form_identitas_pasien',
             fields: [
                 {
-                    id: 'no_identitas',
+                    id: 'nik',
                     label: 'NIK',
                     required: true,
                     type: 'text',
@@ -189,9 +191,9 @@ export class PasienComponent implements OnInit, OnDestroy {
                 },
                 {
                     id: 'jam_lahir',
-                    label: 'Tanggal Lahir',
+                    label: 'Jam Lahir',
                     required: false,
-                    type: 'date',
+                    type: 'time',
                     value: '',
                 },
                 {
@@ -221,7 +223,7 @@ export class PasienComponent implements OnInit, OnDestroy {
             id: 'form_alamat',
             fields: [
                 {
-                    id: 'alamat_lengkap',
+                    id: 'ktp_alamat_lengkap',
                     label: 'Alamat Lengkap',
                     required: true,
                     type: 'textarea',
@@ -230,7 +232,7 @@ export class PasienComponent implements OnInit, OnDestroy {
                     hidden: true,
                 },
                 {
-                    id: 'provinsi',
+                    id: 'ktp_id_provinsi',
                     label: 'Provinsi',
                     required: true,
                     type: 'select',
@@ -242,7 +244,7 @@ export class PasienComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'kota',
+                    id: 'ktp_id_kabupaten',
                     label: 'Kota / Kabupaten',
                     required: true,
                     type: 'select',
@@ -254,7 +256,7 @@ export class PasienComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'kecamatan',
+                    id: 'ktp_id_kecamatan',
                     label: 'Kecamatan',
                     required: true,
                     type: 'select',
@@ -266,7 +268,7 @@ export class PasienComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'kelurahan',
+                    id: 'ktp_id_kelurahan',
                     label: 'Kelurahan',
                     required: true,
                     type: 'select',
@@ -278,7 +280,7 @@ export class PasienComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'kode_pos',
+                    id: 'ktp_kode_pos',
                     label: 'Kode Pos',
                     required: true,
                     type: 'text',
@@ -291,12 +293,12 @@ export class PasienComponent implements OnInit, OnDestroy {
                     type: 'text_split',
                     splitProps: [
                         {
-                            id: 'rt',
+                            id: 'ktp_rt',
                             required: true,
                             value: '',
                         },
                         {
-                            id: 'rw',
+                            id: 'ktp_rw',
                             required: true,
                             value: '',
                         },
@@ -314,7 +316,7 @@ export class PasienComponent implements OnInit, OnDestroy {
             id: 'form_alamat_domisili',
             fields: [
                 {
-                    id: 'alamat_domisili',
+                    id: 'alamat_lengkap',
                     label: 'Alamat Domisili',
                     required: true,
                     type: 'textarea',
@@ -323,7 +325,7 @@ export class PasienComponent implements OnInit, OnDestroy {
                     hidden: true,
                 },
                 {
-                    id: 'provinsi',
+                    id: 'id_provinsi',
                     label: 'Provinsi',
                     required: true,
                     type: 'select',
@@ -335,7 +337,7 @@ export class PasienComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'kota',
+                    id: 'id_kabupaten',
                     label: 'Kota / Kabupaten',
                     required: true,
                     type: 'select',
@@ -347,7 +349,7 @@ export class PasienComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'kecamatan',
+                    id: 'id_kecamatan',
                     label: 'Kecamatan',
                     required: true,
                     type: 'select',
@@ -359,7 +361,7 @@ export class PasienComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'kelurahan',
+                    id: 'id_kelurahan',
                     label: 'Kelurahan',
                     required: true,
                     type: 'select',
@@ -407,14 +409,14 @@ export class PasienComponent implements OnInit, OnDestroy {
             id: 'form_kontak',
             fields: [
                 {
-                    id: 'no_handphone',
+                    id: 'no_hp',
                     label: 'No. HP',
                     required: false,
                     type: 'text',
                     value: '',
                 },
                 {
-                    id: 'no_telepon_rumah',
+                    id: 'no_telpon',
                     label: 'No. Telepon Rumah',
                     required: false,
                     type: 'text',
@@ -463,6 +465,30 @@ export class PasienComponent implements OnInit, OnDestroy {
                     value: '',
                     hidden: true
                 },
+                {
+                    id: 'pendidikan_terakhir',
+                    label: 'Pendidikan Terakhir',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    hidden: true
+                },
+                {
+                    id: 'pekerjaan',
+                    label: 'Pekerjaan',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    hidden: true
+                },
+                {
+                    id: 'status_pernikahan',
+                    label: 'Status Pernikahan',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    hidden: true
+                },
             ],
             style: 'not_inline',
             class: 'grid-rows-1 grid-cols-2',
@@ -481,42 +507,21 @@ export class PasienComponent implements OnInit, OnDestroy {
     }
 
     private getAll() {
-        // this._store
-        //     .select(SetupWilayahState.provinsiEntities)
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result) {
-        //             console.log("get prov from setup poli =>", result);
-        //             this.GridProps.dataSource = result;
-        //         }
-        //     })
-
-        this.GridProps.dataSource = [
-            {
-                no_rekam_medis: '2400003',
-                nama_lengkap: 'John Doe',
-                no_identitas: '9999999999999999',
-                umur: '24th 2bln 7hr',
-                alamat: 'RT05/RW05, Meteseh, Tembalang',
-                status_active: true
-            },
-        ]
+        this._pasienService
+            .getAll()
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    console.log("get data =>", result.data);
+                    this.GridProps.dataSource = result.data;
+                }
+            });
     }
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'add') {
             this.PageState = 'form';
             this.ButtonNavigation = [];
-        };
-
-        if (data.id == 'save') {
-            const formValue = this.FormIdentitasComps.FormGroup.value;
-            this.savePoli(formValue);
-        };
-
-        if (data.id == 'update') {
-            const formValue = this.FormIdentitasComps.FormGroup.value;
-            this.updatePoli(formValue);
         };
     }
 
@@ -576,37 +581,38 @@ export class PasienComponent implements OnInit, OnDestroy {
     onToolbarClicked(args: any): void {
         if (args.id == 'delete') {
             console.log(this.GridSelectedData);
-            this.deletePoli(this.GridSelectedData.kode_wilayah);
+            // this.deletePoli(this.GridSelectedData.kode_wilayah);
         }
     }
 
-    private savePoli(data: any) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.CreatePoli(data))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         console.log(result);
+    savePasien() {
+        const alamat_form = this.FormAlamatComps.FormGroup.value;
 
-        //         if (result.setup_wilayah.success) {
-        //             // ** Reset Form 
-        //             this.FormIdentitasComps.onResetForm();
+        const alamat_domisili_form = this.FormAlamatDomisiliComps.FormGroup.value;
 
-        //             // ** Kembali ke list
-        //             this.PageState = 'list';
+        const alamat_domisili = {
+            alamat_lengkap: this.IsAlamatDomisiliSame ? alamat_form.ktp_alamat_lengkap : alamat_domisili_form.alamat_lengkap,
+            id_provinsi: this.IsAlamatDomisiliSame ? alamat_form.ktp_id_provinsi : alamat_domisili_form.id_provinsi,
+            id_kabupaten: this.IsAlamatDomisiliSame ? alamat_form.ktp_id_kabupaten : alamat_domisili_form.id_kabupaten,
+            id_kecamatan: this.IsAlamatDomisiliSame ? alamat_form.ktp_id_kecamatan : alamat_domisili_form.id_kecamatan,
+            kode_pos: this.IsAlamatDomisiliSame ? alamat_form.ktp_kode_pos : alamat_domisili_form.kode_pos,
+            rt: this.IsAlamatDomisiliSame ? alamat_form.ktp_rt : alamat_domisili_form.rt,
+            rw: this.IsAlamatDomisiliSame ? alamat_form.ktp_rw : alamat_domisili_form.rw,
+        };
 
-        //             // ** Reset Button Navigation
-        //             this.ButtonNavigation = [
-        //                 {
-        //                     id: 'add',
-        //                     title: 'Tambah',
-        //                     icon: 'pi pi-plus'
-        //                 }
-        //             ];
-        //         }
-        //     })
+        const payload = {
+            is_pasien_bayi: this.IsBayiLahir,
+            ...this.FormIdentitasComps.FormGroup.value,
+            ...this.FormAlamatComps.FormGroup.value,
+            ...alamat_domisili,
+            ...this.FormKontakComps.FormGroup.value,
+            ...this.FormLainLainComps.FormGroup.value,
+        };
+
+        console.log("payload =>", payload);
     }
 
-    private updatePoli(data: any) {
+    private updatePasien(data: any) {
         // this._store
         //     .dispatch(new SetupWilayahActions.UpdatePoli(data))
         //     .pipe(takeUntil(this.Destroy$))
@@ -630,7 +636,7 @@ export class PasienComponent implements OnInit, OnDestroy {
         //     })
     }
 
-    private deletePoli(kode_wilayah: string) {
+    private deletePasien(kode_wilayah: string) {
         // this._store
         //     .dispatch(new SetupWilayahActions.DeletePoli(kode_wilayah))
         //     .pipe(takeUntil(this.Destroy$))
