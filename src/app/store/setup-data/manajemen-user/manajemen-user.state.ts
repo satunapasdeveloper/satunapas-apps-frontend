@@ -52,7 +52,7 @@ export class ManajemenUserState {
             )
     }
 
-    @Action(ManajemenUserActions.GetAllUser)
+    @Action(ManajemenUserActions.GetAllUserDokter)
     getAllDokter(ctx: StateContext<ManajemenUserStateModel>) {
         return this._manajemenUserService
             .getAllDokter()
@@ -142,12 +142,14 @@ export class ManajemenUserState {
             )
     }
 
-    @Action(ManajemenUserActions.UpdateUser)
+    @Action(ManajemenUserActions.UpdateUserDokter)
     updateUserDokter(ctx: StateContext<ManajemenUserStateModel>, actions: any) {
         return this._manajemenUserService
             .updateDokter(actions.payload)
             .pipe(
                 tap((result) => {
+                    console.log("result update dokter =>", result);
+
                     const state = ctx.getState();
                     if (result.responseResult) {
                         ctx.setState({

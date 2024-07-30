@@ -1,10 +1,13 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DropdownModule } from 'primeng/dropdown';
 import { Subject, BehaviorSubject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
@@ -25,7 +28,10 @@ import { SetupPoliState } from 'src/app/store/setup-data/setup-poli';
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        DropdownModule,
+        FormsModule,
+        CalendarModule,
     ],
     templateUrl: './manajemen-user.component.html',
     styleUrl: './manajemen-user.component.scss'
@@ -64,11 +70,44 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
     };
     GridSelectedData: any;
 
+    IsDokter = false;
+
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
 
-    KfaKeywordSearch$ = new BehaviorSubject(null);
+    JadwalDokter: any[] = [];
+
+    Hari: any[] = [
+        {
+            value: 0,
+            label: 'Minggu'
+        },
+        {
+            value: 1,
+            label: 'Senin'
+        },
+        {
+            value: 2,
+            label: 'Selasa'
+        },
+        {
+            value: 3,
+            label: 'Rabu'
+        },
+        {
+            value: 4,
+            label: 'Kamis'
+        },
+        {
+            value: 5,
+            label: 'Jumat'
+        },
+        {
+            value: 6,
+            label: 'Sabtu'
+        },
+    ];
 
     constructor(
         private _store: Store,
@@ -277,18 +316,13 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
 
         this.FormProps.class = 'grid-rows-4 grid-cols-2';
 
+        this.IsDokter = args.id_poli == 1 ? true : false;
+
         this.PageState = 'form';
         this.FormState = 'update';
         this.ButtonNavigation = [];
-        // ** Set value ke Dynamic form components
-        setTimeout(() => {
-            setTimeout(() => {
-                this.FormComps.FormGroup.patchValue({
-                    ...args,
-                    tanggal_lahir: new Date(args.tanggal_lahir)
-                });
-            }, 500);
-        }, 100);
+
+        this.getByIdUser(args.uuid);
     }
 
     onToolbarClicked(args: any): void {
@@ -333,12 +367,40 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
         }
     }
 
+    private getByIdUser(uuid: string) {
+        this._store
+            .dispatch(new ManajemenUserActions.GetByIdUser(uuid))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.manajemen_user.single) {
+                    // ** Set value ke Dynamic form components
+                    this.FormComps.FormGroup.patchValue({
+                        ...result.manajemen_user.single,
+                        tanggal_lahir: new Date(result.manajemen_user.single.tanggal_lahir)
+                    });
+
+                    this.JadwalDokter = [];
+
+                    result.manajemen_user.single.jadwal.forEach((item: any) => {
+                        item.jam_buka.forEach((day: any) => {
+                            this.JadwalDokter.push({
+                                id_hari: day.id_hari,
+                                hari: item.hari,
+                                jam_mulai: new Date(formatDate(new Date(), 'yyyy-MM-dd', 'EN') + 'T' + day.jam_mulai + '.000Z'),
+                                jam_selesai: new Date(formatDate(new Date(), 'yyyy-MM-dd', 'EN') + 'T' + day.jam_selesai + '.000Z'),
+                            })
+                        });
+                    });
+                }
+            });
+    }
+
     saveUser(data: any) {
         this._store
             .dispatch(new ManajemenUserActions.CreateUser(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result.setup_User.success) {
+                if (result.manajemen_user.success) {
                     this._messageService.clear();
                     this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Disimpan' });
                     this.handleBackToList();
@@ -351,7 +413,65 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
             .dispatch(new ManajemenUserActions.UpdateUser(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result.setup_User.success) {
+                if (result.manajemen_user.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
+                    this.handleBackToList();
+                }
+            })
+    }
+
+    updateUserDokter(data: any) {
+        const payload: any = {
+            uuid: data.uuid,
+            nik: data.nik,
+            nama: data.nama,
+            no_hp: data.no_hp,
+            tanggal_lahir: data.tanggal_lahir,
+            jenis_kelamin: data.jenis_kelamin,
+            id_role: data.id_role,
+            id_poli: data.id_poli,
+            jadwal: this.JadwalDokter
+                .map((item: any) => {
+                    return {
+                        id_hari: item.id_hari,
+                        hari: this.Hari.find(day => day.value == item.id_hari).label,
+                        jam_mulai: formatDate(new Date(item.jam_mulai), 'HH:mm', 'EN'),
+                        jam_selesai: formatDate(new Date(item.jam_selesai), 'HH:mm', 'EN'),
+                    }
+                }).reduce((acc: any, curr: any) => {
+                    const { id_hari, hari, jam_mulai, jam_selesai } = curr;
+                    const existingDay = acc.find((day: any) => day.id_hari === id_hari);
+
+                    if (existingDay) {
+                        existingDay.jam_buka.push({
+                            id_hari,
+                            jam_mulai,
+                            jam_selesai,
+                        });
+                    } else {
+                        acc.push({
+                            id_hari,
+                            hari,
+                            jam_buka: [{
+                                id_hari,
+                                jam_mulai,
+                                jam_selesai,
+                            }]
+                        });
+                    }
+
+                    return acc;
+                }, [])
+        };
+
+        this._store
+            .dispatch(new ManajemenUserActions.UpdateUserDokter(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                // console.log("result update dokter =>", result);
+
+                if (result.manajemen_user.success) {
                     this._messageService.clear();
                     this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
                     this.handleBackToList();
@@ -364,7 +484,7 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
             .dispatch(new ManajemenUserActions.UpdateStatusUser(uuid))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result.setup_User.success) {
+                if (result.manajemen_user.success) {
                     this._messageService.clear();
                     this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
                     this.handleBackToList();
@@ -377,12 +497,26 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
             .dispatch(new ManajemenUserActions.DeleteUser(uuid))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result.setup_User.success) {
+                if (result.manajemen_user.success) {
                     this._messageService.clear();
                     this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
                     this.handleBackToList();
                 }
             })
+    }
+
+    handleAddNewJadwal() {
+        this.JadwalDokter.push({
+            hari: null,
+            jam_mulai: null,
+            jam_selesai: null,
+        });
+    }
+
+    handleDeleteJadwal(index: number) {
+        if (this.JadwalDokter.length > 1) {
+            this.JadwalDokter.splice(index, 1);
+        }
     }
 
 }
