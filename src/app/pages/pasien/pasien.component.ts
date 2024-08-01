@@ -692,24 +692,33 @@ export class PasienComponent implements OnInit, OnDestroy {
 
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
+        this.FormState = 'update';
 
-        // ** Ganti button navigation bar data
-        this.ButtonNavigation = [
-            {
-                id: 'back',
-                icon: 'pi pi-chevron-left',
-                title: 'Kembali'
-            },
-            {
-                id: 'update',
-                icon: 'pi pi-save',
-                title: 'Update'
-            },
-        ];
-
-        // ** Set value ke Dynamic form components
         setTimeout(() => {
-            this.FormIdentitasComps.FormGroup.patchValue(args);
+            this.FormIdentitasComps.onResetForm();
+            this.FormIdentitasBayiComps ? this.FormIdentitasBayiComps.onResetForm() : null;
+            this.FormAlamatComps.onResetForm();
+            this.FormAlamatDomisiliComps ? this.FormAlamatDomisiliComps.onResetForm() : null;
+            this.FormKontakComps.onResetForm();
+            this.FormLainLainComps.onResetForm();
+
+            this.ButtonNavigation = [];
+
+            this.getDetailPasien(args);
+        }, 100);
+    }
+
+    private getDetailPasien(args: any) {
+        console.log("detail pasien =>", args);
+
+        this.IsBayiLahir = args.is_pasien_bayi;
+
+        setTimeout(() => {
+            if (this.IsBayiLahir) {
+                this.FormIdentitasBayiComps.FormGroup.patchValue(args);
+            } else {
+                this.FormIdentitasComps.FormGroup.patchValue(args);
+            }
         }, 100);
     }
 
