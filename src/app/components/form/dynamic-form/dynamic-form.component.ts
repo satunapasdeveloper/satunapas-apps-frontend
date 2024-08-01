@@ -14,6 +14,7 @@ import { PasswordModule } from 'primeng/password';
 import { FormModel } from 'src/app/model/components/form.model';
 import { LookupDialogComponent } from '../../dialog/lookup-dialog/lookup-dialog.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
 @Component({
     selector: 'app-dynamic-form',
@@ -33,10 +34,15 @@ import { InputSwitchModule } from 'primeng/inputswitch';
         PasswordModule,
         LookupDialogComponent,
         InputSwitchModule,
+        NgxMaskDirective,
+        NgxMaskPipe
     ],
     templateUrl: './dynamic-form.component.html',
     styleUrls: ['./dynamic-form.component.scss'],
-    providers: [MessageService]
+    providers: [
+        MessageService,
+        provideNgxMask()
+    ]
 })
 export class DynamicFormComponent implements OnInit {
 

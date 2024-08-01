@@ -56,6 +56,7 @@ export namespace FormModel {
         label: string;
         required: boolean;
         value: any;
+        mask?: string;
         dropdownProps?: DropdownProps | any;
         radioButtonProps?: RadioButtonProps[] | any;
         checkBoxProps?: CheckBoxProps[] | any;

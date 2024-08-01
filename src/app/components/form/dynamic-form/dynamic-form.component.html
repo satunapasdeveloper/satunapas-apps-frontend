@@ -12,11 +12,18 @@
 
         <div class="{{ props.style == 'inline' ? 'w-8/12' : 'w-full'  }}">
             <!-- Text -->
-            <input *ngIf="item.type == 'text'" type="text" pInputText
+            <input *ngIf="item.type == 'text' && !item.mask" type="text" pInputText
                 class="p-inputtext-sm w-full {{ props.state == 'read' || item.readonly ? 'readonlyState' : '' }}"
                 formControlName="{{ item.id }}" [readonly]="props.state == 'read' || item.readonly "
                 (change)="handleChangeInputText($event, item)" [value]="item.value"
                 placeholder="{{ item.placeholder ? item.placeholder : '' }}" />
+
+            <!-- Text and Mask -->
+            <input *ngIf="item.type == 'text' && item.mask" type="text" pInputText
+                class="p-inputtext-sm w-full {{ props.state == 'read' || item.readonly ? 'readonlyState' : '' }}"
+                formControlName="{{ item.id }}" [readonly]="props.state == 'read' || item.readonly "
+                (change)="handleChangeInputText($event, item)" [value]="item.value"
+                placeholder="{{ item.placeholder ? item.placeholder : '' }}" [mask]="item.mask" />
 
             <!-- Textarea -->
             <textarea *ngIf="item.type == 'textarea'" rows="{{ item.textareaRow }}" pInputTextarea
