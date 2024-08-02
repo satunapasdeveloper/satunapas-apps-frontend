@@ -7,7 +7,7 @@ import { ManajemenUserActions } from "./manajemen-user.action";
 
 interface ManajemenUserStateModel {
     entities: ManajemenUserModel.IUser[];
-    dokters?: ManajemenUserModel.IUser[];
+    dokters?: ManajemenUserModel.IUser[] | any[];
     single?: ManajemenUserModel.IUser;
     success?: boolean;
 }
@@ -57,11 +57,11 @@ export class ManajemenUserState {
         return this._manajemenUserService
             .getAllDokter()
             .pipe(
-                tap((result) => {
+                tap((result: any) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        dokters: result.data,
+                        dokters: result,
                     });
                 })
             )

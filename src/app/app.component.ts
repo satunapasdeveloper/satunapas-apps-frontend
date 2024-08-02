@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { SetupPoliActions } from './store/setup-data/setup-poli';
 import { SetupTindakanMedisActions } from './store/setup-data/tindakan-medis';
 import { SetupItemActions } from './store/setup-data/item';
@@ -75,7 +75,12 @@ export class AppComponent implements OnInit, OnDestroy {
         // ** Get All User Dokter
         this._store
             .dispatch(new ManajemenUserActions.GetAllUserDokter())
-            .pipe(takeUntil(this.Destroy$));
+            .pipe(
+                takeUntil(this.Destroy$),
+                tap((result) => {
+                    console.log("dokter =>", result);
+                })
+            );
     }
 
     triggerAnimation() {

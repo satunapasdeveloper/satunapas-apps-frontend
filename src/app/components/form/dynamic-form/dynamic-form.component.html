@@ -12,11 +12,18 @@
 
         <div class="{{ props.style == 'inline' ? 'w-8/12' : 'w-full'  }}">
             <!-- Text -->
-            <input *ngIf="item.type == 'text'" type="text" pInputText
+            <input *ngIf="item.type == 'text' && !item.mask" type="text" pInputText
                 class="p-inputtext-sm w-full {{ props.state == 'read' || item.readonly ? 'readonlyState' : '' }}"
                 formControlName="{{ item.id }}" [readonly]="props.state == 'read' || item.readonly "
                 (change)="handleChangeInputText($event, item)" [value]="item.value"
                 placeholder="{{ item.placeholder ? item.placeholder : '' }}" />
+
+            <!-- Text and Mask -->
+            <input *ngIf="item.type == 'text' && item.mask" type="text" pInputText
+                class="p-inputtext-sm w-full {{ props.state == 'read' || item.readonly ? 'readonlyState' : '' }}"
+                formControlName="{{ item.id }}" [readonly]="props.state == 'read' || item.readonly "
+                (change)="handleChangeInputText($event, item)" [value]="item.value"
+                placeholder="{{ item.placeholder ? item.placeholder : '' }}" [mask]="item.mask" />
 
             <!-- Textarea -->
             <textarea *ngIf="item.type == 'textarea'" rows="{{ item.textareaRow }}" pInputTextarea
@@ -32,12 +39,18 @@
 
             <!-- Datepicker -->
             <p-calendar *ngIf="item.type == 'date'" appendTo="body" styleClass="p-inputtext-sm w-full"
-                dateFormat="dd MM yy" [showClear]="true" formControlName="{{ item.id }}" [readonlyInput]="true">
+                dateFormat="dd MM yy" [showClear]="true" formControlName="{{ item.id }}" [readonlyInput]="true"
+                (onSelect)="handleChangeCalendar($event, item)">
             </p-calendar>
 
             <!-- Daterange -->
             <p-calendar *ngIf="item.type == 'daterange'" appendTo="body" styleClass="p-inputtext-sm w-full"
                 dateFormat="dd MM yy" [showClear]="true" selectionMode="range" formControlName="{{ item.id }}">
+            </p-calendar>
+
+            <!-- Time -->
+            <p-calendar *ngIf="item.type == 'time'" appendTo="body" styleClass="p-inputtext-sm w-full" [timeOnly]="true"
+                [showClear]="true" formControlName="{{ item.id }}" [readonlyInput]="true">
             </p-calendar>
 
             <!-- Dropdown -->

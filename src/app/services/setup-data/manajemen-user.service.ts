@@ -28,7 +28,7 @@ export class ManajemenUserService {
             .pipe(
                 map((result) => {
                     if (result.responseResult) {
-                        return result.data = result.data.filter((item: ManajemenUserModel.IUser) => { return item.id_role == 1 })
+                        return result.data = result.data.filter((item: ManajemenUserModel.IUser) => { return item.id_role == 1 });
                     } else {
                         return result.data = [];
                     }
