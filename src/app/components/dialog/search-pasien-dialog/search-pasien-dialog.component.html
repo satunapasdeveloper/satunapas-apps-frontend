@@ -17,7 +17,7 @@
             <img src="../../../../assets/icon/search.svg" alt="search" class="h-[12rem] drop-shadow-lg">
         </div>
 
-        <div *ngIf="DataPasien.length" class="flex flex-col w-full gap-3 max-h-[20rem] overflow-y-auto">
+        <div *ngIf="DataPasien.length" class="flex flex-col w-full gap-3 h-[20rem] max-h-[20rem] overflow-y-auto">
             <div *ngFor="let item of DataPasien"
                 class="flex flex-col rounded-lg shadow bg-gray-50 hover:bg-gray-200 transition-all p-3 cursor-pointer"
                 (click)="handleSelectPasien(item)">
@@ -25,10 +25,10 @@
                     {{ item.nama_lengkap }}
                 </p>
                 <p class="text-sm text-sky-500">
-                    {{ item.no_identitas }}
+                    {{ item.nik }}
                 </p>
                 <p class="text-sm text-gray-700">
-                    {{ item.alamat }}
+                    {{ item.alamat_lengkap }}
                 </p>
             </div>
         </div>

@@ -498,7 +498,7 @@ export class PasienComponent implements OnInit, OnDestroy {
             id: 'form_lain_lain',
             fields: [
                 {
-                    id: 'metode_pembayaran',
+                    id: 'methode_pembayaran',
                     label: 'Metode Pembayaran',
                     required: true,
                     type: 'select',

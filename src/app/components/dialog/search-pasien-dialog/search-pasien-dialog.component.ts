@@ -3,6 +3,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { PostRequestByDynamicFiterModel } from 'src/app/model/http/http-request.model';
+import { PasienService } from 'src/app/services/pasien/pasien.service';
 
 @Component({
     selector: 'app-search-pasien-dialog',
@@ -24,38 +26,36 @@ export class SearchPasienDialogComponent {
 
     DataPasien: any[] = [];
 
-    constructor() { }
+    constructor(
+        private _pasienService: PasienService,
+    ) { }
 
     handleSearch(keyword: string) {
-        const data: any[] = [
-            {
-                id: 1,
-                no_rekam_medis: '112233',
-                nama_lengkap: 'John Doe',
-                no_identitas: '3374100408970001',
-                alamat: 'Jalan Indonesia Raya 1',
-            },
-            {
-                id: 2,
-                no_rekam_medis: '112234',
-                nama_lengkap: 'Jane Doe',
-                no_identitas: '3374100408970002',
-                alamat: 'Jalan Indonesia Raya 3',
-            },
-            {
-                id: 3,
-                no_rekam_medis: '112235',
-                nama_lengkap: 'Lorem Ipsum',
-                no_identitas: '3374100408970003',
-                alamat: 'Jalan Indonesia Raya 2',
-            },
-        ];
-
         if (keyword.length) {
-            this.DataPasien = data.filter(item => item.nama_lengkap.toLowerCase().includes(keyword.toLowerCase()));
+            const parameter: PostRequestByDynamicFiterModel[] = [
+                {
+                    filter: 'like',
+                    columnName: 'nama_lengkap',
+                    searchText: keyword.toLowerCase(),
+                    searchText2: '',
+                    withOr: false
+                }
+            ];
+
+            this.onSearchPasien(parameter);
         } else {
-            this.DataPasien = [];
+            this.onSearchPasien();
         }
+    }
+
+    private onSearchPasien(parameter?: any[]) {
+        this._pasienService
+            .getAll(parameter)
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.DataPasien = result.data;
+                }
+            })
     }
 
     handleSelectPasien(data: any) {

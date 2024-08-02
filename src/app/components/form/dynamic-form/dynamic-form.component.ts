@@ -169,6 +169,10 @@ export class DynamicFormComponent implements OnInit {
         return fields.onChange?.(args.target.value);
     }
 
+    handleChangeCalendar(args: any, fields: FormModel.IFormFields) {
+        return fields.onChange?.(args);
+    }
+
     handleChangeDropdown(args: any, fields: FormModel.IFormFields): any {
         let data = null;
 
