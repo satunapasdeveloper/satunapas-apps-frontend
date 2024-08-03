@@ -684,6 +684,8 @@ export class PasienComponent implements OnInit, OnDestroy {
                 icon: 'pi pi-plus'
             }
         ];
+
+        this.getAll();
     }
 
     onCellClicked(args: any): void {
