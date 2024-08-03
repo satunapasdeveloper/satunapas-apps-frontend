@@ -316,7 +316,7 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
 
         this.FormProps.class = 'grid-rows-4 grid-cols-2';
 
-        this.IsDokter = args.id_poli == 1 ? true : false;
+        this.IsDokter = args.id_role == 1 ? true : false;
 
         this.PageState = 'form';
         this.FormState = 'update';
