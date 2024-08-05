@@ -21,12 +21,12 @@ export namespace ManajemenUserActions {
 
     export class UpdateUser {
         static readonly type = '[User] Update User';
-        constructor(public payload: ManajemenUserModel.UpdateUser) { }
+        constructor(public uuid: string, public payload: ManajemenUserModel.UpdateUser) { }
     }
 
     export class UpdateUserDokter {
         static readonly type = '[User] Update User Dokter';
-        constructor(public payload: ManajemenUserModel.UpdateUser) { }
+        constructor(public uuid: string, public payload: ManajemenUserModel.UpdateUser) { }
     }
 
     export class UpdateStatusUser {

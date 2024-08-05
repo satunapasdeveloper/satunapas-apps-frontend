@@ -45,12 +45,12 @@ export class ManajemenUserService {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/MsUsers/Create`, payload);
     }
 
-    update(payload: ManajemenUserModel.UpdateUser): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/MsUsers/Update/${payload.uuid}`, payload);
+    update(uuid: string, payload: ManajemenUserModel.UpdateUser): Observable<HttpBaseResponse> {
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/MsUsers/Update/${uuid}`, payload);
     }
 
-    updateDokter(payload: ManajemenUserModel.UpdateUserDokter): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/MsUsers/Update/${payload.uuid}`, payload);
+    updateDokter(uuid: string, payload: ManajemenUserModel.UpdateUserDokter): Observable<HttpBaseResponse> {
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/MsUsers/Update/${uuid}`, payload);
     }
 
     updateStatus(uuid: string): Observable<HttpBaseResponse> {

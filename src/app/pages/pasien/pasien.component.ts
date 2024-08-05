@@ -1,5 +1,5 @@
-import { CommonModule, formatDate } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, formatDate, TitleCasePipe } from '@angular/common';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
@@ -15,6 +15,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { PasienService } from 'src/app/services/pasien/pasien.service';
 import { LokasiService } from 'src/app/services/setup-data/lokasi.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-pasien',
@@ -32,19 +33,15 @@ import { LokasiService } from 'src/app/services/setup-data/lokasi.service';
     templateUrl: './pasien.component.html',
     styleUrl: './pasien.component.scss'
 })
-export class PasienComponent implements OnInit, OnDestroy {
+export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
 
     Destroy$ = new Subject();
 
+    IsFromOtherPage = false;
+
     PageState: 'list' | 'form' = 'list';
 
-    ButtonNavigation: LayoutModel.IButtonNavigation[] = [
-        {
-            id: 'add',
-            title: 'Tambah',
-            icon: 'pi pi-plus'
-        }
-    ];
+    ButtonNavigation: LayoutModel.IButtonNavigation[] = [];
 
     GridProps: GridModel.IGrid = {
         id: 'Pasien',
@@ -95,8 +92,11 @@ export class PasienComponent implements OnInit, OnDestroy {
 
     constructor(
         private _store: Store,
+        private _router: Router,
         private _pasienService: PasienService,
         private _lokasiService: LokasiService,
+        private _titleCasePipe: TitleCasePipe,
+        private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
     ) {
         this.FormIdentitasProps = {
@@ -596,9 +596,44 @@ export class PasienComponent implements OnInit, OnDestroy {
         this.getProvinsi();
     }
 
+    ngAfterViewInit(): void {
+        this.onCheckQueryParams();
+    }
+
     ngOnDestroy(): void {
         this.Destroy$.next(0);
         this.Destroy$.complete();
+    }
+
+    private onCheckQueryParams() {
+        const queryParams = this._activatedRoute.snapshot.queryParams;
+
+        if (queryParams['from_url']) {
+            setTimeout(() => {
+                this.ButtonNavigation = [
+                    {
+                        id: 'back_to_from_url',
+                        title: `Kembali Ke ${this._titleCasePipe.transform(queryParams['from_url'])}`,
+                        icon: 'pi pi-chevron-left'
+                    },
+                    {
+                        id: 'add',
+                        title: 'Tambah',
+                        icon: 'pi pi-plus'
+                    }
+                ]
+            }, 100);
+        } else {
+            setTimeout(() => {
+                this.ButtonNavigation = [
+                    {
+                        id: 'add',
+                        title: 'Tambah',
+                        icon: 'pi pi-plus'
+                    }
+                ]
+            }, 100);
+        }
     }
 
     private getAll() {
@@ -662,6 +697,14 @@ export class PasienComponent implements OnInit, OnDestroy {
             this.PageState = 'form';
             this.ButtonNavigation = [];
         };
+
+        const queryParams = this._activatedRoute.snapshot.queryParams;
+
+        if (queryParams['from_url']) {
+            if (data.id == 'back_to_from_url') {
+                this._router.navigateByUrl(queryParams['from_url']);
+            }
+        }
     }
 
     handleBackToList() {
@@ -681,13 +724,8 @@ export class PasienComponent implements OnInit, OnDestroy {
         this.FormLainLainComps.onResetForm();
 
         this.PageState = 'list';
-        this.ButtonNavigation = [
-            {
-                id: 'add',
-                title: 'Tambah',
-                icon: 'pi pi-plus'
-            }
-        ];
+
+        this.onCheckQueryParams();
 
         this.getAll();
     }
@@ -715,8 +753,6 @@ export class PasienComponent implements OnInit, OnDestroy {
     }
 
     private getDetailPasien(args: any) {
-        console.log("detail pasien =>", args);
-
         this.IsBayiLahir = args.is_pasien_bayi;
 
         setTimeout(() => {

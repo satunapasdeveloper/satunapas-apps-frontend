@@ -115,7 +115,7 @@ export class ManajemenUserState {
     @Action(ManajemenUserActions.UpdateUser)
     updateUser(ctx: StateContext<ManajemenUserStateModel>, actions: any) {
         return this._manajemenUserService
-            .update(actions.payload)
+            .update(actions.uuid, actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
@@ -145,7 +145,7 @@ export class ManajemenUserState {
     @Action(ManajemenUserActions.UpdateUserDokter)
     updateUserDokter(ctx: StateContext<ManajemenUserStateModel>, actions: any) {
         return this._manajemenUserService
-            .updateDokter(actions.payload)
+            .updateDokter(actions.uuid, actions.payload)
             .pipe(
                 tap((result) => {
                     console.log("result update dokter =>", result);

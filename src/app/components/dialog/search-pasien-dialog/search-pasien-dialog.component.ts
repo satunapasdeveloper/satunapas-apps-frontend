@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -27,6 +28,7 @@ export class SearchPasienDialogComponent {
     DataPasien: any[] = [];
 
     constructor(
+        private _router: Router,
         private _pasienService: PasienService,
     ) { }
 
@@ -61,5 +63,9 @@ export class SearchPasienDialogComponent {
     handleSelectPasien(data: any) {
         this.onSelect.emit(data);
         this.ShowDialog = false;
+    }
+
+    handleNavigateToPasien() {
+        this._router.navigate(['/pasien'], { queryParams: { from_url: 'antrian' } });
     }
 }
