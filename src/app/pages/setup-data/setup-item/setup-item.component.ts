@@ -1,15 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { ItemService } from 'src/app/services/setup-data/item.service';
+import { SetupItemActions, SetupItemState } from 'src/app/store/setup-data/item';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
     selector: 'app-setup-item',
@@ -20,6 +23,7 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
+        ConfirmDialogModule
     ],
     templateUrl: './setup-item.component.html',
     styleUrl: './setup-item.component.scss'
@@ -41,16 +45,16 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'Setup_Item',
         column: [
-            { field: 'kode_item', headerName: 'Kode Item', class: 'font-semibold' },
+            { field: 'kode_kfa', headerName: 'Kode Item', class: 'font-semibold' },
             { field: 'nama_item', headerName: 'Nama Item', },
             { field: 'kategori', headerName: 'Kategori', },
             { field: 'satuan', headerName: 'Satuan', },
             { field: 'harga_jual', headerName: 'Harga Jual', format: 'currency' },
-            { field: 'status_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Delete', "Ubah Status", 'Detail'],
         showPaging: true,
         showSearch: true,
         searchKeyword: 'nama_item',
@@ -62,9 +66,13 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
 
+    KfaKeywordSearch$ = new BehaviorSubject(null);
+
     constructor(
         private _store: Store,
+        private _itemService: ItemService,
         private _messageService: MessageService,
+        private _confirmationService: ConfirmationService,
     ) {
         this.FormProps = {
             id: 'form_setup_item',
@@ -76,7 +84,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [
-                            { name: 'Obat', value: 'Obat' },
+                            { name: 'Obat', value: 'OBAT' },
                             { name: 'BMHP', value: 'BMHP' },
                         ],
                         optionName: 'name',
@@ -92,17 +100,22 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'value',
+                        optionName: 'nama_item',
+                        optionValue: 'nama_item',
                         autoDisplayFirst: false
                     },
                     value: '',
                     onFilter: (args) => {
-                        console.log(args);
+                        this.KfaKeywordSearch$.next(args.filter);
+                    },
+                    onChange: (args) => {
+                        this.FormComps.FormGroup.get('kategori')?.setValue(args ? args.kategori : null);
+                        this.FormComps.FormGroup.get('kode_kfa')?.setValue(args ? args.kode_kfa : "");
+                        this.FormComps.FormGroup.get('satuan')?.setValue(args ? args.satuan : "");
                     }
                 },
                 {
-                    id: 'kode_item',
+                    id: 'kode_kfa',
                     label: 'Kode Item KFA',
                     required: false,
                     type: 'text',
@@ -124,12 +137,32 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     type: 'number',
                     value: 0,
                 },
+                {
+                    id: 'uuid',
+                    label: 'UUID',
+                    hidden: true,
+                    required: false,
+                    type: 'text',
+                    value: "",
+                },
             ],
             style: 'not_inline',
             class: 'grid-rows-5 grid-cols-1',
             state: 'write',
             defaultValue: null,
         };
+
+        this.KfaKeywordSearch$
+            .pipe(
+                takeUntil(this.Destroy$),
+                debounceTime(300),
+                distinctUntilChanged()
+            )
+            .subscribe((result) => {
+                if (result) {
+                    this.getAllKfa(result);
+                }
+            })
     }
 
     ngOnInit(): void {
@@ -142,50 +175,27 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     }
 
     private getAll() {
-        // this._store
-        //     .select(SetupWilayahState.provinsiEntities)
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result) {
-        //             console.log("get prov from setup poli =>", result);
-        //             this.GridProps.dataSource = result;
-        //         }
-        //     })
+        this._store
+            .select(SetupItemState.itemEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    console.log("get data from setup item =>", result);
+                    this.GridProps.dataSource = result;
+                }
+            });
+    }
 
-        this.GridProps.dataSource = [
-            {
-                kode_item: '92001142',
-                nama_item: 'Paracetamol 250 mg Sirup (OBAPA)',
-                kategori: 'Obat',
-                satuan: 'Botol Plastik',
-                harga_jual: 6000,
-                status_active: true
-            },
-            {
-                kode_item: '2048618',
-                nama_item: 'Latex Examination Glove (Free Powder) (LPF001, SHAMROCK SUPREME, XS, S, M, L, XL)',
-                kategori: 'BMHP',
-                satuan: 'Pieces',
-                harga_jual: 6000,
-                status_active: true
-            },
-            {
-                kode_item: '93000108',
-                nama_item: 'Gemcitabine Hydrochloride 1000 mg Serbuk Injeksi Liofilisasi (ABINGEM)',
-                kategori: 'Obat',
-                satuan: 'Vial',
-                harga_jual: 12000,
-                status_active: true
-            },
-            {
-                kode_item: '93000126',
-                nama_item: 'Diazepam 2 mg Tablet (VALISANBE)',
-                kategori: 'Obat',
-                satuan: 'Tablet',
-                harga_jual: 19000,
-                status_active: true
-            },
-        ]
+    private getAllKfa(keyword: string) {
+        this._itemService
+            .getAllIcd9(keyword)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'nama_item');
+                    this.FormProps.fields[index].dropdownProps.options = result.data;
+                }
+            });
     }
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
@@ -193,29 +203,22 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             this.PageState = 'form';
             this.ButtonNavigation = [];
         };
-
-        if (data.id == 'save') {
-            const formValue = this.FormComps.FormGroup.value;
-            this.savePoli(formValue);
-        };
-
-        if (data.id == 'update') {
-            const formValue = this.FormComps.FormGroup.value;
-            this.updatePoli(formValue);
-        };
     }
 
     handleBackToList() {
         this.FormComps.onResetForm();
 
-        this.PageState = 'list';
-        this.ButtonNavigation = [
-            {
-                id: 'add',
-                title: 'Tambah',
-                icon: 'pi pi-plus'
-            }
-        ];
+        setTimeout(() => {
+            this.PageState = 'list';
+            this.FormState = 'insert';
+            this.ButtonNavigation = [
+                {
+                    id: 'add',
+                    title: 'Tambah',
+                    icon: 'pi pi-plus'
+                }
+            ];
+        }, 100);
     }
 
     onCellClicked(args: any): void {
@@ -224,95 +227,108 @@ export class SetupItemComponent implements OnInit, OnDestroy {
 
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
-
-        // ** Ganti button navigation bar data
-        this.ButtonNavigation = [
-            {
-                id: 'back',
-                icon: 'pi pi-chevron-left',
-                title: 'Kembali'
-            },
-            {
-                id: 'update',
-                icon: 'pi pi-save',
-                title: 'Update'
-            },
-        ];
-
+        this.FormState = 'update';
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            this.FormComps.FormGroup.patchValue(args);
+            this.getAllKfa(args.nama_item);
+            setTimeout(() => {
+                this.FormComps.FormGroup.patchValue(args);
+            }, 500);
         }, 100);
     }
 
     onToolbarClicked(args: any): void {
-        if (args.id == 'delete') {
-            console.log(this.GridSelectedData);
-            this.deletePoli(this.GridSelectedData.kode_wilayah);
+        if (args.type == 'delete') {
+            this._confirmationService.confirm({
+                target: (<any>event).target as EventTarget,
+                message: 'Data yang dihapus tidak bisa dikembalikan',
+                header: 'Apakah Anda Yakin?',
+                icon: 'pi pi-info-circle',
+                acceptButtonStyleClass: "p-button-danger p-button-sm",
+                rejectButtonStyleClass: "p-button-secondary p-button-sm",
+                acceptIcon: "none",
+                acceptLabel: 'Iya Saya Yakin',
+                rejectIcon: "none",
+                rejectLabel: 'Tidak, Kembali',
+                accept: () => {
+                    this.deleteItem(args.data.uuid);
+                }
+            });
+        }
+
+        if (args.type == 'ubah status') {
+            this._confirmationService.confirm({
+                target: (<any>event).target as EventTarget,
+                message: 'Data akan diubah statusnya',
+                header: 'Apakah Anda Yakin?',
+                icon: 'pi pi-info-circle',
+                acceptButtonStyleClass: "p-button-danger p-button-sm",
+                rejectButtonStyleClass: "p-button-secondary p-button-sm",
+                acceptIcon: "none",
+                acceptLabel: 'Iya Saya Yakin',
+                rejectIcon: "none",
+                rejectLabel: 'Tidak, Kembali',
+                accept: () => {
+                    this.updateStatusItem(args.data.uuid);
+                }
+            });
+        }
+
+        if (args.type == 'detail') {
+            this.onRowDoubleClicked(args.data);
         }
     }
 
-    private savePoli(data: any) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.CreatePoli(data))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         console.log(result);
-
-        //         if (result.setup_wilayah.success) {
-        //             // ** Reset Form 
-        //             this.FormComps.onResetForm();
-
-        //             // ** Kembali ke list
-        //             this.PageState = 'list';
-
-        //             // ** Reset Button Navigation
-        //             this.ButtonNavigation = [
-        //                 {
-        //                     id: 'add',
-        //                     title: 'Tambah',
-        //                     icon: 'pi pi-plus'
-        //                 }
-        //             ];
-        //         }
-        //     })
+    saveItem(data: any) {
+        this._store
+            .dispatch(new SetupItemActions.CreateItem(data))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_item.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Disimpan' });
+                    this.handleBackToList();
+                }
+            })
     }
 
-    private updatePoli(data: any) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.UpdatePoli(data))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result.setup_wilayah.success) {
-        //             // ** Reset Form 
-        //             this.FormComps.onResetForm();
-
-        //             // ** Kembali ke list
-        //             this.PageState = 'list';
-
-        //             // ** Reset Button Navigation
-        //             this.ButtonNavigation = [
-        //                 {
-        //                     id: 'add',
-        //                     title: 'Tambah',
-        //                     icon: 'pi pi-plus'
-        //                 }
-        //             ];
-        //         }
-        //     })
+    updateItem(data: any) {
+        this._store
+            .dispatch(new SetupItemActions.UpdateItem(data))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_item.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
+                    this.handleBackToList();
+                }
+            })
     }
 
-    private deletePoli(kode_wilayah: string) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.DeletePoli(kode_wilayah))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         console.log("store =>", result);
+    private updateStatusItem(uuid: string) {
+        this._store
+            .dispatch(new SetupItemActions.UpdateStatusItem(uuid))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_item.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
+                    this.handleBackToList();
+                }
+            })
+    }
 
-        //         if (result.setup_wilayah.success) {
-
-        //         }
-        //     })
+    private deleteItem(uuid: string) {
+        this._store
+            .dispatch(new SetupItemActions.DeleteItem(uuid))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_item.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this.handleBackToList();
+                }
+            })
     }
 
 }

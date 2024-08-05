@@ -54,11 +54,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
         setTimeout(() => {
             this._utilityService.ShowLoading$.next(false);
-
             this._messageService.clear();
             this._messageService.add({ severity: 'success', detail: 'Success', summary: 'Sign Out Berhasil' });
-
             this._router.navigateByUrl("");
+            localStorage.clear();
         }, 2000);
     }
 

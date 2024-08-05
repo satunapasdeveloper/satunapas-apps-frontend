@@ -82,6 +82,9 @@ export class GridComponent implements OnInit {
                     case 'Delete':
                         icon = 'pi pi-trash';
                         break;
+                    case 'Ubah Status':
+                        icon = 'pi pi-sync';
+                        break;
                     case 'Detail':
                         icon = 'pi pi-info-circle';
                         break;
@@ -99,11 +102,11 @@ export class GridComponent implements OnInit {
     }
 
     onCellClicked(args: any): void {
-        this.cellClicked.emit(args.data);
+        this.cellClicked.emit(args);
     }
 
     onRowDoubleClicked(args: any): void {
-        this.rowDoubleClicked.emit(args.data);
+        this.rowDoubleClicked.emit(args);
     }
 
     onToolbarClicked(args: GridModel.IGridToolbar): void {
@@ -126,6 +129,10 @@ export class GridComponent implements OnInit {
 
     onAksiClicked(type: string, data: any) {
         this.aksiClicked.emit({ type: type, data: data });
+    }
+
+    handleFormatStringToNumber(data: string): number {
+        return parseFloat(data);
     }
 
     onExportExcel(): void {

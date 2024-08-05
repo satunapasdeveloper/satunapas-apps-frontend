@@ -78,7 +78,9 @@ export class HttpRequestService {
                     // ** Jika responseResult = false
                     if (!result.responseResult) {
                         this._messageService.clear();
-                        this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(result.message) })
+                        (<any>result.message).forEach((item: string) => {
+                            this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(item) })
+                        })
                     }
 
                     return result;
@@ -153,7 +155,9 @@ export class HttpRequestService {
                     // ** Jika responseResult = false
                     if (!result.responseResult) {
                         this._messageService.clear();
-                        this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(result.message) })
+                        (<any>result.message).forEach((item: string) => {
+                            this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(item) })
+                        })
                     }
 
 
@@ -191,7 +195,9 @@ export class HttpRequestService {
                     // ** Jika responseResult = false
                     if (!result.responseResult) {
                         this._messageService.clear();
-                        this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(result.message) })
+                        (<any>result.message).forEach((item: string) => {
+                            this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(item) })
+                        })
                     }
 
                     return result;
@@ -206,6 +212,6 @@ export class HttpRequestService {
     private handlingError(error: HttpErrorResponse): void {
         this._utilityService.ShowLoading$.next(false);
         this._messageService.clear();
-        this._messageService.add({ severity: 'error', summary: 'Oops', detail: this._titleCasePipe.transform(error.message) })
+        this._messageService.add({ severity: 'error', summary: error.statusText, detail: error.error.message.message })
     }
 }

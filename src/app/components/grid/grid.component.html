@@ -28,7 +28,7 @@
             </tr>
         </ng-template>
         <ng-template *ngIf="props.dataSource" pTemplate="body" let-rowData let-columns="columns">
-            <tr [pSelectableRow]="rowData">
+            <tr [pSelectableRow]="rowData" (dblclick)="onRowDoubleClicked(rowData)" (click)="onCellClicked(rowData)">
                 <td *ngFor="let col of columns" class="text-sm {{ col.class }}">
                     @switch (col.renderAsCheckbox){
                     @case (true) {
@@ -37,13 +37,13 @@
                     @case (false) {
                     @switch (col.format) {
                     @case ('currency') {
-                    {{ rowData[col.field] | currency: 'Rp. ' }}
+                    {{ handleFormatStringToNumber(rowData[col.field]) | currency: 'Rp. ' }}
                     }
                     @case ('date') {
                     {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
                     }
                     @case ('number') {
-                    {{ rowData[col.field] | number: '' }}
+                    {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}
                     }
                     @case (undefined) {
                     {{ rowData[col.field] }}

@@ -1,8 +1,11 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { Subject, takeUntil } from 'rxjs';
-import { SetupWilayahActions } from './store/pis/setup-data/setup-wilayah';
+import { Subject, takeUntil, tap } from 'rxjs';
+import { SetupPoliActions } from './store/setup-data/setup-poli';
+import { SetupTindakanMedisActions } from './store/setup-data/tindakan-medis';
+import { SetupItemActions } from './store/setup-data/item';
+import { ManajemenUserActions } from './store/setup-data/manajemen-user';
 
 @Component({
     selector: 'app-root',
@@ -44,15 +47,40 @@ export class AppComponent implements OnInit, OnDestroy {
         const isUserLoggedIn = localStorage.getItem('_CISUD_');
 
         if (isUserLoggedIn) {
-            // this.initAllNeededState();
+            this.initAllNeededState();
         }
     }
 
     private initAllNeededState() {
-        // ** Get All Provinsi
+        // ** Get All Poli
         this._store
-            .dispatch(new SetupWilayahActions.GetAllProvinsi())
+            .dispatch(new SetupPoliActions.GetAllPoli())
             .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Tindakan Medis
+        this._store
+            .dispatch(new SetupTindakanMedisActions.GetAllTindakanMedis())
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Item
+        this._store
+            .dispatch(new SetupItemActions.GetAllItem())
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All User
+        this._store
+            .dispatch(new ManajemenUserActions.GetAllUser())
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All User Dokter
+        this._store
+            .dispatch(new ManajemenUserActions.GetAllUserDokter())
+            .pipe(
+                takeUntil(this.Destroy$),
+                tap((result) => {
+                    console.log("dokter =>", result);
+                })
+            );
     }
 
     triggerAnimation() {
