@@ -134,6 +134,13 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
+                    id: 'his_number',
+                    label: 'HIS Number',
+                    required: false,
+                    type: 'text',
+                    value: "",
+                },
+                {
                     id: 'no_hp',
                     label: 'No. Handphone',
                     required: false,
@@ -223,9 +230,10 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
                     type: 'text',
                     value: "",
                 },
+
             ],
             style: 'not_inline',
-            class: 'grid-rows-5 grid-cols-2',
+            class: 'grid-rows-6 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
@@ -292,7 +300,7 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
             const index = this.FormProps.fields.findIndex(item => item.id == 'password');
             this.FormProps.fields[index].hidden = false;
 
-            this.FormProps.class = 'grid-rows-5 grid-cols-2';
+            this.FormProps.class = 'grid-rows-6 grid-cols-2';
 
             this.PageState = 'list';
             this.FormState = 'insert';
@@ -314,7 +322,7 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
         const index = this.FormProps.fields.findIndex(item => item.id == 'password');
         this.FormProps.fields[index].hidden = true;
 
-        this.FormProps.class = 'grid-rows-4 grid-cols-2';
+        this.FormProps.class = 'grid-rows-5 grid-cols-2';
 
         this.IsDokter = args.id_role == 1 ? true : false;
 
@@ -409,8 +417,20 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
     }
 
     updateUser(data: any) {
+        const payload = {
+            his_number: data.his_number,
+            nik: data.nik,
+            nama: data.nama,
+            no_hp: data.no_hp,
+            tanggal_lahir: data.tanggal_lahir,
+            jenis_kelamin: data.jenis_kelamin,
+            id_role: data.id_role,
+            id_poli: data.id_poli,
+            jadwal: []
+        };
+
         this._store
-            .dispatch(new ManajemenUserActions.UpdateUser(data))
+            .dispatch(new ManajemenUserActions.UpdateUser(data.uuid, payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.manajemen_user.success) {
@@ -423,8 +443,8 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
 
     updateUserDokter(data: any) {
         const payload: any = {
-            uuid: data.uuid,
             nik: data.nik,
+            his_number: data.his_number,
             nama: data.nama,
             no_hp: data.no_hp,
             tanggal_lahir: data.tanggal_lahir,
@@ -466,7 +486,7 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
         };
 
         this._store
-            .dispatch(new ManajemenUserActions.UpdateUserDokter(payload))
+            .dispatch(new ManajemenUserActions.UpdateUserDokter(data.uuid, payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 // console.log("result update dokter =>", result);

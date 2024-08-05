@@ -57,7 +57,6 @@ export namespace ManajemenUserModel {
     }
 
     export interface UpdateUser {
-        uuid: string
         his_number: string
         nik: string
         nama: string
@@ -70,7 +69,6 @@ export namespace ManajemenUserModel {
     }
 
     export interface UpdateUserDokter {
-        uuid: string
         his_number: string
         nik: string
         nama: string
