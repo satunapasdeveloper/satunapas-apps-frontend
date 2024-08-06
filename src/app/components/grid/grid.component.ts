@@ -88,6 +88,15 @@ export class GridComponent implements OnInit {
                     case 'Detail':
                         icon = 'pi pi-info-circle';
                         break;
+                    case 'Mulai Assesment':
+                        icon = 'pi pi-file-o';
+                        break;
+                    case 'Panggil':
+                        icon = 'pi pi-megaphone';
+                        break;
+                    case 'Mulai Periksa':
+                        icon = 'pi pi-play';
+                        break;
                     default:
                         break;
                 }
