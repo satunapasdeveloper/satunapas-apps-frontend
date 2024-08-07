@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
@@ -17,6 +17,8 @@ import { BillingComponent } from './billing/billing.component';
 import { InformasiPasienComponent } from './informasi-pasien/informasi-pasien.component';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 import { DialogModule } from 'primeng/dialog';
+import { RekamMedisActions } from 'src/app/store/rekam-medis';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-input-rekam-medis',
@@ -39,7 +41,9 @@ import { DialogModule } from 'primeng/dialog';
     templateUrl: './input-rekam-medis.component.html',
     styleUrl: './input-rekam-medis.component.scss'
 })
-export class InputRekamMedisComponent {
+export class InputRekamMedisComponent implements OnInit, OnDestroy {
+
+    Destroy$ = new Subject();
 
     ButtonNavigation: LayoutModel.IButtonNavigation[] = [
         {
@@ -51,6 +55,8 @@ export class InputRekamMedisComponent {
 
     SelectedPasien: any;
 
+    @ViewChild('AnamesisComps') AnamesisComps!: AnamesisComponent;
+
     constructor(
         private _store: Store,
         private _router: Router,
@@ -60,14 +66,45 @@ export class InputRekamMedisComponent {
     ) { }
 
     ngOnInit(): void {
-        const no_rm = this._activatedRoute.snapshot.queryParams['no_rm'];
-        console.log("no rekam medis =>", no_rm);
+        this.getById(this._activatedRoute.snapshot.queryParams['id']);
+    }
 
-        this.SelectedPasien = JSON.parse(localStorage.getItem('_SPSH_') as any);
-        console.log("selected pasien =>", this.SelectedPasien);
+    ngOnDestroy(): void {
+        this.Destroy$.next(0);
+        this.Destroy$.complete();
+    }
+
+    private getById(id_pendaftaran: string) {
+        this._store
+            .dispatch(new RekamMedisActions.GetByIdRekamMedis(id_pendaftaran))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                console.log("detail rekam medis =>", result);
+            })
     }
 
     handleBackToList() {
         this._router.navigateByUrl('antrian');
+    }
+
+    handleCreateAnamesis(nextCallback: any) {
+        let payload = this.AnamesisComps.FormComps.FormGroup.value;
+        delete payload.is_ada_riwayat_alergi;
+        delete payload.is_ada_riwayat_pengobatan;
+        delete payload.is_ada_riwayat_penyakit_terdahulu;
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateAnamesis(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        nextCallback.emit();
+                    }, 500);
+                }
+            });
     }
 }

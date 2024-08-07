@@ -34,6 +34,11 @@ export class RekamMedisState {
     }
 
     @Selector()
+    static rekamMedisDetail(state: RekamMedisStateModel) {
+        return state.single;
+    }
+
+    @Selector()
     static rekamMedisVariable(state: RekamMedisStateModel) {
         return state.variable;
     }
@@ -87,6 +92,180 @@ export class RekamMedisState {
     createAssessment(ctx: StateContext<RekamMedisStateModel>, actions: any) {
         return this._rekamMedisService
             .createAssesment(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    if (result.responseResult) {
+                        ctx.setState({
+                            ...state,
+                            success: true
+                        })
+                    } else {
+                        ctx.patchState({
+                            ...state,
+                            success: false
+                        })
+                    }
+                }),
+                switchMap((result: any) => {
+                    if (result.responseResult) {
+                        return ctx.dispatch(new RekamMedisActions.GetByIdRekamMedis(actions.payload.id_pendaftaran));
+                    } else {
+                        return of([]);
+                    }
+                })
+            )
+    }
+
+    @Action(RekamMedisActions.CreateAnamesis)
+    createAnamesis(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .createAnamesis(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    if (result.responseResult) {
+                        ctx.setState({
+                            ...state,
+                            success: true
+                        })
+                    } else {
+                        ctx.patchState({
+                            ...state,
+                            success: false
+                        })
+                    }
+                }),
+                switchMap((result: any) => {
+                    if (result.responseResult) {
+                        return ctx.dispatch(new RekamMedisActions.GetByIdRekamMedis(actions.payload.id_pendaftaran));
+                    } else {
+                        return of([]);
+                    }
+                })
+            )
+    }
+
+    @Action(RekamMedisActions.CreatePemeriksaanFisik)
+    createPemeriksaanFisik(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .createPemeriksaanFisik(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    if (result.responseResult) {
+                        ctx.setState({
+                            ...state,
+                            success: true
+                        })
+                    } else {
+                        ctx.patchState({
+                            ...state,
+                            success: false
+                        })
+                    }
+                }),
+                switchMap((result: any) => {
+                    if (result.responseResult) {
+                        return ctx.dispatch(new RekamMedisActions.GetByIdRekamMedis(actions.payload.id_pendaftaran));
+                    } else {
+                        return of([]);
+                    }
+                })
+            )
+    }
+
+    @Action(RekamMedisActions.CreateDiagnosa)
+    createDiagnosa(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .createDiagnosis(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    if (result.responseResult) {
+                        ctx.setState({
+                            ...state,
+                            success: true
+                        })
+                    } else {
+                        ctx.patchState({
+                            ...state,
+                            success: false
+                        })
+                    }
+                }),
+                switchMap((result: any) => {
+                    if (result.responseResult) {
+                        return ctx.dispatch(new RekamMedisActions.GetByIdRekamMedis(actions.payload.id_pendaftaran));
+                    } else {
+                        return of([]);
+                    }
+                })
+            )
+    }
+
+    @Action(RekamMedisActions.CreateTindakan)
+    createTindakan(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .createTindakan(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    if (result.responseResult) {
+                        ctx.setState({
+                            ...state,
+                            success: true
+                        })
+                    } else {
+                        ctx.patchState({
+                            ...state,
+                            success: false
+                        })
+                    }
+                }),
+                switchMap((result: any) => {
+                    if (result.responseResult) {
+                        return ctx.dispatch(new RekamMedisActions.GetByIdRekamMedis(actions.payload.id_pendaftaran));
+                    } else {
+                        return of([]);
+                    }
+                })
+            )
+    }
+
+    @Action(RekamMedisActions.CreateResep)
+    createResep(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .createResep(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    if (result.responseResult) {
+                        ctx.setState({
+                            ...state,
+                            success: true
+                        })
+                    } else {
+                        ctx.patchState({
+                            ...state,
+                            success: false
+                        })
+                    }
+                }),
+                switchMap((result: any) => {
+                    if (result.responseResult) {
+                        return ctx.dispatch(new RekamMedisActions.GetByIdRekamMedis(actions.payload.id_pendaftaran));
+                    } else {
+                        return of([]);
+                    }
+                })
+            )
+    }
+
+    @Action(RekamMedisActions.CreateStatusPulang)
+    createStatusPulang(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .createKondisiPulang(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();

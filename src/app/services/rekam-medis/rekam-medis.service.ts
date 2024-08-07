@@ -11,6 +11,7 @@ import { DiagnosisModel } from 'src/app/model/pages/rekam-medis/diagnosis.model'
 import { TindakanModel } from 'src/app/model/pages/rekam-medis/tindakan.model';
 import { ResepModel } from 'src/app/model/pages/rekam-medis/resep.model';
 import { BillingModel } from 'src/app/model/pages/rekam-medis/billing.model';
+import { KondisiPulangModel } from 'src/app/model/pages/rekam-medis/pulang.model';
 
 @Injectable({
     providedIn: 'root'
@@ -153,6 +154,10 @@ export class RekamMedisService {
 
     createResep(payload: ResepModel.IResep): Observable<HttpBaseResponse> {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/Resep`, payload);
+    }
+
+    createKondisiPulang(payload: KondisiPulangModel.IKondisiPulang): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/StatusPulang`, payload);
     }
 
     getTagihan(id_pendaftaran: string): Observable<RekamMedisModel.GetByIdRekamMedis> {

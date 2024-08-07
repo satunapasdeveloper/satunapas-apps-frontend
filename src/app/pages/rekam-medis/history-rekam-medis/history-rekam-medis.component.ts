@@ -150,8 +150,6 @@ export class HistoryRekamMedisComponent implements OnInit, OnDestroy {
     getAll(parameter?: any) {
         let payload: any[] = [];
 
-        console.log("parameter =>", parameter);
-
         if (parameter) {
             for (const item of Object.keys(parameter)) {
                 if (item == 'pendaftaran.tanggal_visit') {
@@ -160,7 +158,7 @@ export class HistoryRekamMedisComponent implements OnInit, OnDestroy {
                         "filter": "between",
                         "searchText": formatDate(new Date(parameter[item]), 'yyyy-MM-dd', 'EN'),
                         "searchText2": formatDate(new Date(parameter[item]), 'yyyy-MM-dd', 'EN'),
-                        "withOr": true
+                        "withOr": false
                     });
                 } else {
                     payload.push({
@@ -168,7 +166,7 @@ export class HistoryRekamMedisComponent implements OnInit, OnDestroy {
                         "filter": item == 'pasien.nama_lengkap' ? 'like' : "equel",
                         "searchText": parameter[item],
                         "searchText2": "",
-                        "withOr": true
+                        "withOr": false
                     });
                 }
             }
@@ -207,14 +205,8 @@ export class HistoryRekamMedisComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        if (args.id == 'delete') {
-            // console.log(this.GridSelectedData);
-            // this.deletePoli(this.GridSelectedData.kode_wilayah);
+        if (args.type == "mulai periksa") {
+            this._router.navigateByUrl(`/rekam-medis/baru?id=${args.data.id_pendaftaran}`)
         }
-    }
-
-    handleSelectLookupPasien(args: any) {
-        localStorage.setItem('_SPSH_', JSON.stringify(args));
-        this._router.navigateByUrl(`/rekam-medis/baru?no_rm=${args.no_rekam_medis}`)
     }
 }

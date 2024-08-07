@@ -2,7 +2,11 @@ import { HttpBaseResponse } from "../../http/http-request.model"
 
 export namespace DiagnosisModel {
     export interface IDiagnosisi {
-        diagnosisi: any[]
+        id_pendaftaran: number
+        kode_icd10: string
+        display_icd10: string
+        jenis_diagnosis: string
+        keterangan: string
     }
 
     export interface IIcd10 {
@@ -17,5 +21,9 @@ export namespace DiagnosisModel {
         statusCode!: number
         message!: string
         data!: IIcd10[]
+    }
+
+    export interface CreateDiagnosa {
+        diagnosisi: IDiagnosisi[]
     }
 }
