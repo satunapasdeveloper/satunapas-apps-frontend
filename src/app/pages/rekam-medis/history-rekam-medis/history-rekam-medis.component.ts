@@ -14,7 +14,7 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
 import { ManajemenUserModel } from 'src/app/model/pages/setup-data/manajemen-user.model';
 import { PoliModel } from 'src/app/model/pages/setup-data/poli.model';
 import { PendaftaranService } from 'src/app/services/pendaftaran/pendaftaran.service';
-import { RekamMedisActions, RekamMedisState } from 'src/app/store/rekam-medis';
+import { RekamMedisActions } from 'src/app/store/rekam-medis';
 import { ManajemenUserState } from 'src/app/store/setup-data/manajemen-user';
 import { SetupPoliState } from 'src/app/store/setup-data/setup-poli';
 
@@ -86,8 +86,6 @@ export class HistoryRekamMedisComponent implements OnInit, OnDestroy {
     }
 
     handleChangeFilter(type: string, args: any) {
-        console.log("data =>", args);
-
         if (type == 'pendaftaran.tanggal_visit') {
             if (args) {
                 this.SearchParameter$.next(

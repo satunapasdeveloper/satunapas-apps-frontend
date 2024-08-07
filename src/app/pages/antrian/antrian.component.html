@@ -9,7 +9,7 @@
             </p>
         </div>
 
-        <div class="flex w-full gap-5">
+        <div *ngIf="AntrianDalamPemeriksaan.length" class="flex w-full gap-5">
             @for (item of AntrianDalamPemeriksaan; track $index) {
             <div class="flex flex-col items-center w-3/12 bg-white rounded-lg shadow-sm p-3">
                 <p class="text-sm text-gray-700">
@@ -39,6 +39,12 @@
             </div>
             }
         </div>
+
+        <div class="flex w-full items-center justify-center p-5">
+            <p class="text-gray-800 font-semibold">
+                Tidak Ada Pemeriksaan
+            </p>
+        </div>
     </div>
 
     <div class="grid w-full bg-white rounded-xl shadow p-2">
@@ -48,47 +54,60 @@
                 <!-- Dropdown Poli -->
                 <div class="w-5/12">
                     <p-dropdown styleClass="p-inputtext-sm w-full" placeholder="Pilih Poli" [options]="PoliDatasource"
-                        optionLabel="label" optionValue="value" appendTo="body" [(ngModel)]="SelectedPoli">
+                        optionLabel="poli" optionValue="id_poli" appendTo="body" [(ngModel)]="SelectedPoli">
                     </p-dropdown>
                 </div>
 
                 <!-- Calendar Tanggal -->
                 <div class="w-5/12">
                     <p-calendar styleClass="p-inputtext-sm w-full" placeholder="Pilih Tanggal" appendTo="body"
-                        [(ngModel)]="SelectedTanggal">
+                        [(ngModel)]="SelectedTanggal" dateFormat="dd-mm-yy">
                     </p-calendar>
                 </div>
 
                 <!-- Button -->
                 <div class="w-2/12">
                     <p-button severity="info" label="Cari" styleClass="p-button-sm"
-                        (onClick)="handleSearchPoli(SelectedPoli)">
+                        (onClick)="handleSearchAntrian(SelectedPoli, SelectedTanggal)">
                     </p-button>
                 </div>
             </div>
         </div>
 
-        <p-table [value]="AntrianDatasource" styleClass="p-datatable-striped" [tableStyle]="{'min-width': '50rem'}">
+        <p-table [value]="AntrianDatasource" [tableStyle]="{'min-width': '50rem'}" rowGroupMode="subheader"
+            groupRowsBy="id_dokter">
             <ng-template pTemplate="header">
                 <tr>
                     <th class="text-sm">No. Antrian</th>
+                    <th class="text-sm">No. Rekam Medis</th>
                     <th class="text-sm">Nama Pasien</th>
-                    <th class="text-sm">Nama Poli</th>
-                    <th class="text-sm">Nama Dokter</th>
+                    <th class="text-sm">Metode Bayar</th>
                     <th class="text-sm text-center">Status</th>
                     <th class="text-sm text-center">Aksi</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="groupheader" let-antrian>
+                <tr pRowGroupHeader>
+                    <td colspan="6" class="bg-sky-50">
+                        <span class="font-normal text-base text-sky-800">
+                            Antrian Kunjungan :
+                            <span class="font-bold">
+                                {{ antrian.dokter }}
+                            </span>
+                        </span>
+                    </td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-antrian>
                 <tr>
                     <td class="text-sm">{{ antrian.no_antrian }}</td>
-                    <td class="text-sm">{{ antrian.nama_pasien }}</td>
-                    <td class="text-sm">{{ antrian.nama_poli }}</td>
-                    <td class="text-sm">{{ antrian.nama_dokter }}</td>
+                    <td class="text-sm">{{ antrian.no_rekam_medis }}</td>
+                    <td class="text-sm">{{ antrian.nama_lengkap }}</td>
+                    <td class="text-sm">{{ antrian.debitur }}</td>
                     <td class="text-center">
                         <span
-                            class="py-1 px-2 text-xs {{ handleFormatStatusAntrian(antrian.status) }} rounded-lg font-medium">
-                            {{ antrian.status }}
+                            class="py-1 px-2 text-xs {{ handleFormatStatusAntrian(antrian.status_pasien) }} rounded-lg font-medium">
+                            {{ antrian.status_pasien }}
                         </span>
                     </td>
                     <td class="text-sm text-center">
@@ -151,7 +170,7 @@
             </p>
 
             <p class="text-base text-gray-700 font-medium mb-1">
-                {{ SelectedPasien?.nama_pasien }}
+                {{ SelectedPasien?.nama_lengkap }}
             </p>
 
             <p class="text-sm text-gray-700 mb-5">
