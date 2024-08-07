@@ -64,7 +64,7 @@
                     <p-overlayPanel #op>
                         <div class="flex flex-col gap-2 w-[10rem]">
                             @for (item of gridToolbar; track $index) {
-                            <div class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 transition-all rounded-md"
+                            <div class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 transition-all rounded-md cursor-pointer"
                                 (click)="onAksiClicked(item.id, rowData)">
                                 <i class="pi {{ item.icon }}" style="font-size: 13px"></i>
                                 <span class="font-medium text-sm text-gray-700">

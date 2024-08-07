@@ -1,19 +1,22 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { TableModule } from 'primeng/table';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { LookupDialogComponent } from 'src/app/components/dialog/lookup-dialog/lookup-dialog.component';
 import { SearchPasienDialogComponent } from 'src/app/components/dialog/search-pasien-dialog/search-pasien-dialog.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { LookupModel } from 'src/app/model/components/lookup.model';
+import { RekamMedisActions } from 'src/app/store/rekam-medis';
+import { SetupPoliState } from 'src/app/store/setup-data/setup-poli';
 
 @Component({
     selector: 'app-antrian',
@@ -46,131 +49,41 @@ export class AntrianComponent implements OnInit, OnDestroy {
     ];
 
     AntrianDalamPemeriksaan: any[] = [
-        {
-            id: 1,
-            no_antrian: 'A001',
-            nama_pasien: 'John Doe',
-            nama_poli: 'POLI UMUM',
-            nama_dokter: 'dr. Kim Jennie'
-        },
-        {
-            id: 2,
-            no_antrian: 'A002',
-            nama_pasien: 'Jane Doe',
-            nama_poli: 'POLI ANAK',
-            nama_dokter: 'dr. Park Rose, Sp.A'
-        },
-        {
-            id: 3,
-            no_antrian: 'A001',
-            nama_pasien: 'Jane Doe',
-            nama_poli: 'POLI PENYAKIT DALAM',
-            nama_dokter: 'dr. Lalisa Manobal, Sp.Pd'
-        },
-        {
-            id: 4,
-            no_antrian: 'A004',
-            nama_pasien: 'Jane Doe',
-            nama_poli: 'POLI KANDUNGAN',
-            nama_dokter: 'dr. Kim Jisoo, Sp.Og'
-        },
+        // {
+        //     id: 1,
+        //     no_antrian: 'A001',
+        //     nama_pasien: 'John Doe',
+        //     nama_poli: 'POLI UMUM',
+        //     nama_dokter: 'dr. Kim Jennie'
+        // },
+        // {
+        //     id: 2,
+        //     no_antrian: 'A002',
+        //     nama_pasien: 'Jane Doe',
+        //     nama_poli: 'POLI ANAK',
+        //     nama_dokter: 'dr. Park Rose, Sp.A'
+        // },
+        // {
+        //     id: 3,
+        //     no_antrian: 'A001',
+        //     nama_pasien: 'Jane Doe',
+        //     nama_poli: 'POLI PENYAKIT DALAM',
+        //     nama_dokter: 'dr. Lalisa Manobal, Sp.Pd'
+        // },
+        // {
+        //     id: 4,
+        //     no_antrian: 'A004',
+        //     nama_pasien: 'Jane Doe',
+        //     nama_poli: 'POLI KANDUNGAN',
+        //     nama_dokter: 'dr. Kim Jisoo, Sp.Og'
+        // },
     ];
 
-    AntrianDatasource: any[] = [
-        {
-            id: 1,
-            no_antrian: 'A003',
-            nama_pasien: 'Lorem Ipsum',
-            nama_poli: 'POLI PENYAKIT DALAM',
-            nama_dokter: 'dr. Lalisa Manobal, Sp.PD',
-            status: 'Menunggu Assesment'
-        },
-        {
-            id: 2,
-            no_antrian: 'A005',
-            nama_pasien: 'Dolor Sit Amet',
-            nama_poli: 'POLI UMUM',
-            nama_dokter: 'dr. Jennie Kim, Sp.PK',
-            status: 'Skip'
-        },
-        {
-            id: 3,
-            no_antrian: 'A008',
-            nama_pasien: 'Consectetur Adipiscing',
-            nama_poli: 'POLI ANAK',
-            nama_dokter: 'dr. Kim Jisoo, Sp.A',
-            status: 'Sedang Diperiksa'
-        },
-        {
-            id: 4,
-            no_antrian: 'A012',
-            nama_pasien: 'Elit Sed Do',
-            nama_poli: 'POLI KANDUNGAN',
-            nama_dokter: 'dr. Park Chaeyoung, Sp.KK',
-            status: 'Menunggu Assesment'
-        },
-        {
-            id: 5,
-            no_antrian: 'A015',
-            nama_pasien: 'Lorem Ipsum II',
-            nama_poli: 'POLI PENYAKIT DALAM',
-            nama_dokter: 'dr. Lalisa Manobal, Sp.PD',
-            status: 'Skip'
-        },
-        {
-            id: 6,
-            no_antrian: 'A018',
-            nama_pasien: 'Dolor Sit Amet II',
-            nama_poli: 'POLI UMUM',
-            nama_dokter: 'dr. Jennie Kim, Sp.PK',
-            status: 'Sedang Diperiksa'
-        },
-        {
-            id: 7,
-            no_antrian: 'A021',
-            nama_pasien: 'Consectetur Adipiscing II',
-            nama_poli: 'POLI ANAK',
-            nama_dokter: 'dr. Kim Jisoo, Sp.A',
-            status: 'Menunggu Assesment'
-        },
-        {
-            id: 8,
-            no_antrian: 'A024',
-            nama_pasien: 'Elit Sed Do II',
-            nama_poli: 'POLI KANDUNGAN',
-            nama_dokter: 'dr. Jisoo, Sp.KK',
-            status: 'Skip'
-        },
-        {
-            id: 9,
-            no_antrian: 'A027',
-            nama_pasien: 'Lorem Ipsum III',
-            nama_poli: 'POLI PENYAKIT DALAM',
-            nama_dokter: 'dr. Park Chaeyoung, Sp.KK',
-            status: 'Sedang Diperiksa'
-        }
-    ];
+    AntrianDatasource: any[] = [];
 
-    PoliDatasource: any[] = [
-        {
-            value: 'POLI UMUM',
-            label: 'POLI UMUM'
-        },
-        {
-            value: 'POLI ANAK',
-            label: 'POLI ANAK'
-        },
-        {
-            value: 'POLI PENYAKIT DALAM',
-            label: 'POLI PENYAKIT DALAM'
-        },
-        {
-            value: 'POLI KANDUNGAN',
-            label: 'POLI KANDUNGAN'
-        },
-    ];
+    PoliDatasource: any[] = [];
 
-    SelectedPoli = 'POLI UMUM';
+    SelectedPoli: any;
 
     SelectedTanggal = new Date();
 
@@ -181,11 +94,13 @@ export class AntrianComponent implements OnInit, OnDestroy {
     @ViewChild('SearchPasienDialogComps') SearchPasienDialogComps!: SearchPasienDialogComponent;
 
     constructor(
+        private _store: Store,
         private _router: Router,
     ) { }
 
     ngOnInit(): void {
-        this.handleSearchPoli(this.SelectedPoli);
+        this.getAllPoli();
+        // this.handleSearchPoli(this.SelectedPoli);
     }
 
     ngOnDestroy(): void {
@@ -199,93 +114,49 @@ export class AntrianComponent implements OnInit, OnDestroy {
         };
     }
 
-    handleSearchPoli(nama_poli: string) {
-        const data = [
-            {
-                id: 1,
-                no_antrian: 'A003',
-                nama_pasien: 'Lorem Ipsum',
-                nama_poli: 'POLI PENYAKIT DALAM',
-                nama_dokter: 'dr. Lalisa Manobal, Sp.PD',
-                status: 'Menunggu Assesment'
-            },
-            {
-                id: 2,
-                no_antrian: 'A005',
-                nama_pasien: 'Dolor Sit Amet',
-                nama_poli: 'POLI UMUM',
-                nama_dokter: 'dr. Jennie Kim, Sp.PK',
-                status: 'Skip'
-            },
-            {
-                id: 3,
-                no_antrian: 'A008',
-                nama_pasien: 'Consectetur Adipiscing',
-                nama_poli: 'POLI ANAK',
-                nama_dokter: 'dr. Kim Jisoo, Sp.A',
-                status: 'Sedang Diperiksa'
-            },
-            {
-                id: 4,
-                no_antrian: 'A012',
-                nama_pasien: 'Elit Sed Do',
-                nama_poli: 'POLI KANDUNGAN',
-                nama_dokter: 'dr. Park Chaeyoung, Sp.KK',
-                status: 'Menunggu Assesment'
-            },
-            {
-                id: 5,
-                no_antrian: 'A015',
-                nama_pasien: 'Lorem Ipsum II',
-                nama_poli: 'POLI PENYAKIT DALAM',
-                nama_dokter: 'dr. Lalisa Manobal, Sp.PD',
-                status: 'Skip'
-            },
-            {
-                id: 6,
-                no_antrian: 'A018',
-                nama_pasien: 'Dolor Sit Amet II',
-                nama_poli: 'POLI UMUM',
-                nama_dokter: 'dr. Jennie Kim, Sp.PK',
-                status: 'Sedang Diperiksa'
-            },
-            {
-                id: 7,
-                no_antrian: 'A021',
-                nama_pasien: 'Consectetur Adipiscing II',
-                nama_poli: 'POLI ANAK',
-                nama_dokter: 'dr. Kim Jisoo, Sp.A',
-                status: 'Menunggu Assesment'
-            },
-            {
-                id: 8,
-                no_antrian: 'A024',
-                nama_pasien: 'Elit Sed Do II',
-                nama_poli: 'POLI KANDUNGAN',
-                nama_dokter: 'dr. Jisoo, Sp.KK',
-                status: 'Skip'
-            },
-            {
-                id: 9,
-                no_antrian: 'A027',
-                nama_pasien: 'Lorem Ipsum III',
-                nama_poli: 'POLI PENYAKIT DALAM',
-                nama_dokter: 'dr. Park Chaeyoung, Sp.KK',
-                status: 'Sedang Diperiksa'
-            }
-        ];
-
-        this.AntrianDatasource = data.filter(item => item.nama_poli == nama_poli);
+    private getAllPoli() {
+        this._store
+            .select(SetupPoliState.poliEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.PoliDatasource = result;
+            })
     }
 
-    handleFormatStatusAntrian(status: 'Skip' | 'Menunggu Assesment' | 'Sedang Diperiksa') {
+    handleSearchAntrian(id_poli: string, tanggal_visit: Date) {
+        let payload: any[] = [
+            {
+                "columnName": 'pendaftaran.tanggal_visit',
+                "filter": "between",
+                "searchText": formatDate(new Date(tanggal_visit), 'yyyy-MM-dd', 'EN'),
+                "searchText2": formatDate(new Date(tanggal_visit), 'yyyy-MM-dd', 'EN'),
+                "withOr": false
+            },
+            // {
+            //     "columnName": 'jadwal_dokter.id_poli',
+            //     "filter": "equel",
+            //     "searchText": id_poli,
+            //     "searchText2": "",
+            //     "withOr": false
+            // }
+        ];
+
+        this._store
+            .dispatch(new RekamMedisActions.GetAllRekamMedis(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.AntrianDatasource = result.rekam_medis.entities;
+            })
+    }
+
+    handleFormatStatusAntrian(status: 'Skip' | 'MENUNGGU/BELUM DI PANGGIL' | 'Sedang Diperiksa') {
         let classColor = 'bg-red-200 text-red-700';
 
         switch (status) {
             case 'Skip':
                 classColor = 'bg-red-200 text-red-700';
                 break;
-            case 'Menunggu Assesment':
+            case 'MENUNGGU/BELUM DI PANGGIL':
                 classColor = 'bg-orange-200 text-orange-700';
                 break;
             case 'Sedang Diperiksa':
@@ -317,7 +188,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
         msg.lang = "id-ID";
         msg.voice = voice.find((item: any) => { return item.name == 'Google Bahasa Indonesia' });
 
-        msg.text = `Panggilan....Kepada....Nomor....antrian....${data.no_antrian},....pasien....${data.nama_pasien},....menuju....${data.nama_poli}`;
+        msg.text = `Panggilan....Kepada....Nomor....antrian....${data.no_antrian},....pasien....${data.nama_lengkap},....menuju....${data.nama_poli}`;
 
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(msg);
@@ -330,6 +201,6 @@ export class AntrianComponent implements OnInit, OnDestroy {
 
     handleGoToAssesmentAwal(args: any) {
         localStorage.setItem('_SPSH_', JSON.stringify(args));
-        this._router.navigateByUrl(`/antrian/assesment-awal?id=${args.id}`)
+        this._router.navigateByUrl(`/antrian/assesment-awal?id=${args.id_pendaftaran}`)
     }
 }

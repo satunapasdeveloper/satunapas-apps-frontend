@@ -1,5 +1,16 @@
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { HttpRequestService } from '../http/http-request.service';
+import { HttpBaseResponse, PostRequestByDynamicFiterModel } from 'src/app/model/http/http-request.model';
+import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
+import { environment } from 'src/environments/environment';
+import { AssesmentModel } from 'src/app/model/pages/rekam-medis/assesment.model';
+import { AnamesisModel } from 'src/app/model/pages/rekam-medis/anamesis.model';
+import { PemeriksaanFisikModel } from 'src/app/model/pages/rekam-medis/pemeriksaan-fisik.model';
+import { DiagnosisModel } from 'src/app/model/pages/rekam-medis/diagnosis.model';
+import { TindakanModel } from 'src/app/model/pages/rekam-medis/tindakan.model';
+import { ResepModel } from 'src/app/model/pages/rekam-medis/resep.model';
+import { BillingModel } from 'src/app/model/pages/rekam-medis/billing.model';
 
 @Injectable({
     providedIn: 'root'
@@ -61,7 +72,9 @@ export class RekamMedisService {
         { label: 'Inhalasi', value: 'Inhalasi' },
     ];
 
-    constructor() { }
+    constructor(
+        private _httpRequestService: HttpRequestService
+    ) { }
 
     getRekamMedisPasien() {
         const tindakan: any = localStorage.getItem('tindakan');
@@ -79,5 +92,83 @@ export class RekamMedisService {
         };
 
         return of(data_billing);
+    }
+
+    getAll(parameter?: PostRequestByDynamicFiterModel[]): Observable<RekamMedisModel.GetAllRekamMedis> {
+        const filter = { filter: parameter ? parameter : [] };
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/GetListRekamMedis`, filter);
+    }
+
+    getById(id_pendaftaran: string): Observable<RekamMedisModel.GetByIdRekamMedis> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/RekamMedis/GetRekamMedisByIdPendaftaran/${id_pendaftaran}`);
+    }
+
+    getAllVariableRekamMedis(): Observable<RekamMedisModel.GetAllRekamMedisVariable> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/RekamMedis/Variable`);
+    }
+
+    createAssesment(payload: AssesmentModel.IAssesment): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/Assessment`, payload);
+    }
+
+    createAnamesis(payload: AnamesisModel.IAnamnesis): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/Anamnesis`, payload);
+    }
+
+    createPemeriksaanFisik(payload: PemeriksaanFisikModel.IPemeriksaanFisik): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/PemeriksaanFisik`, payload);
+    }
+
+    getAllIcd10(keyword?: string): Observable<DiagnosisModel.GetAllIcd10> {
+        const payload = {
+            cari: keyword ? keyword : ""
+        };
+
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetIcd10`, payload);
+    }
+
+    createDiagnosis(payload: DiagnosisModel.IDiagnosisi): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/Diagnosisi`, payload);
+    }
+
+    getAllBmhp(keyword?: string): Observable<TindakanModel.GetItemBmhp> {
+        const payload = {
+            cari: keyword ? keyword : ""
+        };
+
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetItemBmhp`, payload);
+    }
+
+    createTindakan(payload: TindakanModel.ITindakan): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/Tindakan`, payload);
+    }
+
+    getAllObat(keyword?: string): Observable<TindakanModel.GetItemBmhp> {
+        const payload = {
+            cari: keyword ? keyword : ""
+        };
+
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetItemObat`, payload);
+    }
+
+    createResep(payload: ResepModel.IResep): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/Resep`, payload);
+    }
+
+    getTagihan(id_pendaftaran: string): Observable<RekamMedisModel.GetByIdRekamMedis> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/RekamMedis/GetTagihanByIdPendaftaran/${id_pendaftaran}`);
+    }
+
+    createInvoice(payload: BillingModel.IInvoice): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/BuatInvoicePaymnet`, payload);
+    }
+
+    getAllHistoryPembayaran(parameter?: PostRequestByDynamicFiterModel[]): Observable<BillingModel.GetAllHistoryPembayaran> {
+        const filter = { filter: parameter ? parameter : [] };
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/HistoryPembayaran`, filter);
+    }
+
+    batalInvoice(id_pendaftaran: string): Observable<RekamMedisModel.GetByIdRekamMedis> {
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/RekamMedis/BatalInvoice/${id_pendaftaran}`, null);
     }
 }

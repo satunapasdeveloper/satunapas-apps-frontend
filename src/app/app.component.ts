@@ -6,6 +6,7 @@ import { SetupPoliActions } from './store/setup-data/setup-poli';
 import { SetupTindakanMedisActions } from './store/setup-data/tindakan-medis';
 import { SetupItemActions } from './store/setup-data/item';
 import { ManajemenUserActions } from './store/setup-data/manajemen-user';
+import { RekamMedisActions } from './store/rekam-medis';
 
 @Component({
     selector: 'app-root',
@@ -75,12 +76,12 @@ export class AppComponent implements OnInit, OnDestroy {
         // ** Get All User Dokter
         this._store
             .dispatch(new ManajemenUserActions.GetAllUserDokter())
-            .pipe(
-                takeUntil(this.Destroy$),
-                tap((result) => {
-                    console.log("dokter =>", result);
-                })
-            );
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Variable Rekam Medis
+        this._store
+            .dispatch(new RekamMedisActions.GetAllVariableRekamMedis())
+            .pipe(takeUntil(this.Destroy$));
     }
 
     triggerAnimation() {
