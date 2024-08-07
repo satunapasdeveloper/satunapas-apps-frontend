@@ -4,6 +4,7 @@ import { of, switchMap, tap } from "rxjs";
 import { RekamMedisModel } from "src/app/model/pages/rekam-medis/rekam-medis.model";
 import { RekamMedisActions } from "./rekam-medis.action";
 import { RekamMedisService } from "src/app/services/rekam-medis/rekam-medis.service";
+import { ActivatedRoute } from "@angular/router";
 
 interface RekamMedisStateModel {
     entities: RekamMedisModel.IRekamMedis[];
@@ -25,6 +26,7 @@ interface RekamMedisStateModel {
 export class RekamMedisState {
 
     constructor(
+        private _activatedRoute: ActivatedRoute,
         private _rekamMedisService: RekamMedisService,
     ) { }
 
@@ -196,7 +198,7 @@ export class RekamMedisState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new RekamMedisActions.GetByIdRekamMedis(actions.payload.id_pendaftaran));
+                        return ctx.dispatch(new RekamMedisActions.GetByIdRekamMedis(this._activatedRoute.snapshot.queryParams['id']));
                     } else {
                         return of([]);
                     }

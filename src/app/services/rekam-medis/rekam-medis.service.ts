@@ -125,7 +125,7 @@ export class RekamMedisService {
             cari: keyword ? keyword : ""
         };
 
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetIcd10`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/GetIcd10`, payload);
     }
 
     createDiagnosis(payload: DiagnosisModel.IDiagnosisi): Observable<HttpBaseResponse> {
@@ -137,7 +137,7 @@ export class RekamMedisService {
             cari: keyword ? keyword : ""
         };
 
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetItemBmhp`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/GetItemBmhp`, payload);
     }
 
     createTindakan(payload: TindakanModel.ITindakan): Observable<HttpBaseResponse> {
@@ -149,7 +149,7 @@ export class RekamMedisService {
             cari: keyword ? keyword : ""
         };
 
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetItemObat`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/GetItemObat`, payload);
     }
 
     createResep(payload: ResepModel.IResep): Observable<HttpBaseResponse> {

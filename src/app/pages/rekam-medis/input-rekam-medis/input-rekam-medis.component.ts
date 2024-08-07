@@ -59,6 +59,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
     @ViewChild('PemeriksaanFisikComps') PemeriksaanFisikComps!: PemeriksaanFisikComponent;
 
+    @ViewChild('DiagnosisComps') DiagnosisComps!: DiagnosisComponent;
+
     constructor(
         private _store: Store,
         private _router: Router,
@@ -120,6 +122,27 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
         this._store
             .dispatch(new RekamMedisActions.CreatePemeriksaanFisik(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        nextCallback.emit();
+                    }, 500);
+                }
+            });
+    }
+
+    handleCreateDiagnosa(nextCallback: any) {
+        let payload = {
+            diagnosisi: this.DiagnosisComps.DiagnosaDatasource
+
+        };
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateDiagnosa(payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.rekam_medis.success) {
