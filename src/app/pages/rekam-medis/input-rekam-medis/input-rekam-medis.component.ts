@@ -57,6 +57,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
     @ViewChild('AnamesisComps') AnamesisComps!: AnamesisComponent;
 
+    @ViewChild('PemeriksaanFisikComps') PemeriksaanFisikComps!: PemeriksaanFisikComponent;
+
     constructor(
         private _store: Store,
         private _router: Router,
@@ -95,6 +97,29 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
         this._store
             .dispatch(new RekamMedisActions.CreateAnamesis(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        nextCallback.emit();
+                    }, 500);
+                }
+            });
+    }
+
+    handleCreatePemeriksaanFisik(nextCallback: any) {
+        let payload = {
+            ...this.PemeriksaanFisikComps.FormComps.FormGroup.value,
+            ...this.PemeriksaanFisikComps.FormKeadaanUmumComps.FormGroup.value,
+            ...this.PemeriksaanFisikComps.FormVitalSignComps.FormGroup.value,
+            kondisi_tubuh: this.PemeriksaanFisikComps.CatatanKondisiTubuh
+        };
+
+        this._store
+            .dispatch(new RekamMedisActions.CreatePemeriksaanFisik(payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.rekam_medis.success) {

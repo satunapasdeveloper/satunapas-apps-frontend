@@ -162,6 +162,27 @@ export class AnamesisComponent implements OnInit, AfterViewInit, OnDestroy {
                         is_ada_riwayat_pengobatan: result.anamnesis.riwayat_pengobatan ? true : false,
                     };
 
+                    if (data.is_ada_riwayat_penyakit_terdahulu) {
+                        this.FormProps.fields[4].hidden = false;
+                    } else {
+                        this.FormProps.fields[4].hidden = true;
+                    }
+
+                    if (data.is_ada_riwayat_alergi) {
+                        this.FormProps.fields[6].hidden = false;
+                    } else {
+                        this.FormProps.fields[6].hidden = true;
+                    }
+
+                    if (data.is_ada_riwayat_pengobatan) {
+                        this.FormProps.fields[8].hidden = false;
+                    } else {
+                        this.FormProps.fields[8].hidden = true;
+                    };
+
+                    const not_hidden = this.FormProps.fields.filter(item => !item.hidden);
+                    this.FormProps.class = `grid-rows-${not_hidden.length} grid-cols-1`;
+
                     this.FormComps.FormGroup.patchValue(data);
                 }
             })
