@@ -64,6 +64,9 @@ export class DiagnosisComponent implements OnInit, AfterViewInit, OnDestroy {
             })
     }
 
+    handleSearchIcd10(args: any) {
+        console.log(args);
+    }
 
     private getAllIcd10() {
         this._rekamMedisService

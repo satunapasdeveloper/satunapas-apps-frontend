@@ -1,0 +1,23 @@
+<p-dialog header="Header" [(visible)]="ShowDialogPayment" [modal]="true" [style]="{ width: '70vw' }" [draggable]="false"
+    [resizable]="false">
+    <!-- Header -->
+    <ng-template pTemplate="header">
+        <div class="inline-flex align-items-center justify-content-center gap-2">
+            <span class="font-bold white-space-nowrap text-2xl">
+                Invoice Pembayaran
+            </span>
+        </div>
+    </ng-template>
+
+    <!-- Content -->
+    <div class="w-full">
+
+    </div>
+
+    <!-- Footer -->
+    <ng-template pTemplate="footer">
+        <p-button label="Tutup" severity="secondary" styleClass="p-button-sm" (onClick)="ShowDialogPayment = false" />
+
+        <p-button label="Simpan" severity="info" styleClass="p-button-sm" (onClick)="ShowDialogPayment = false" />
+    </ng-template>
+</p-dialog>

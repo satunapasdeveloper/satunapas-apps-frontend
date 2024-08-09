@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
@@ -24,6 +24,7 @@ export class AnamesisComponent implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(
         private _store: Store,
+        private _cdr: ChangeDetectorRef,
     ) {
         this.FormProps = {
             id: 'form_anamesis_rekam_medis',
@@ -184,6 +185,8 @@ export class AnamesisComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.FormProps.class = `grid-rows-${not_hidden.length} grid-cols-1`;
 
                     this.FormComps.FormGroup.patchValue(data);
+
+                    this._cdr.detectChanges();
                 }
             })
     }

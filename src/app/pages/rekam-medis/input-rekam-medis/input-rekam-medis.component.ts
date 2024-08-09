@@ -19,6 +19,7 @@ import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.serv
 import { DialogModule } from 'primeng/dialog';
 import { RekamMedisActions } from 'src/app/store/rekam-medis';
 import { Subject, takeUntil } from 'rxjs';
+import { PaymentComponent } from './payment/payment.component';
 
 @Component({
     selector: 'app-input-rekam-medis',
@@ -37,6 +38,7 @@ import { Subject, takeUntil } from 'rxjs';
         StatusComponent,
         BillingComponent,
         DialogModule,
+        PaymentComponent
     ],
     templateUrl: './input-rekam-medis.component.html',
     styleUrl: './input-rekam-medis.component.scss'
@@ -60,6 +62,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     @ViewChild('PemeriksaanFisikComps') PemeriksaanFisikComps!: PemeriksaanFisikComponent;
 
     @ViewChild('DiagnosisComps') DiagnosisComps!: DiagnosisComponent;
+
+    @ViewChild('PaymentComps') PaymentComps!: PaymentComponent;
 
     constructor(
         private _store: Store,
@@ -117,7 +121,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             ...this.PemeriksaanFisikComps.FormComps.FormGroup.value,
             ...this.PemeriksaanFisikComps.FormKeadaanUmumComps.FormGroup.value,
             ...this.PemeriksaanFisikComps.FormVitalSignComps.FormGroup.value,
-            kondisi_tubuh: this.PemeriksaanFisikComps.CatatanKondisiTubuh
+            kondisi_tubuh: this.PemeriksaanFisikComps.CatatanKondisiTubuh$.value
         };
 
         this._store

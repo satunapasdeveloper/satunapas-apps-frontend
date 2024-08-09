@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
@@ -17,6 +17,7 @@ import { RekamMedisState } from 'src/app/store/rekam-medis';
     standalone: true,
     imports: [
         FormsModule,
+        ReactiveFormsModule,
         CommonModule,
         DashboardComponent,
         DynamicFormComponent,
@@ -44,10 +45,11 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
 
     BodyParts: any[] = this._rekamMedisService.BodyParts;
 
-    CatatanKondisiTubuh: any[] = [];
+    CatatanKondisiTubuh$ = new BehaviorSubject<any[]>([]);
 
     constructor(
         private _store: Store,
+        private _cdr: ChangeDetectorRef,
         private _rekamMedisService: RekamMedisService
     ) {
         this.FormProps = {
@@ -210,7 +212,8 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     this.FormComps.FormGroup.patchValue(result.pemeriksaan_fisik);
                     this.FormKeadaanUmumComps.FormGroup.patchValue(result.pemeriksaan_fisik);
                     this.FormVitalSignComps.FormGroup.patchValue(result.pemeriksaan_fisik);
-                    this.CatatanKondisiTubuh = result.pemeriksaan_fisik.kondisi_tubuh;
+                    this.CatatanKondisiTubuh$.next(result.pemeriksaan_fisik.kondisi_tubuh);
+                    this._cdr.detectChanges();
                 }
             })
     }
@@ -268,7 +271,7 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     handleAddCatatanTubuh() {
-        let catatan = [...this.CatatanKondisiTubuh];
+        let catatan = [...this.CatatanKondisiTubuh$.value];
 
         catatan.push({
             kode_loinc: '',
@@ -277,12 +280,17 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
             catatan_kondisi: ''
         });
 
-        this.CatatanKondisiTubuh = catatan;
+        this.CatatanKondisiTubuh$.next([]);
+        this.CatatanKondisiTubuh$.next(catatan);
     }
 
     handleDeleteCatatanTubuh(index: number) {
-        if (this.CatatanKondisiTubuh.length > 0) {
-            this.CatatanKondisiTubuh.splice(index, 1);
+        let value = this.CatatanKondisiTubuh$.value;
+
+        if (value.length > 0) {
+            value.splice(index, 1);
+            this.CatatanKondisiTubuh$.next([]);
+            this.CatatanKondisiTubuh$.next(value);
         }
     }
 }   

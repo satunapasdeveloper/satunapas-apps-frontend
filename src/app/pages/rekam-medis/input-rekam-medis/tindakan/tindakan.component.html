@@ -19,13 +19,13 @@
             </div>
 
             <div *ngIf="is_ada_kie.value" class="flex w-full flex-col">
-                <textarea pInputTextarea rows="4" class="p-inputtext-sm w-full"
-                    placeholder="Tulis KIE yang disarankan"></textarea>
+                <textarea pInputTextarea rows="4" class="p-inputtext-sm w-full" placeholder="Tulis KIE yang disarankan"
+                    formControlName="keterangan_kie"></textarea>
             </div>
         </div>
 
         <!-- Is Ada Tindakan -->
-        <div class="flex flex-col w-full gap-3 mb-5">
+        <div class="flex flex-col w-full gap-3 mb-5 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
             <div class="flex w-full items-center gap-2" [formGroup]="FormTindakan">
                 <p-inputSwitch formControlName="is_ada_tindakan" />
                 <p class="text-gray-700 text-sm">
@@ -52,6 +52,8 @@
 
             <div *ngIf="is_ada_tindakan.value"
                 class="flex w-full flex-col gap-0 border border-dashed border-gray-400 p-2 rounded-lg">
+
+                <!-- Heading -->
                 <div class="flex flex-row gap-2 items-center mb-0">
                     <div class="w-4/12">
                         <p class="text-gray-700 text-sm font-medium">
@@ -63,12 +65,12 @@
                             Petugas
                         </p>
                     </div>
-                    <div class="w-1/12">
+                    <div class="w-2/12">
                         <p class="text-gray-700 text-sm font-medium">
                             Qty
                         </p>
                     </div>
-                    <div class="w-3/12">
+                    <div class="w-2/12">
                         <p class="text-gray-700 text-sm font-medium">
                             Harga Total
                         </p>
@@ -80,6 +82,7 @@
                     </div>
                 </div>
 
+                <!-- Content -->
                 <div *ngFor="let item of TindakanForSave; let i = index; let last = last"
                     class="flex flex-row gap-2 items-center mb-2">
                     <div class="w-4/12">
@@ -95,20 +98,26 @@
                             [filter]="true" [(ngModel)]="item.petugas" appendTo="body">
                         </p-dropdown>
                     </div>
-                    <div class="w-1/12 flex">
+                    <div class="w-2/12 flex">
                         <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.qty"></p-inputNumber>
                     </div>
                     <div class="w-2/12 flex">
                         <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.total" [disabled]="true">
                         </p-inputNumber>
                     </div>
-                    <div class="w-2/12">
+                    <div class="w-1/12">
                         <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
                             styleClass="p-button-sm" (onClick)="handleDeleteTindakan(i)" />
-
-                        <p-button *ngIf="last" icon="pi pi-plus" [rounded]="true" [text]="true" severity="info"
-                            styleClass="p-button-sm" (onClick)="handleAddTindakan()" />
                     </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
+                    (click)="handleAddTindakan()">
+                    <i class="pi pi-plus" style="font-size: 13px"></i>
+                    <p class="text-sm text-gray-800 font-medium text-center">
+                        Tambah Tindakan Medis
+                    </p>
                 </div>
             </div>
         </div>

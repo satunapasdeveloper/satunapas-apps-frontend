@@ -146,7 +146,8 @@
                                 <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
                                     styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
 
-                                <p-button severity="info" label="Simpan" icon="pi pi-save" styleClass="p-button-sm" />
+                                <p-button severity="info" label="Buat Invoice" icon="pi pi-save"
+                                    styleClass="p-button-sm" (onClick)="PaymentComps.ShowDialogPayment = true" />
                             </div>
                         </div>
                         <div class="w-4/12">
@@ -157,4 +158,6 @@
             </p-stepperPanel>
         </p-stepper>
     </div>
+
+    <app-payment #PaymentComps></app-payment>
 </app-dashboard>
