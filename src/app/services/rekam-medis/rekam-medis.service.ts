@@ -11,6 +11,7 @@ import { DiagnosisModel } from 'src/app/model/pages/rekam-medis/diagnosis.model'
 import { TindakanModel } from 'src/app/model/pages/rekam-medis/tindakan.model';
 import { ResepModel } from 'src/app/model/pages/rekam-medis/resep.model';
 import { BillingModel } from 'src/app/model/pages/rekam-medis/billing.model';
+import { KondisiPulangModel } from 'src/app/model/pages/rekam-medis/pulang.model';
 
 @Injectable({
     providedIn: 'root'
@@ -124,7 +125,7 @@ export class RekamMedisService {
             cari: keyword ? keyword : ""
         };
 
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetIcd10`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/GetIcd10`, payload);
     }
 
     createDiagnosis(payload: DiagnosisModel.IDiagnosisi): Observable<HttpBaseResponse> {
@@ -136,7 +137,7 @@ export class RekamMedisService {
             cari: keyword ? keyword : ""
         };
 
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetItemBmhp`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/GetItemBmhp`, payload);
     }
 
     createTindakan(payload: TindakanModel.ITindakan): Observable<HttpBaseResponse> {
@@ -148,11 +149,15 @@ export class RekamMedisService {
             cari: keyword ? keyword : ""
         };
 
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetItemObat`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/GetItemObat`, payload);
     }
 
     createResep(payload: ResepModel.IResep): Observable<HttpBaseResponse> {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/Resep`, payload);
+    }
+
+    createKondisiPulang(payload: KondisiPulangModel.IKondisiPulang): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/StatusPulang`, payload);
     }
 
     getTagihan(id_pendaftaran: string): Observable<RekamMedisModel.GetByIdRekamMedis> {

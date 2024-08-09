@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 
@@ -9,12 +10,14 @@ import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.serv
     imports: [
         CommonModule,
         DialogModule,
+        ButtonModule,
     ],
     templateUrl: './payment.component.html',
     styleUrl: './payment.component.scss'
 })
 export class PaymentComponent implements OnInit, OnDestroy {
 
+    ShowDialogPayment: boolean = false;
 
     constructor(
         private _rekamMedisService: RekamMedisService,

@@ -27,21 +27,26 @@
         <div *ngFor="let item of DiagnosaDatasource; let i = index; let last = last"
             class="flex flex-row gap-2 items-center">
             <div class="w-6/12">
-                <p-dropdown [filter]="true" styleClass="p-inputtext-sm">
+                <p-dropdown [filter]="true" styleClass="p-inputtext-sm" [options]="Icd10" optionLabel="nama_icd_10"
+                    optionValue="nama_icd_10" [(ngModel)]="item.kode_icd10" (onFilter)="handleSearchIcd10($event)">
                 </p-dropdown>
             </div>
             <div class="w-4/12">
                 <p-dropdown [options]="JenisDiagnosa" optionLabel="label" optionValue="value" [filter]="true"
-                    styleClass="p-inputtext-sm" [autoDisplayFirst]="false">
+                    styleClass="p-inputtext-sm" [autoDisplayFirst]="false" [(ngModel)]="item.jenis_diagnosis">
                 </p-dropdown>
             </div>
             <div class="w-2/12">
                 <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" styleClass="p-button-sm"
                     (onClick)="handleDeleteDiagnosa(i)" />
-
-                <p-button *ngIf="last" icon="pi pi-plus" [rounded]="true" [text]="true" severity="info"
-                    styleClass="p-button-sm" (onClick)="handleAddDiagnosa()" />
             </div>
+        </div>
+        <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer"
+            (click)="handleAddDiagnosa()">
+            <i class="pi pi-plus" style="font-size: 13px"></i>
+            <p class="text-sm text-gray-800 font-medium text-center">
+                Tambah Diagnosa
+            </p>
         </div>
     </div>
 </div>

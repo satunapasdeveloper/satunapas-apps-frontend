@@ -2,7 +2,7 @@
     <!-- Grid -->
     <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
         <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
-            (rowDoubleClicked)="onRowDoubleClicked($event)" (toolbarClicked)="onToolbarClicked($event)">
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)">
         </app-grid>
     </div>
 
@@ -16,7 +16,15 @@
             <p-button severity="secondary" label="Kembali" styleClass="p-button-sm" (onClick)="handleBackToList()">
             </p-button>
 
-            <p-button severity="info" label="Simpan" styleClass="p-button-sm"></p-button>
+            <p-button *ngIf="FormState == 'insert'" severity="info" label="Simpan" styleClass="p-button-sm"
+                (onClick)="savePoli(FormComps.FormGroup.value)">
+            </p-button>
+
+            <p-button *ngIf="FormState == 'update'" severity="warning" label="Update" styleClass="p-button-sm"
+                (onClick)="updatePoli(FormComps.FormGroup.value)">
+            </p-button>
         </div>
     </div>
+
+    <p-confirmDialog />
 </app-dashboard>

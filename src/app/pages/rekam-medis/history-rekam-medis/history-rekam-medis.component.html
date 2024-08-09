@@ -51,11 +51,7 @@
         </div>
 
         <!-- Grid -->
-        <app-grid [props]="GridProps" (toolbarClicked)="onToolbarClicked($event)">
+        <app-grid [props]="GridProps" (aksiClicked)="onToolbarClicked($event)">
         </app-grid>
     </div>
-
-    <!-- Dialog Search Pasien -->
-    <app-search-pasien-dialog #SearchPasienDialogComps (onSelect)="handleSelectLookupPasien($event)">
-    </app-search-pasien-dialog>
 </app-dashboard>

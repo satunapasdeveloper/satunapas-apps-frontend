@@ -80,7 +80,7 @@
             </div>
         </div>
 
-        <div *ngIf="billing.tindakan.length < 1" class="flex flex-row w-full justify-center p-2 rounded-md bg-gray-100">
+        <div *ngIf="!billing.tindakan" class="flex flex-row w-full justify-center p-2 rounded-md bg-gray-100">
             <p class="text-sm text-gray-700">
                 Tidak ada tindakan
             </p>
@@ -111,9 +111,9 @@
             </div>
         </div>
 
-        <div *ngIf="billing.bmhp.length < 1" class="flex flex-row w-full justify-center p-2 rounded-md bg-gray-100">
+        <div *ngIf="!billing.bmhp" class="flex flex-row w-full justify-center p-2 rounded-md bg-gray-100">
             <p class="text-sm text-gray-700">
-                Tidak ada penggunakan BMHP
+                Tidak ada penggunaan BMHP
             </p>
         </div>
     </div>

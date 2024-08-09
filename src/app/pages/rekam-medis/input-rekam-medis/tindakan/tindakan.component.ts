@@ -1,12 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Store } from '@ngxs/store';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { map, Subject, takeUntil } from 'rxjs';
+import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
+import { RekamMedisState } from 'src/app/store/rekam-medis';
+import { SetupTindakanMedisState } from 'src/app/store/setup-data/tindakan-medis';
 
 @Component({
     selector: 'app-tindakan',
@@ -27,33 +32,13 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 })
 export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
 
+    Destroy$ = new Subject();
+
     FormTindakan: FormGroup;
 
-    PetugasDatasource: any[] = [
-        {
-            value: 1,
-            label: 'Frey Blake'
-        },
-        {
-            value: 2,
-            label: 'Anastasia'
-        },
-    ];
+    PetugasDatasource: any[] = [];
 
-    TindakanMedisDatasource: any[] = [
-        {
-            nama_tindakan_medis: 'Jahitan',
-            nama_tindakan_icd_9: 'Part Gastrec W Jej Anast',
-            harga_satuan: 30000,
-            status_active: true
-        },
-        {
-            nama_tindakan_medis: 'USG',
-            nama_tindakan_icd_9: 'Therap Ultrasound Periphrl V (Begin 2002)',
-            harga_satuan: 300000,
-            status_active: true
-        },
-    ];
+    TindakanMedisDatasource: any[] = [];
 
     TindakanForSave: any[] = [];
 
@@ -62,7 +47,9 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
     BmhpForSave: any[] = [];
 
     constructor(
+        private _store: Store,
         private _formBuilder: FormBuilder,
+        private _rekamMedisService: RekamMedisService,
     ) {
         this.FormTindakan = this._formBuilder.group({
             is_ada_kie: [false, []],
@@ -76,39 +63,52 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     ngOnInit(): void {
-
+        this.getBmhp();
+        this.getSetupTindakanMedis();
     }
 
     ngAfterViewInit(): void {
-        setTimeout(() => {
-            const form_tindakan = localStorage.getItem('form_tindakan');
-            const tindakan = localStorage.getItem('tindakan');
-            const bmhp = localStorage.getItem('bmhp');
-
-            if (form_tindakan) {
-                let data = JSON.parse(form_tindakan);
-                data.tanggal_tindakan = new Date(data.tanggal_tindakan);
-                data.waktu_tindakan = new Date(data.waktu_tindakan);
-
-                this.FormTindakan.patchValue(data);
-            };
-
-            if (tindakan) {
-                this.TindakanForSave = JSON.parse(tindakan);
-            } else {
-                this.handleAddTindakan();
-            }
-
-            if (bmhp) {
-                this.BmhpForSave = JSON.parse(bmhp);
-            };
-        }, 100);
+        this.getTindakan();
     }
 
     ngOnDestroy(): void {
-        localStorage.setItem('form_tindakan', JSON.stringify(this.FormTindakan.value));
-        localStorage.setItem('tindakan', JSON.stringify(this.TindakanForSave));
-        localStorage.setItem('bmhp', JSON.stringify(this.BmhpForSave));
+        this.Destroy$.next(0);
+        this.Destroy$.complete();
+    }
+
+    private getBmhp() {
+        this._rekamMedisService
+            .getAllBmhp()
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                console.log(result);
+            })
+    }
+
+    private getSetupTindakanMedis() {
+        this._store
+            .select(SetupTindakanMedisState.TindakanMedisEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                console.log(result);
+                this.TindakanMedisDatasource = result;
+            })
+    }
+
+    private getTindakan() {
+        this._store
+            .select(RekamMedisState.rekamMedisDetail)
+            .pipe(
+                takeUntil(this.Destroy$),
+                map((result) => {
+                    return result?.tindakan ? result.tindakan : null;
+                })
+            )
+            .subscribe((result) => {
+                if (result) {
+                    console.log("tindakan =>", result);
+                }
+            })
     }
 
     handleAddTindakan() {

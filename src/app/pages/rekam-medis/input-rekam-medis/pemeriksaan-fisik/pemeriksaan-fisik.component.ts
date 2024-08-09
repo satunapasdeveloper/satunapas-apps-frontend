@@ -1,18 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
+import { RekamMedisState } from 'src/app/store/rekam-medis';
 
 @Component({
     selector: 'app-pemeriksaan-fisik',
     standalone: true,
     imports: [
+        FormsModule,
+        ReactiveFormsModule,
         CommonModule,
         DashboardComponent,
         DynamicFormComponent,
@@ -26,6 +31,8 @@ import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.serv
 })
 export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestroy {
 
+    Destroy$ = new Subject();
+
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
@@ -38,128 +45,63 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
 
     BodyParts: any[] = this._rekamMedisService.BodyParts;
 
-    CatatanKondisiTubuh: any[] = [];
+    CatatanKondisiTubuh$ = new BehaviorSubject<any[]>([]);
 
     constructor(
+        private _store: Store,
+        private _cdr: ChangeDetectorRef,
         private _rekamMedisService: RekamMedisService
     ) {
         this.FormProps = {
             id: 'form_assesment_pasien',
             fields: [
                 {
+                    id: 'id_pendaftaran',
+                    label: 'Id Pendaftaran',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
+                },
+                {
                     id: 'tingkat_kesadaran',
                     label: 'Tingkat Kesadaran',
                     required: true,
                     type: 'radio',
-                    radioButtonProps: [
-                        {
-                            name: 'tingkat_kesadaran',
-                            label: 'Sadar Penuh',
-                            value: 'Sadar Penuh'
-                        },
-                        {
-                            name: 'tingkat_kesadaran',
-                            label: 'Tampak Mengantuk / Gelisah Bicara Tidak Jelas',
-                            value: 'Tampak Mengantuk / Gelisah Bicara Tidak Jelas'
-                        },
-                        {
-                            name: 'tingkat_kesadaran',
-                            label: 'Tidak Sadar',
-                            value: 'Tidak Sadar'
-                        },
-                    ],
-                    value: 'Sadar Penuh',
+                    radioButtonProps: [],
+                    value: '',
                 },
                 {
                     id: 'pernafasan',
                     label: 'Pernafasan',
                     required: true,
                     type: 'radio',
-                    radioButtonProps: [
-                        {
-                            name: 'pernafasan',
-                            label: 'Nafas Normal',
-                            value: 'Nafas Normal'
-                        },
-                        {
-                            name: 'pernafasan',
-                            label: 'Tampak Sesak',
-                            value: 'Tampak Sesak'
-                        },
-                        {
-                            name: 'pernafasan',
-                            label: 'Tidak Bernafas',
-                            value: 'Tidak Bernafas'
-                        },
-                    ],
-                    value: 'Nafas Normal',
+                    radioButtonProps: [],
+                    value: '',
                 },
                 {
                     id: 'resiko_jatuh',
                     label: 'Risiko Jatuh',
                     required: true,
                     type: 'radio',
-                    radioButtonProps: [
-                        {
-                            name: 'resiko_jatuh',
-                            label: 'Risiko Rendah',
-                            value: 'Risiko Rendah'
-                        },
-                        {
-                            name: 'resiko_jatuh',
-                            label: 'Risiko Sedang',
-                            value: 'Risiko Sedang'
-                        },
-                        {
-                            name: 'resiko_jatuh',
-                            label: 'Risiko Tinggi',
-                            value: 'Risiko Tinggi'
-                        },
-                    ],
-                    value: 'Risiko Rendah',
+                    radioButtonProps: [],
+                    value: '',
                 },
                 {
-                    id: 'skala_nyeri',
+                    id: 'nyeri',
                     label: 'Skala Nyeri',
                     required: true,
                     type: 'radio',
-                    radioButtonProps: [
-                        {
-                            name: 'skala_nyeri',
-                            label: 'Skor 1-3 (Nyeri Ringan)',
-                            value: 'Skor 1-3 (Nyeri Ringan)'
-                        },
-                        {
-                            name: 'skala_nyeri',
-                            label: 'Skor 4-7 (Nyeri Sedang)',
-                            value: 'Skor 4-7 (Nyeri Sedang)'
-                        },
-                        {
-                            name: 'skala_nyeri',
-                            label: 'Skor 8-10 (Nyeri Berat)',
-                            value: 'Skor 8-10 (Nyeri Berat)'
-                        },
-                    ],
-                    value: 'Skor 1-3 (Nyeri Ringan)',
+                    radioButtonProps: [],
+                    value: '',
                 },
                 {
                     id: 'batuk',
                     label: 'Batuk',
                     required: true,
                     type: 'radio',
-                    radioButtonProps: [
-                        {
-                            name: 'batuk',
-                            label: 'Tidak Ada / <2 Minggu',
-                            value: 'Tidak Ada / <2 Minggu'
-                        },
-                        {
-                            name: 'batuk',
-                            label: '>= 2 Minggu',
-                            value: '>= 2 Minggu'
-                        }
-                    ],
-                    value: 'Tidak Ada / <2 Minggu',
+                    radioButtonProps: [],
+                    value: '',
                 },
             ],
             style: 'not_inline',
@@ -203,14 +145,14 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     value: 0,
                 },
                 {
-                    id: 'diastole',
+                    id: 'distole',
                     label: 'Diastole (mm/Hg)',
                     required: true,
                     type: 'number',
                     value: 0,
                 },
                 {
-                    id: 'spo2',
+                    id: 'spO2',
                     label: 'SpO2 (%)',
                     required: false,
                     type: 'number',
@@ -231,7 +173,7 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     value: 0,
                 },
                 {
-                    id: 'pernafasan',
+                    id: 'pernafasan_menit',
                     label: 'Pernafasan (/menit)',
                     required: true,
                     type: 'number',
@@ -246,44 +188,109 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     ngOnInit(): void {
+        this.getVariable();
         this.handleAddCatatanTubuh();
     }
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            const pemeriksaan_fisik = localStorage.getItem('pemeriksaan_fisik') as any;
-            if (pemeriksaan_fisik) {
-                this.FormComps.FormGroup.setValue(JSON.parse(pemeriksaan_fisik).assesment_awal);
-                this.FormKeadaanUmumComps.FormGroup.setValue(JSON.parse(pemeriksaan_fisik).keadaan_umum);
-                this.FormVitalSignComps.FormGroup.setValue(JSON.parse(pemeriksaan_fisik).vital_sign);
-                this.CatatanKondisiTubuh = JSON.parse(pemeriksaan_fisik).catatan_tubuh;
-            }
+            this.getPemeriksaanFisik();
         }, 100);
     }
 
     ngOnDestroy(): void {
-        const pemeriksaan_fisik = {
-            assesment_awal: this.FormComps.FormGroup.value,
-            keadaan_umum: this.FormVitalSignComps.FormGroup.value,
-            vital_sign: this.FormVitalSignComps.FormGroup.value,
-            catatan_tubuh: this.CatatanKondisiTubuh
-        }
+        this.Destroy$.next(0);
+        this.Destroy$.complete();
+    }
 
-        localStorage.setItem('pemeriksaan_fisik', JSON.stringify(pemeriksaan_fisik));
+    private getPemeriksaanFisik() {
+        this._store
+            .select(RekamMedisState.rekamMedisDetail)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result?.pemeriksaan_fisik) {
+                    this.FormComps.FormGroup.patchValue(result.pemeriksaan_fisik);
+                    this.FormKeadaanUmumComps.FormGroup.patchValue(result.pemeriksaan_fisik);
+                    this.FormVitalSignComps.FormGroup.patchValue(result.pemeriksaan_fisik);
+                    this.CatatanKondisiTubuh$.next(result.pemeriksaan_fisik.kondisi_tubuh);
+                    this._cdr.detectChanges();
+                }
+            })
+    }
+
+    private getVariable() {
+        this._store
+            .select(RekamMedisState.rekamMedisVariable)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                const tingkat_kesadaran_index = this.FormProps.fields.findIndex(item => item.id == 'tingkat_kesadaran');
+                this.FormProps.fields[tingkat_kesadaran_index].radioButtonProps = result?.kesadaran.map((item) => {
+                    return {
+                        ...item,
+                        name: 'tingkat_kesadaran',
+                        label: item.title
+                    }
+                });
+
+                const pernafasan_index = this.FormProps.fields.findIndex(item => item.id == 'pernafasan');
+                this.FormProps.fields[pernafasan_index].radioButtonProps = result?.pernafasan.map((item) => {
+                    return {
+                        ...item,
+                        name: 'pernafasan',
+                        label: item.title
+                    }
+                });
+
+                const resiko_jatuh_index = this.FormProps.fields.findIndex(item => item.id == 'resiko_jatuh');
+                this.FormProps.fields[resiko_jatuh_index].radioButtonProps = result?.resiko_jatuh.map((item) => {
+                    return {
+                        ...item,
+                        name: 'resiko_jatuh',
+                        label: item.title
+                    }
+                });
+
+                const nyeri_index = this.FormProps.fields.findIndex(item => item.id == 'nyeri');
+                this.FormProps.fields[nyeri_index].radioButtonProps = result?.nyeri.map((item) => {
+                    return {
+                        ...item,
+                        name: 'nyeri',
+                        label: item.title
+                    }
+                });
+
+                const batuk_index = this.FormProps.fields.findIndex(item => item.id == 'batuk');
+                this.FormProps.fields[batuk_index].radioButtonProps = result?.batuk.map((item) => {
+                    return {
+                        ...item,
+                        name: 'batuk',
+                        label: item.title
+                    }
+                });
+            })
     }
 
     handleAddCatatanTubuh() {
-        this.CatatanKondisiTubuh.push({
-            id: 0,
-            label: '',
-            body: '',
-            keterangan: ''
-        })
-    };
+        let catatan = [...this.CatatanKondisiTubuh$.value];
+
+        catatan.push({
+            kode_loinc: '',
+            display_loinc: '',
+            anggota_tubuh: '',
+            catatan_kondisi: ''
+        });
+
+        this.CatatanKondisiTubuh$.next([]);
+        this.CatatanKondisiTubuh$.next(catatan);
+    }
 
     handleDeleteCatatanTubuh(index: number) {
-        if (this.CatatanKondisiTubuh.length > 0) {
-            this.CatatanKondisiTubuh.splice(index, 1);
+        let value = this.CatatanKondisiTubuh$.value;
+
+        if (value.length > 0) {
+            value.splice(index, 1);
+            this.CatatanKondisiTubuh$.next([]);
+            this.CatatanKondisiTubuh$.next(value);
         }
     }
 }   

@@ -6,11 +6,11 @@
                 <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
                     <div class="flex flex-row gap-3">
                         <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                            <app-anamesis></app-anamesis>
+                            <app-anamesis #AnamesisComps></app-anamesis>
 
                             <div class="flex pt-4 justify-end">
                                 <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
-                                    styleClass="p-button-sm" (onClick)="nextCallback.emit()" />
+                                    styleClass="p-button-sm" (onClick)="handleCreateAnamesis(nextCallback)" />
                             </div>
                         </div>
                         <div class="w-4/12">
@@ -26,14 +26,14 @@
                     let-index="index">
                     <div class="flex flex-row gap-3">
                         <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                            <app-pemeriksaan-fisik></app-pemeriksaan-fisik>
+                            <app-pemeriksaan-fisik #PemeriksaanFisikComps></app-pemeriksaan-fisik>
 
                             <div class="flex pt-4 justify-between">
                                 <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
                                     styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
 
                                 <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
-                                    styleClass="p-button-sm" (onClick)="nextCallback.emit()" />
+                                    styleClass="p-button-sm" (onClick)="handleCreatePemeriksaanFisik(nextCallback)" />
                             </div>
                         </div>
                         <div class="w-4/12">
@@ -49,14 +49,14 @@
                     let-index="index">
                     <div class="flex flex-row gap-3">
                         <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                            <app-diagnosis></app-diagnosis>
+                            <app-diagnosis #DiagnosisComps></app-diagnosis>
 
                             <div class="flex pt-4 justify-between">
                                 <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
                                     styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
 
                                 <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
-                                    styleClass="p-button-sm" (onClick)="nextCallback.emit()" />
+                                    styleClass="p-button-sm" (onClick)="handleCreateDiagnosa(nextCallback)" />
                             </div>
                         </div>
                         <div class="w-4/12">
@@ -146,7 +146,8 @@
                                 <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
                                     styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
 
-                                <p-button severity="info" label="Simpan" icon="pi pi-save" styleClass="p-button-sm" />
+                                <p-button severity="info" label="Buat Invoice" icon="pi pi-save"
+                                    styleClass="p-button-sm" (onClick)="PaymentComps.ShowDialogPayment = true" />
                             </div>
                         </div>
                         <div class="w-4/12">
@@ -157,4 +158,6 @@
             </p-stepperPanel>
         </p-stepper>
     </div>
+
+    <app-payment #PaymentComps></app-payment>
 </app-dashboard>
