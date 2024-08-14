@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 import { RekamMedisState } from 'src/app/store/rekam-medis';
 
@@ -34,14 +34,28 @@ export class DiagnosisComponent implements OnInit, AfterViewInit, OnDestroy {
         { label: 'Diagnosa Tambahan / Sekunder', value: 'Diagnosa Tambahan / Sekunder' },
     ];
 
+    KeywordSearch$ = new BehaviorSubject(null);
+
     constructor(
         private _store: Store,
         private _activatedRoute: ActivatedRoute,
         private _rekamMedisService: RekamMedisService
-    ) { }
+    ) {
+        this.KeywordSearch$
+            .pipe(
+                takeUntil(this.Destroy$),
+                debounceTime(500),
+                distinctUntilChanged()
+            )
+            .subscribe((result) => {
+                if (result) {
+                    this.getAllIcd10(result);
+                }
+            })
+    }
 
     ngOnInit(): void {
-        this.getAllIcd10();
+        // this.getAllIcd10();
     }
 
     ngAfterViewInit(): void {
@@ -61,13 +75,21 @@ export class DiagnosisComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result?.diagnosisi) {
-                    this.DiagnosaDatasource = (<any>result.diagnosisi)['diagnosisi'];
+                    this.DiagnosaDatasource = (<any>result.diagnosisi)['diagnosisi'].map((item: any) => {
+                        return {
+                            ...item,
+                            is_new: false,
+                            is_edit: false
+                        }
+                    });
+
+                    console.log(this.DiagnosaDatasource);
                 }
             })
     }
 
     handleSearchIcd10(args: any) {
-        this.getAllIcd10(args.filter);
+        this.KeywordSearch$.next(args.filter);
     }
 
     private getAllIcd10(keyword?: string) {
@@ -86,11 +108,24 @@ export class DiagnosisComponent implements OnInit, AfterViewInit, OnDestroy {
             kode_icd10: '',
             display_icd10: '',
             jenis_diagnosis: '',
-            keterangan: ''
+            keterangan: '',
+            is_new: true,
+            is_edit: false
         });
 
         this.DiagnosaDatasource = data;
     };
+
+    handleEditDiagnosa(index: number) {
+        let value = this.DiagnosaDatasource.map((data: any, indexes: number) => {
+            return {
+                ...data,
+                is_edit: indexes == index ? true : false
+            }
+        });
+
+        this.DiagnosaDatasource = value;
+    }
 
     handleDeleteDiagnosa(index: number) {
         if (this.DiagnosaDatasource.length > 0) {

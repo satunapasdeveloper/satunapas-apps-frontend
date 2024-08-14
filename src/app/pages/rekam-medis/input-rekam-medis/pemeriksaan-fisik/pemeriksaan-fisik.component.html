@@ -71,6 +71,7 @@
 
             <!-- Content -->
             @for(item of CatatanKondisiTubuh$ | async; let i = $index; track item) {
+            <!-- Add or edit -->
             <div *ngIf="item.is_new || item.is_edit" class="flex flex-row gap-2 items-center">
                 <div class="w-2/12">
                     <p class="text-gray-700 text-sm">
@@ -91,6 +92,7 @@
                 </div>
             </div>
 
+            <!-- Just view -->
             <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center">
                 <div class="w-2/12">
                     <p class="text-gray-700 text-sm">
