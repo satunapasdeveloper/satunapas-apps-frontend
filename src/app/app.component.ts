@@ -7,6 +7,7 @@ import { SetupTindakanMedisActions } from './store/setup-data/tindakan-medis';
 import { SetupItemActions } from './store/setup-data/item';
 import { ManajemenUserActions } from './store/setup-data/manajemen-user';
 import { RekamMedisActions } from './store/rekam-medis';
+import { RekananPenunjangActions } from './store/setup-data/rekanan-penunjang';
 
 @Component({
     selector: 'app-root',
@@ -66,6 +67,11 @@ export class AppComponent implements OnInit, OnDestroy {
         // ** Get All Item
         this._store
             .dispatch(new SetupItemActions.GetAllItem())
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Rekanan Penunjang
+        this._store
+            .dispatch(new RekananPenunjangActions.GetAllRekananPenunjang())
             .pipe(takeUntil(this.Destroy$));
 
         // ** Get All User

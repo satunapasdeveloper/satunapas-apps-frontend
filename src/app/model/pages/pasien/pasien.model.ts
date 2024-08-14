@@ -83,4 +83,37 @@ export namespace PasienModel {
         status_pernikahan: string
         methode_pembayaran: string
     }
+
+    export interface UpdatePasien {
+        nik: string
+        wna: string
+        is_pasien_bayi: boolean
+        nama_lengkap: string
+        nama_ibu_kandung: string
+        tempat_lahir: string
+        tanggal_lahir: string
+        jenis_kelamin: string
+        ktp_alamat_lengkap: string
+        ktp_id_provinsi: string
+        ktp_id_kabupaten: string
+        ktp_id_kecamatan: string
+        ktp_id_kelurahan: string
+        ktp_kode_pos: string
+        ktp_rt: string
+        ktp_rw: string
+        alamat_lengkap: string
+        id_provinsi: string
+        id_kabupaten: string
+        id_kecamatan: string
+        id_kelurahan: string
+        kode_pos: string
+        rt: string
+        rw: string
+        no_hp: string
+        no_telpon: string
+        pendidikan_terakhir: string
+        pekerjaan: string
+        status_pernikahan: string
+        methode_pembayaran: string
+    }
 }

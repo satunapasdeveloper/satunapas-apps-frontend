@@ -13,6 +13,8 @@ export namespace GridModel {
         format?: 'date' | 'number' | 'currency';
         class?: string;
         renderAsCheckbox?: boolean;
+        renderAsPills?: boolean;
+        pillClass?: string;
     }
 
     export interface IGrid {

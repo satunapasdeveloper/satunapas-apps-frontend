@@ -159,8 +159,6 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        console.log(args);
-
         if (args.type == 'delete') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
@@ -202,7 +200,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
             .dispatch(new SetupPoliActions.UpdatePoli(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result.setup_tindakan_medis.success) {
+                if (result.setup_poli.success) {
                     this._messageService.clear();
                     this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
                     this.handleBackToList();
@@ -215,7 +213,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
             .dispatch(new SetupPoliActions.DeletePoli(id_poli))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result.setup_tindakan_medis.success) {
+                if (result.setup_poli.success) {
                     this._messageService.clear();
                     this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
                     this.handleBackToList();

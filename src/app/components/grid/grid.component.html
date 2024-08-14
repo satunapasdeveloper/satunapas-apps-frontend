@@ -30,33 +30,35 @@
         <ng-template *ngIf="props.dataSource" pTemplate="body" let-rowData let-columns="columns">
             <tr [pSelectableRow]="rowData" (dblclick)="onRowDoubleClicked(rowData)" (click)="onCellClicked(rowData)">
                 <td *ngFor="let col of columns" class="text-sm {{ col.class }}">
-                    @switch (col.renderAsCheckbox){
-                    @case (true) {
-                    <i class="pi {{ rowData[col.field] ? 'pi-check' : 'pi-times' }}"></i>
-                    }
-                    @case (false) {
-                    @switch (col.format) {
-                    @case ('currency') {
-                    {{ handleFormatStringToNumber(rowData[col.field]) | currency: 'Rp. ' }}
-                    }
-                    @case ('date') {
-                    {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
-                    }
-                    @case ('number') {
-                    {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}
-                    }
-                    @case (undefined) {
-                    {{ rowData[col.field] }}
-                    }
-                    @default {
-                    {{ rowData[col.field] }}
-                    }
-                    }
-                    }
-                    @default {
-                    {{ rowData[col.field] }}
-                    }
-                    }
+                    <span *ngIf="col.renderAsCheckbox && !col.renderAsPills">
+                        <i class="pi {{ rowData[col.field] ? 'pi-check' : 'pi-times' }}"></i>
+                    </span>
+
+                    <span *ngIf="!col.renderAsCheckbox && col.renderAsPills" class="{{ col.pillClass }}">
+                        <p class="text-sm">
+                            {{ rowData[col.field] }}
+                        </p>
+                    </span>
+
+                    <span *ngIf="!col.renderAsCheckbox && !col.renderAsPills">
+                        @switch (col.format) {
+                        @case ('currency') {
+                        {{ handleFormatStringToNumber(rowData[col.field]) | currency: 'Rp. ' }}
+                        }
+                        @case ('date') {
+                        {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
+                        }
+                        @case ('number') {
+                        {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}
+                        }
+                        @case (undefined) {
+                        {{ rowData[col.field] }}
+                        }
+                        @default {
+                        {{ rowData[col.field] }}
+                        }
+                        }
+                    </span>
                 </td>
                 <td *ngIf=" gridToolbar" class="text-center">
                     <i class="pi pi-ellipsis-v" (click)="op.toggle($event)"></i>
