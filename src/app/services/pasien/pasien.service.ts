@@ -23,4 +23,8 @@ export class PasienService {
     create(payload: PasienModel.CreatePasien): Observable<HttpBaseResponse> {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/pasien/PendaftaranPasienBaru`, payload);
     }
+
+    update(payload: PasienModel.UpdatePasien): Observable<HttpBaseResponse> {
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/pasien/UpdateDataPasien`, payload);
+    }
 }

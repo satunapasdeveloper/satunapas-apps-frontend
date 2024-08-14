@@ -111,7 +111,13 @@
             <p-button severity="secondary" label="Kembali" styleClass="p-button-sm" (onClick)="handleBackToList()">
             </p-button>
 
-            <p-button severity="info" label="Simpan" styleClass="p-button-sm" (onClick)="savePasien()"></p-button>
+            <p-button *ngIf="FormState == 'insert'" severity="info" label="Simpan" styleClass="p-button-sm"
+                (onClick)="savePasien()">
+            </p-button>
+
+            <p-button *ngIf="FormState == 'update'" severity="warning" label="Update" styleClass="p-button-sm"
+                (onClick)="updatePasien()">
+            </p-button>
         </div>
     </div>
 </app-dashboard>
