@@ -142,7 +142,6 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     handleCreateDiagnosa(nextCallback: any) {
         let payload = {
             diagnosisi: this.DiagnosisComps.DiagnosaDatasource
-
         };
 
         this._store

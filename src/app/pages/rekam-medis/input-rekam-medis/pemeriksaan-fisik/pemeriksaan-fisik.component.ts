@@ -212,7 +212,16 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     this.FormComps.FormGroup.patchValue(result.pemeriksaan_fisik);
                     this.FormKeadaanUmumComps.FormGroup.patchValue(result.pemeriksaan_fisik);
                     this.FormVitalSignComps.FormGroup.patchValue(result.pemeriksaan_fisik);
-                    this.CatatanKondisiTubuh$.next(result.pemeriksaan_fisik.kondisi_tubuh);
+
+                    let pemeriksaan_fisik = result.pemeriksaan_fisik.kondisi_tubuh.map((item) => {
+                        return {
+                            ...item,
+                            is_new: false,
+                            is_edit: false
+                        }
+                    });
+
+                    this.CatatanKondisiTubuh$.next(pemeriksaan_fisik);
                     this._cdr.detectChanges();
                 }
             })
@@ -277,11 +286,25 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
             kode_loinc: '',
             display_loinc: '',
             anggota_tubuh: '',
-            catatan_kondisi: ''
+            catatan_kondisi: '',
+            is_new: true,
+            is_edit: false
         });
 
         this.CatatanKondisiTubuh$.next([]);
         this.CatatanKondisiTubuh$.next(catatan);
+    }
+
+    handleEditCatatanTubuh(index: number) {
+        let value = this.CatatanKondisiTubuh$.value.map((data: any, indexes: number) => {
+            return {
+                ...data,
+                is_edit: indexes == index ? true : false
+            }
+        });
+
+        this.CatatanKondisiTubuh$.next([]);
+        this.CatatanKondisiTubuh$.next(value);
     }
 
     handleDeleteCatatanTubuh(index: number) {

@@ -45,7 +45,9 @@ export class DiagnosisComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.getDiagnosis();
+        setTimeout(() => {
+            this.getDiagnosis();
+        }, 100);
     }
 
     ngOnDestroy(): void {
@@ -65,12 +67,12 @@ export class DiagnosisComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleSearchIcd10(args: any) {
-        console.log(args);
+        this.getAllIcd10(args.filter);
     }
 
-    private getAllIcd10() {
+    private getAllIcd10(keyword?: string) {
         this._rekamMedisService
-            .getAllIcd10()
+            .getAllIcd10(keyword)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 this.Icd10 = result.data;
@@ -92,7 +94,10 @@ export class DiagnosisComponent implements OnInit, AfterViewInit, OnDestroy {
 
     handleDeleteDiagnosa(index: number) {
         if (this.DiagnosaDatasource.length > 0) {
-            this.DiagnosaDatasource.splice(index, 1);
+            let data = JSON.parse(JSON.stringify(this.DiagnosaDatasource));
+            data.splice(index, 1);
+
+            this.DiagnosaDatasource = data;
         }
     }
 }
