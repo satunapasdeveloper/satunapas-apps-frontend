@@ -2,7 +2,7 @@ import { CommonModule, formatDate, TitleCasePipe } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngxs/store';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
@@ -16,6 +16,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { PasienService } from 'src/app/services/pasien/pasien.service';
 import { LokasiService } from 'src/app/services/setup-data/lokasi.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
     selector: 'app-pasien',
@@ -29,6 +30,7 @@ import { ActivatedRoute, Router } from '@angular/router';
         FormsModule,
         InputSwitchModule,
         InputTextareaModule,
+        ConfirmDialogModule
     ],
     templateUrl: './pasien.component.html',
     styleUrl: './pasien.component.scss'
@@ -52,10 +54,11 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             { field: 'tanggal_lahir', headerName: 'Tgl. Lahir', format: 'date' },
             { field: 'alamat_lengkap', headerName: 'Alamat', },
             { field: 'is_pasien_bayi', headerName: 'Pasien Bayi', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
         searchKeyword: 'nama_lengkap',
@@ -98,6 +101,7 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
         private _titleCasePipe: TitleCasePipe,
         private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
+        private _confirmationService: ConfirmationService,
     ) {
         this.FormIdentitasProps = {
             id: 'form_identitas_pasien',
@@ -651,7 +655,6 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get data =>", result.data);
                     this.GridProps.dataSource = result.data;
                 }
             });
@@ -825,9 +828,28 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        if (args.id == 'delete') {
-            console.log(this.GridSelectedData);
-            // this.deletePoli(this.GridSelectedData.kode_wilayah);
+        console.log(args);
+
+        if (args.type == "ubah status") {
+            this._confirmationService.confirm({
+                target: (<any>event).target as EventTarget,
+                message: 'Data akan diubah statusnya',
+                header: 'Apakah Anda Yakin?',
+                icon: 'pi pi-info-circle',
+                acceptButtonStyleClass: "p-button-danger p-button-sm",
+                rejectButtonStyleClass: "p-button-secondary p-button-sm",
+                acceptIcon: "none",
+                acceptLabel: 'Iya Saya Yakin',
+                rejectIcon: "none",
+                rejectLabel: 'Tidak, Kembali',
+                accept: () => {
+                    this.ubahStatusPasien(args.data.id_pasien);
+                }
+            });
+        }
+
+        if (args.type == 'detail') {
+            this.onRowDoubleClicked(args.data);
         }
     }
 
@@ -953,17 +975,18 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             })
     }
 
-    private deletePasien(kode_wilayah: string) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.DeletePoli(kode_wilayah))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         console.log("store =>", result);
-
-        //         if (result.setup_wilayah.success) {
-
-        //         }
-        //     })
+    private ubahStatusPasien(id_pasien: string) {
+        this._pasienService
+            .updateStatus(id_pasien)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
+                    this.onCheckQueryParams();
+                    this.getAll();
+                }
+            })
     }
 
 }

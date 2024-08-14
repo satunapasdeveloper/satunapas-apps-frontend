@@ -2,7 +2,7 @@
     <!-- Grid -->
     <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
         <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
-            (rowDoubleClicked)="onRowDoubleClicked($event)" (toolbarClicked)="onToolbarClicked($event)">
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)">
         </app-grid>
     </div>
 
@@ -120,4 +120,6 @@
             </p-button>
         </div>
     </div>
+
+    <p-confirmDialog />
 </app-dashboard>

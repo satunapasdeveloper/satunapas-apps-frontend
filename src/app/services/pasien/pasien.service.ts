@@ -27,4 +27,8 @@ export class PasienService {
     update(payload: PasienModel.UpdatePasien): Observable<HttpBaseResponse> {
         return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/pasien/UpdateDataPasien`, payload);
     }
+
+    updateStatus(id_pasien: string): Observable<HttpBaseResponse> {
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/pasien/UpdateActivePasien`, { id_pasien: id_pasien });
+    }
 }
