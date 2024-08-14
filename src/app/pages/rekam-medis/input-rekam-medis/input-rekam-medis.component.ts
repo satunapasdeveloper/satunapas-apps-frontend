@@ -63,6 +63,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
     @ViewChild('DiagnosisComps') DiagnosisComps!: DiagnosisComponent;
 
+    @ViewChild('TindakanComps') TindakanComps!: TindakanComponent;
+
     @ViewChild('PaymentComps') PaymentComps!: PaymentComponent;
 
     constructor(
@@ -157,5 +159,10 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
                     }, 500);
                 }
             });
+    }
+
+    handleCreateTindakan(nextCallback: any) {
+        const value = this.TindakanComps.getTindakanForRekamMedis();
+        console.log("payload tindakan =>", value);
     }
 }

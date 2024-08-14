@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngxs/store';
@@ -11,6 +11,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { map, Subject, takeUntil } from 'rxjs';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 import { RekamMedisState } from 'src/app/store/rekam-medis';
+import { ManajemenUserState } from 'src/app/store/setup-data/manajemen-user';
 import { SetupTindakanMedisState } from 'src/app/store/setup-data/tindakan-medis';
 
 @Component({
@@ -52,11 +53,13 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
         private _rekamMedisService: RekamMedisService,
     ) {
         this.FormTindakan = this._formBuilder.group({
+            id_pendaftaran: [false, []],
             is_ada_kie: [false, []],
             keterangan_kie: ['', []],
             is_ada_tindakan: [false, []],
-            tanggal_tindakan: [new Date(), []],
-            waktu_tindakan: [new Date(), []],
+            tanggal_tindakan: [null, []],
+            waktu_tindakan: [null, []],
+            petugas: [null, []],
             tindakan: [[], []],
             bmhp: [[], []]
         })
@@ -65,6 +68,7 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit(): void {
         this.getBmhp();
         this.getSetupTindakanMedis();
+        this.getUser();
     }
 
     ngAfterViewInit(): void {
@@ -81,7 +85,7 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
             .getAllBmhp()
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                console.log(result);
+                this.BmhpDatasource = result.data;
             })
     }
 
@@ -90,8 +94,8 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
             .select(SetupTindakanMedisState.TindakanMedisEntities)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                console.log(result);
                 this.TindakanMedisDatasource = result;
+                console.log("setup tindakan medis =>", result);
             })
     }
 
@@ -106,20 +110,45 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe((result) => {
                 if (result) {
-                    console.log("tindakan =>", result);
+                    this.FormTindakan.get('id_pendaftaran')?.setValue(result.id_pendaftaran);
+                }
+            })
+    }
+
+    private getUser() {
+        this._store
+            .select(ManajemenUserState.allUserEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    this.PetugasDatasource = result;
                 }
             })
     }
 
     handleAddTindakan() {
         this.TindakanForSave.push({
-            id: this.TindakanForSave.length + 1,
-            nama_tindakan_medis: '',
+            id_tindakan: this.TindakanForSave.length + 1,
+            kode_icd9: '',
+            display_icd9: '',
             petugas: 0,
             qty: 0,
-            harga_satuan: 0,
-            total: 0
+            harga: 0,
+            total: 0,
+            is_new: true,
+            is_edit: false
         });
+    }
+
+    handleEditTindakan(index: number) {
+        let value = this.TindakanForSave.map((data: any, indexes: number) => {
+            return {
+                ...data,
+                is_edit: indexes == index ? true : false
+            }
+        });
+
+        this.TindakanForSave = value;
     }
 
     handleDeleteTindakan(index: number) {
@@ -128,19 +157,100 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
+    handleChangeTindakanMedisDropdown(args: any, index: number) {
+        const value = args.value;
+
+        this.TindakanForSave[index].id_tindakan = value.id_tindakan;
+        this.TindakanForSave[index].kode_icd9 = value.kode_icd_9;
+        this.TindakanForSave[index].display_icd9 = value.nama_icd_9;
+        this.TindakanForSave[index].harga = value.harga;
+    }
+
+    handleChangeTindakanMedisQty(args: any, index: number) {
+        const harga = this.TindakanForSave[index].harga ? parseFloat(this.TindakanForSave[index].harga) : 0;
+        this.TindakanForSave[index].total = args * harga;
+    }
+
     handleAddBmhp() {
         this.BmhpForSave.push({
-            id: this.BmhpForSave.length + 1,
+            id_item: this.BmhpForSave.length + 1,
+            kode_kfa: '',
             nama_item: '',
             qty: 0,
-            harga_satuan: 0,
-            total: 0
+            harga: 0,
+            total: 0,
+            is_new: true,
+            is_edit: false
         });
+    }
+
+    handleEditBmhp(index: number) {
+        let value = this.BmhpForSave.map((data: any, indexes: number) => {
+            return {
+                ...data,
+                is_edit: indexes == index ? true : false
+            }
+        });
+
+        this.BmhpForSave = value;
     }
 
     handleDeleteBmhp(index: number) {
         if (this.BmhpForSave.length > 1) {
             this.BmhpForSave.splice(index, 1);
+        }
+    }
+
+    handleChangeBmhpDropdown(args: any, index: number) {
+        const value = args.value;
+
+        this.BmhpForSave[index].id_item = value.id_item;
+        this.BmhpForSave[index].kode_kfa = value.kode_kfa;
+        this.BmhpForSave[index].nama_item = value.nama_item;
+        this.BmhpForSave[index].harga = value.harga;
+    }
+
+    handleChangeBmhpQty(args: any, index: number) {
+        const harga = this.BmhpForSave[index].harga ? parseFloat(this.BmhpForSave[index].harga) : 0;
+        this.BmhpForSave[index].total = args * harga;
+    }
+
+
+    getTindakanForRekamMedis() {
+        const bmhp_for_save = JSON.parse(JSON.stringify(this.BmhpForSave));
+        const tindakan_for_save = JSON.parse(JSON.stringify(this.TindakanForSave));
+
+        const
+            tanggal_tindakan = this.FormTindakan.get('tanggal_tindakan')?.value,
+            waktu_tindakan = this.FormTindakan.get('waktu_tindakan')?.value,
+            bmhp = bmhp_for_save.map((item: any) => {
+                delete item.is_new;
+                delete item.is_edit;
+
+                return {
+                    ...item,
+                }
+            }),
+            tindakan = tindakan_for_save.map((item: any) => {
+                delete item.is_new;
+                delete item.is_edit;
+                delete item.petugas;
+
+                return {
+                    ...item,
+                }
+            });
+
+        return {
+            id_pendaftaran: this.FormTindakan.get('id_pendaftaran')?.value,
+            kie: {
+                catatan: this.FormTindakan.get('is_ada_kie')?.value ? this.FormTindakan.get('keterangan_kie')?.value : ''
+            },
+            tindakan: tindakan,
+            bmhp: bmhp,
+            tanggal: tanggal_tindakan ? formatDate(tanggal_tindakan, 'yyyy-MM-dd', 'EN') : null,
+            waktu: waktu_tindakan ? formatDate(waktu_tindakan, 'HH:mm', 'EN') : null,
+            id_user: this.FormTindakan.get('petugas')?.value,
         }
     }
 

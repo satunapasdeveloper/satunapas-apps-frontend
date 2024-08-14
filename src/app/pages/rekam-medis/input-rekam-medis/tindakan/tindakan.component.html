@@ -39,14 +39,25 @@
                         Tanggal Tindakan
                     </p>
                     <p-calendar styleClass="p-inputtext-sm w-full" dateFormat="dd MM yy"
-                        formControlName="tanggal_tindakan"></p-calendar>
+                        formControlName="tanggal_tindakan" [showClear]="true">
+                    </p-calendar>
                 </div>
                 <div class="w-2/12 flex flex-col gap-1">
                     <p class="text-gray-700 text-sm">
                         Jam Tindakan
                     </p>
-                    <p-calendar styleClass="p-inputtext-sm w-full" formControlName="waktu_tindakan"
-                        [timeOnly]="true"></p-calendar>
+                    <p-calendar styleClass="p-inputtext-sm w-full" formControlName="waktu_tindakan" [timeOnly]="true"
+                        [showClear]="true">
+                    </p-calendar>
+                </div>
+                <div class="w-3/12 flex flex-col gap-1">
+                    <p class="text-gray-700 text-sm">
+                        Petugas
+                    </p>
+                    <p-dropdown [options]="PetugasDatasource" optionLabel="nama" optionValue="uuid"
+                        styleClass="p-inputtext-sm w-full" placeholder="Pilih Petugas" [autoDisplayFirst]="false"
+                        [filter]="true" appendTo="body" formControlName="petugas">
+                    </p-dropdown>
                 </div>
             </div>
 
@@ -62,54 +73,73 @@
                     </div>
                     <div class="w-3/12">
                         <p class="text-gray-700 text-sm font-medium">
-                            Petugas
-                        </p>
-                    </div>
-                    <div class="w-2/12">
-                        <p class="text-gray-700 text-sm font-medium">
                             Qty
                         </p>
                     </div>
-                    <div class="w-2/12">
+                    <div class="w-3/12">
                         <p class="text-gray-700 text-sm font-medium">
                             Harga Total
                         </p>
                     </div>
-                    <div class="w-1/12">
-                        <p class="text-gray-700 text-sm font-medium">
-
+                    <div class="w-2/12">
+                        <p class="text-gray-700 text-center text-sm font-medium">
+                            Aksi
                         </p>
                     </div>
                 </div>
 
                 <!-- Content -->
-                <div *ngFor="let item of TindakanForSave; let i = index; let last = last"
-                    class="flex flex-row gap-2 items-center mb-2">
+                @for(item of TindakanForSave; let i = $index; let last = $last; track item) {
+                <!-- Add & edit -->
+                <div *ngIf="item.is_new || item.is_edit" class="flex flex-row w-full gap-2 items-center mb-2">
                     <div class="w-4/12">
-                        <p-dropdown [options]="TindakanMedisDatasource" optionLabel="nama_tindakan_medis"
-                            optionValue="nama_tindakan_medis" styleClass="p-inputtext-sm w-full"
-                            placeholder="Pilih Tindakan Medis" [autoDisplayFirst]="false" [filter]="true"
-                            [(ngModel)]="item.nama_tindakan_medis" appendTo="body">
+                        <p-dropdown [options]="TindakanMedisDatasource" optionLabel="tindakan"
+                            styleClass="p-inputtext-sm w-full" placeholder="Pilih Tindakan Medis"
+                            [autoDisplayFirst]="false" [filter]="true" appendTo="body"
+                            (onChange)="handleChangeTindakanMedisDropdown($event, i)">
                         </p-dropdown>
                     </div>
-                    <div class="w-3/12">
-                        <p-dropdown [options]="PetugasDatasource" optionLabel="label" optionValue="value"
-                            styleClass="p-inputtext-sm w-full" placeholder="Pilih Petugas" [autoDisplayFirst]="false"
-                            [filter]="true" [(ngModel)]="item.petugas" appendTo="body">
-                        </p-dropdown>
+                    <div class="w-3/12 flex">
+                        <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.qty"
+                            (ngModelChange)="handleChangeTindakanMedisQty($event, i)">
+                        </p-inputNumber>
                     </div>
-                    <div class="w-2/12 flex">
-                        <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.qty"></p-inputNumber>
-                    </div>
-                    <div class="w-2/12 flex">
+                    <div class="w-3/12 flex">
                         <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.total" [disabled]="true">
                         </p-inputNumber>
                     </div>
-                    <div class="w-1/12">
+                    <div class="w-2/12 flex">
                         <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
                             styleClass="p-button-sm" (onClick)="handleDeleteTindakan(i)" />
                     </div>
                 </div>
+
+                <!-- Just view -->
+                <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center mb-2">
+                    <div class="w-4/12">
+                        <p class="text-gray-700 text-sm">
+                            {{ item.nama_tindakan_medis | titlecase }}
+                        </p>
+                    </div>
+                    <div class="w-3/12 flex">
+                        <p class="text-gray-700 text-sm">
+                            {{ item.qty | number }}
+                        </p>
+                    </div>
+                    <div class="w-3/12 flex">
+                        <p class="text-gray-700 text-sm">
+                            {{ item.total | currency: 'Rp. ' }}
+                        </p>
+                    </div>
+                    <div class="w-2/12">
+                        <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
+                            styleClass="p-button-sm" (onClick)="handleEditTindakan(i)" />
+
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                            styleClass="p-button-sm" (onClick)="handleDeleteTindakan(i)" />
+                    </div>
+                </div>
+                }
 
                 <!-- Footer -->
                 <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
@@ -137,7 +167,7 @@
                             Nama Item
                         </p>
                     </div>
-                    <div class="w-2/12">
+                    <div class="w-3/12">
                         <p class="text-gray-700 text-sm font-medium">
                             Qty
                         </p>
@@ -148,35 +178,68 @@
                         </p>
                     </div>
                     <div class="w-2/12">
-                        <p class="text-gray-700 text-sm font-medium">
-
+                        <p class="text-gray-700 text-center text-sm font-medium">
+                            Aksi
                         </p>
                     </div>
                 </div>
 
-                <div *ngFor="let item of TindakanForSave; let i = index; let last = last"
-                    class="flex flex-row gap-2 items-center mb-2">
+                @for(item of BmhpForSave; let i = $index; let last = $last; track item) {
+                <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center mb-2">
                     <div class="w-4/12">
-                        <p-dropdown [options]="BmhpDatasource" optionLabel="nama_tindakan_medis"
-                            optionValue="nama_tindakan_medis" styleClass="p-inputtext-sm w-full"
-                            placeholder="Pilih Item" [autoDisplayFirst]="false" [filter]="true"
-                            [(ngModel)]="item.nama_item" appendTo="body">
+                        <p class="text-gray-700 text-sm">
+                            {{ item.nama_item | titlecase }}
+                        </p>
+                    </div>
+                    <div class="w-3/12 flex">
+                        <p class="text-gray-700 text-sm">
+                            {{ item.qty | number }}
+                        </p>
+                    </div>
+                    <div class="w-3/12 flex">
+                        <p class="text-gray-700 text-sm">
+                            {{ item.total | currency: 'Rp. ' }}
+                        </p>
+                    </div>
+                    <div class="w-2/12 flex justify-center">
+                        <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
+                            styleClass="p-button-sm" (onClick)="handleEditBmhp(i)" />
+
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                            styleClass="p-button-sm" (onClick)="handleDeleteBmhp(i)" />
+                    </div>
+                </div>
+
+                <div *ngIf="item.is_new || item.is_edit" class="flex flex-row gap-2 items-center mb-2">
+                    <div class="w-4/12 flex">
+                        <p-dropdown [options]="BmhpDatasource" optionLabel="nama_item"
+                            styleClass="p-inputtext-sm w-full" placeholder="Pilih Item" [autoDisplayFirst]="false"
+                            [filter]="true" appendTo="body" (onChange)="handleChangeBmhpDropdown($event, i)">
                         </p-dropdown>
                     </div>
-                    <div class="w-2/12 flex">
-                        <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.qty"></p-inputNumber>
+                    <div class="w-3/12 flex">
+                        <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.qty"
+                            (ngModelChange)="handleChangeBmhpQty($event, i)">
+                        </p-inputNumber>
                     </div>
                     <div class="w-3/12 flex">
                         <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.total" [disabled]="true">
                         </p-inputNumber>
                     </div>
-                    <div class="w-2/12">
+                    <div class="w-2/12 flex justify-center">
                         <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
-                            styleClass="p-button-sm" (onClick)="handleDeleteTindakan(i)" />
-
-                        <p-button *ngIf="last" icon="pi pi-plus" [rounded]="true" [text]="true" severity="info"
-                            styleClass="p-button-sm" (onClick)="handleAddTindakan()" />
+                            styleClass="p-button-sm" (onClick)="handleDeleteBmhp(i)" />
                     </div>
+                </div>
+                }
+
+                <!-- Footer -->
+                <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
+                    (click)="handleAddBmhp()">
+                    <i class="pi pi-plus" style="font-size: 13px"></i>
+                    <p class="text-sm text-gray-800 font-medium text-center">
+                        Tambah Bahan Medis Habis Pakai
+                    </p>
                 </div>
             </div>
         </div>
