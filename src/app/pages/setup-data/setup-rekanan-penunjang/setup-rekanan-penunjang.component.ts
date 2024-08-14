@@ -175,8 +175,6 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        console.log(args);
-
         if (args.type == 'delete') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
