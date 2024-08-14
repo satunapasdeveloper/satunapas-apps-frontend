@@ -90,7 +90,7 @@ export class DynamicFormComponent implements OnInit {
             };
 
             if (item.type == 'date') {
-                this.FormGroup.addControl(item.id, new FormControl(new Date(), [Validators.required]));
+                this.FormGroup.addControl(item.id, new FormControl(null, [Validators.required]));
             };
 
             if (item.type == 'select' && item.id.includes('id')) {

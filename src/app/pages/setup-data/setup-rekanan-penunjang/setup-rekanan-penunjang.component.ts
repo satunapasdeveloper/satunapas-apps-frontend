@@ -1,15 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { Subject } from 'rxjs';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { RekananPenunjangActions, RekananPenunjangState } from 'src/app/store/setup-data/rekanan-penunjang';
 
 @Component({
     selector: 'app-setup-rekanan-penunjang',
@@ -20,6 +22,7 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
+        ConfirmDialogModule
     ],
     templateUrl: './setup-rekanan-penunjang.component.html',
     styleUrl: './setup-rekanan-penunjang.component.scss'
@@ -45,11 +48,11 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
             { field: 'nama_rekanan', headerName: 'Nama Rekanan', },
             { field: 'alamat', headerName: 'Alamat', },
             { field: 'no_telepon', headerName: 'No. Telepon', },
-            { field: 'status_active', headerName: 'Status Aktif', renderAsCheckbox: true, },
+            { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Delete', 'Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
         searchKeyword: 'nama_rekanan',
@@ -64,10 +67,19 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
     constructor(
         private _store: Store,
         private _messageService: MessageService,
+        private _confirmationService: ConfirmationService
     ) {
         this.FormProps = {
             id: 'form_setup_rekanan_penunjang',
             fields: [
+                {
+                    id: 'id_rekanan_penunjang',
+                    label: 'Id',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true
+                },
                 {
                     id: 'kode_rekanan',
                     label: 'Kode Rekanan',
@@ -90,7 +102,7 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'no_telepon',
+                    id: 'no_telp',
                     label: 'No. Telepon',
                     required: false,
                     type: 'text',
@@ -114,34 +126,14 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
     }
 
     private getAll() {
-        // this._store
-        //     .select(SetupWilayahState.provinsiEntities)
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result) {
-        //             console.log("get prov from setup poli =>", result);
-        //             this.GridProps.dataSource = result;
-        //         }
-        //     })
-
-        this.GridProps.dataSource = [
-            {
-                kode_rekanan: '92001142',
-                nama_rekanan: 'LAB PRODIA',
-                alamat: 'Jalan Prodia 1, Semarang',
-                no_telepon: '024-70122233',
-                status_active: true
-            },
-
-            {
-                kode_rekanan: '92001141',
-                nama_rekanan: 'LAB IBL',
-                alamat: 'Jalan IBL 1, Semarang',
-                no_telepon: '024-70122244',
-                status_active: true
-            },
-
-        ]
+        this._store
+            .select(RekananPenunjangState.rekananPenunjangEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    this.GridProps.dataSource = result;
+                }
+            })
     }
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
@@ -149,29 +141,22 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
             this.PageState = 'form';
             this.ButtonNavigation = [];
         };
-
-        if (data.id == 'save') {
-            const formValue = this.FormComps.FormGroup.value;
-            this.savePoli(formValue);
-        };
-
-        if (data.id == 'update') {
-            const formValue = this.FormComps.FormGroup.value;
-            this.updatePoli(formValue);
-        };
     }
 
     handleBackToList() {
         this.FormComps.onResetForm();
 
-        this.PageState = 'list';
-        this.ButtonNavigation = [
-            {
-                id: 'add',
-                title: 'Tambah',
-                icon: 'pi pi-plus'
-            }
-        ];
+        setTimeout(() => {
+            this.PageState = 'list';
+            this.FormState = 'insert';
+            this.ButtonNavigation = [
+                {
+                    id: 'add',
+                    title: 'Tambah',
+                    icon: 'pi pi-plus'
+                }
+            ];
+        }, 100);
     }
 
     onCellClicked(args: any): void {
@@ -180,95 +165,96 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
 
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
-
-        // ** Ganti button navigation bar data
-        this.ButtonNavigation = [
-            {
-                id: 'back',
-                icon: 'pi pi-chevron-left',
-                title: 'Kembali'
-            },
-            {
-                id: 'update',
-                icon: 'pi pi-save',
-                title: 'Update'
-            },
-        ];
-
+        this.FormState = 'update';
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            this.FormComps.FormGroup.patchValue(args);
+            setTimeout(() => {
+                this.FormComps.FormGroup.patchValue(args);
+            }, 500);
         }, 100);
     }
 
     onToolbarClicked(args: any): void {
-        if (args.id == 'delete') {
-            console.log(this.GridSelectedData);
-            this.deletePoli(this.GridSelectedData.kode_wilayah);
+        console.log(args);
+
+        if (args.type == 'delete') {
+            this._confirmationService.confirm({
+                target: (<any>event).target as EventTarget,
+                message: 'Data yang dihapus tidak bisa dikembalikan',
+                header: 'Apakah Anda Yakin?',
+                icon: 'pi pi-info-circle',
+                acceptButtonStyleClass: "p-button-danger p-button-sm",
+                rejectButtonStyleClass: "p-button-secondary p-button-sm",
+                acceptIcon: "none",
+                acceptLabel: 'Iya Saya Yakin',
+                rejectIcon: "none",
+                rejectLabel: 'Tidak, Kembali',
+                accept: () => {
+                    this.deleteRekananPenunjang(args.data.id_rekanan_penunjang);
+                }
+            });
+        }
+
+        if (args.type == 'ubah status') {
+            this._confirmationService.confirm({
+                target: (<any>event).target as EventTarget,
+                message: 'Data akan diubah statusnya',
+                header: 'Apakah Anda Yakin?',
+                icon: 'pi pi-info-circle',
+                acceptButtonStyleClass: "p-button-danger p-button-sm",
+                rejectButtonStyleClass: "p-button-secondary p-button-sm",
+                acceptIcon: "none",
+                acceptLabel: 'Iya Saya Yakin',
+                rejectIcon: "none",
+                rejectLabel: 'Tidak, Kembali',
+                accept: () => {
+                    this.updateRekananPenunjang(args.data.id_rekanan_penunjang);
+                }
+            });
+        }
+
+        if (args.type == 'detail') {
+            this.onRowDoubleClicked(args.data);
         }
     }
 
-    private savePoli(data: any) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.CreatePoli(data))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         console.log(result);
-
-        //         if (result.setup_wilayah.success) {
-        //             // ** Reset Form 
-        //             this.FormComps.onResetForm();
-
-        //             // ** Kembali ke list
-        //             this.PageState = 'list';
-
-        //             // ** Reset Button Navigation
-        //             this.ButtonNavigation = [
-        //                 {
-        //                     id: 'add',
-        //                     title: 'Tambah',
-        //                     icon: 'pi pi-plus'
-        //                 }
-        //             ];
-        //         }
-        //     })
+    saveRekananPenunjang(data: any) {
+        this._store
+            .dispatch(new RekananPenunjangActions.CreateRekananPenunjang(data))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekanan_penunjang.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Disimpan' });
+                    this.handleBackToList();
+                }
+            })
     }
 
-    private updatePoli(data: any) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.UpdatePoli(data))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result.setup_wilayah.success) {
-        //             // ** Reset Form 
-        //             this.FormComps.onResetForm();
-
-        //             // ** Kembali ke list
-        //             this.PageState = 'list';
-
-        //             // ** Reset Button Navigation
-        //             this.ButtonNavigation = [
-        //                 {
-        //                     id: 'add',
-        //                     title: 'Tambah',
-        //                     icon: 'pi pi-plus'
-        //                 }
-        //             ];
-        //         }
-        //     })
+    updateRekananPenunjang(data: any) {
+        this._store
+            .dispatch(new RekananPenunjangActions.UpdateRekananPenunjang(data))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekanan_penunjang.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
+                    this.handleBackToList();
+                }
+            })
     }
 
-    private deletePoli(kode_wilayah: string) {
-        // this._store
-        //     .dispatch(new SetupWilayahActions.DeletePoli(kode_wilayah))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         console.log("store =>", result);
-
-        //         if (result.setup_wilayah.success) {
-
-        //         }
-        //     })
+    deleteRekananPenunjang(id_rekanan_penunjang: string) {
+        this._store
+            .dispatch(new RekananPenunjangActions.DeleteRekananPenunjang(id_rekanan_penunjang))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekanan_penunjang.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this.getAll();
+                }
+            })
     }
 
 
