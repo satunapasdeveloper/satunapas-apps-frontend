@@ -207,7 +207,7 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
         this.BmhpForSave[index].id_item = value.id_item;
         this.BmhpForSave[index].kode_kfa = value.kode_kfa;
         this.BmhpForSave[index].nama_item = value.nama_item;
-        this.BmhpForSave[index].harga = value.harga;
+        this.BmhpForSave[index].harga = value.harga_jual;
     }
 
     handleChangeBmhpQty(args: any, index: number) {
