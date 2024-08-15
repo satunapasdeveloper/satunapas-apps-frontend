@@ -1,9 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogResepNonRacikanComponent } from './dialog-resep-non-racikan/dialog-resep-non-racikan.component';
 import { DialogResepRacikanComponent } from './dialog-resep-racikan/dialog-resep-racikan.component';
 import { DialogResepManualComponent } from './dialog-resep-manual/dialog-resep-manual.component';
+import { Store } from '@ngxs/store';
+import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
+import { RekamMedisState } from 'src/app/store/rekam-medis';
 
 @Component({
     selector: 'app-resep',
@@ -21,6 +25,8 @@ import { DialogResepManualComponent } from './dialog-resep-manual/dialog-resep-m
 })
 export class ResepComponent implements OnInit, AfterViewInit, OnDestroy {
 
+    Destroy$ = new Subject();
+
     ResepNonRacikan: any[] = [];
 
     @ViewChild('DialogResepNonRacikanComps') DialogResepNonRacikanComps!: DialogResepNonRacikanComponent;
@@ -31,37 +37,44 @@ export class ResepComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ResepManual: any[] = [];
 
-    ngOnInit(): void {
+    constructor(
+        private _store: Store,
+        private _cdr: ChangeDetectorRef,
+        private _rekamMedisService: RekamMedisService
+    ) { }
 
+    ngOnInit(): void {
     }
 
     ngAfterViewInit(): void {
-        setTimeout(() => {
-            const resep_non_racikan = localStorage.getItem('resep_non_racikan');
-            const resep_racikan = localStorage.getItem('resep_racikan');
-
-            if (resep_non_racikan) {
-                this.ResepNonRacikan = JSON.parse(resep_non_racikan)
-            };
-
-            if (resep_racikan) {
-                this.ResepRacikan = JSON.parse(resep_racikan)
-            };
-        }, 100);
+        this.getResep();
     }
 
     ngOnDestroy(): void {
-        localStorage.setItem('resep_non_racikan', JSON.stringify(this.ResepNonRacikan));
-        localStorage.setItem('resep_racikan', JSON.stringify(this.ResepRacikan));
+        this.Destroy$.next(0);
+        this.Destroy$.complete();
+    }
+
+    private getResep() {
+        this._store
+            .select(RekamMedisState.rekamMedisDetail)
+            .pipe(
+                takeUntil(this.Destroy$),
+                map((result) => {
+                    return result?.resep ? result.resep : null;
+                })
+            )
+            .subscribe((result) => {
+                this.ResepRacikan = result?.racikan ? result.racikan : [];
+                this.ResepNonRacikan = result?.obat ? result.obat : [];
+                this._cdr.detectChanges();
+            })
     }
 
     onFormatAturanPakai(data: any) {
-        const aturan_pakai = data.aturan_pakai;
-
-        const waktu_spesifik_pemberian_obat = data.waktu_spesifik_pemberian_obat.join(',');
-
-        const waktu_pemberian_obat = data.waktu_pemberian_obat.join(',');
-
+        const aturan_pakai = data.aturan_pakai ? data.aturan_pakai : `${data.aturan_pakai_kali},${data.aturan_pakai_catatan}`;
+        const waktu_spesifik_pemberian_obat = data.waktu_spesifik_pemberian_obat ? data.waktu_spesifik_pemberian_obat : data.waktu_spesifik;
+        const waktu_pemberian_obat = data.waktu_pemberian_obat ? data.waktu_pemberian_obat : data.waktu;
         return `${aturan_pakai} | ${waktu_spesifik_pemberian_obat} | ${waktu_pemberian_obat}`;
     }
 

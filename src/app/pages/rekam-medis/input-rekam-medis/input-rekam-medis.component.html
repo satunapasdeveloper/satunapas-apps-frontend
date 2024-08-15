@@ -71,15 +71,15 @@
                 <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback"
                     let-index="index">
                     <div class="flex flex-row gap-3">
-                        <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                            <app-tindakan></app-tindakan>
+                        <div class="w-8/12 flex flex-col p-3">
+                            <app-tindakan #TindakanComps></app-tindakan>
 
                             <div class="flex pt-4 justify-between">
                                 <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
                                     styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
 
                                 <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
-                                    styleClass="p-button-sm" (onClick)="nextCallback.emit()" />
+                                    styleClass="p-button-sm" (onClick)="handleCreateTindakan(nextCallback)" />
                             </div>
                         </div>
                         <div class="w-4/12">
@@ -95,14 +95,14 @@
                     let-index="index">
                     <div class="flex flex-row gap-3">
                         <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                            <app-resep></app-resep>
+                            <app-resep #ResepComps></app-resep>
 
                             <div class="flex pt-4 justify-between">
                                 <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
                                     styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
 
                                 <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
-                                    styleClass="p-button-sm" (onClick)="nextCallback.emit()" />
+                                    styleClass="p-button-sm" (onClick)="handleCreateResep(nextCallback)" />
                             </div>
                         </div>
                         <div class="w-4/12">
@@ -118,14 +118,14 @@
                     let-index="index">
                     <div class="flex flex-row gap-3">
                         <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                            <app-status></app-status>
+                            <app-status #StatusComps></app-status>
 
                             <div class="flex pt-4 justify-between">
                                 <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
                                     styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
 
                                 <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
-                                    styleClass="p-button-sm" (onClick)="nextCallback.emit()" />
+                                    styleClass="p-button-sm" (onClick)="handleCreateStatusPulang(nextCallback)" />
                             </div>
                         </div>
                         <div class="w-4/12">
@@ -140,14 +140,14 @@
                 <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
                     <div class="flex flex-row gap-3">
                         <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                            <app-billing></app-billing>
+                            <app-billing #BillingComps></app-billing>
 
                             <div class="flex pt-4 justify-between">
                                 <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
                                     styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
 
                                 <p-button severity="info" label="Buat Invoice" icon="pi pi-save"
-                                    styleClass="p-button-sm" (onClick)="PaymentComps.ShowDialogPayment = true" />
+                                    styleClass="p-button-sm" (onClick)="handleOpenDialogPayment()" />
                             </div>
                         </div>
                         <div class="w-4/12">
@@ -159,5 +159,5 @@
         </p-stepper>
     </div>
 
-    <app-payment #PaymentComps></app-payment>
+    <app-payment #PaymentComps (onSave)="handleCreateInvoice($event)"></app-payment>
 </app-dashboard>

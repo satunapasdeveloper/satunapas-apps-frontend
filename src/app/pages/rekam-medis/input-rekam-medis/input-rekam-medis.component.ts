@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngxs/store';
@@ -63,6 +63,14 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
     @ViewChild('DiagnosisComps') DiagnosisComps!: DiagnosisComponent;
 
+    @ViewChild('TindakanComps') TindakanComps!: TindakanComponent;
+
+    @ViewChild('ResepComps') ResepComps!: ResepComponent;
+
+    @ViewChild('StatusComps') StatusComps!: StatusComponent;
+
+    @ViewChild('BillingComps') BillingComps!: BillingComponent;
+
     @ViewChild('PaymentComps') PaymentComps!: PaymentComponent;
 
     constructor(
@@ -87,7 +95,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             .dispatch(new RekamMedisActions.GetByIdRekamMedis(id_pendaftaran))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                console.log("detail rekam medis =>", result);
+                this.SelectedPasien = result.rekam_medis.single
             })
     }
 
@@ -142,7 +150,6 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     handleCreateDiagnosa(nextCallback: any) {
         let payload = {
             diagnosisi: this.DiagnosisComps.DiagnosaDatasource
-
         };
 
         this._store
@@ -156,6 +163,127 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
                     setTimeout(() => {
                         nextCallback.emit();
                     }, 500);
+                }
+            });
+    }
+
+    handleCreateTindakan(nextCallback: any) {
+        const payload: any = this.TindakanComps.getTindakanForRekamMedis();
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateTindakan(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        nextCallback.emit();
+                    }, 500);
+                }
+            });
+    }
+
+    handleCreateResep(nextCallback: any) {
+        const payload = {
+            id_pendaftaran: this.SelectedPasien.id_pendaftaran,
+            obat: this.ResepComps.ResepNonRacikan.map((item) => {
+                return {
+                    id_item: item.id_item,
+                    nama_obat: item.nama_obat,
+                    qty: parseFloat(item.qty),
+                    harga: parseFloat(item.harga),
+                    subtotal: parseFloat(item.subtotal),
+                    aturan_pakai_kali: item.aturan_pakai.split(",")[0],
+                    aturan_pakai_catatan: item.aturan_pakai.split(",")[1],
+                    waktu: item.waktu_pemberian_obat,
+                    waktu_spesifik: item.waktu_spesifik_pemberian_obat,
+                    rute_pemberian: item.rute_pemberian_obat,
+                }
+            }),
+            racikan: this.ResepComps.ResepRacikan.map((item) => {
+                return {
+                    nama_obat: item.nama_racikan,
+                    qty: 1,
+                    aturan_pakai_kali: item.aturan_pakai.split(",")[0],
+                    aturan_pakai_catatan: item.aturan_pakai.split(",")[1],
+                    waktu: item.waktu_pemberian_obat,
+                    waktu_spesifik: item.waktu_spesifik_pemberian_obat,
+                    rute_pemberian: item.rute_pemberian_obat,
+                    racikan: item.obats ? item.obats.map((obat: any) => {
+                        return {
+                            id_item: parseFloat(obat.id_item),
+                            nama_obat: obat.nama_obat,
+                            qty: parseFloat(obat.qty),
+                            harga: parseFloat(obat.harga),
+                            subtotal: parseFloat(obat.subtotal)
+                        }
+                    }) : []
+                }
+            }),
+            manual: []
+        };
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateResep(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        nextCallback.emit();
+                    }, 500);
+                }
+            });
+    }
+
+    handleCreateStatusPulang(nextCallback: any) {
+        const payload = {
+            id_pendaftaran: this.SelectedPasien.id_pendaftaran,
+            status_pulang: this.StatusComps.SelectedStatus
+        };
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateStatusPulang(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        nextCallback.emit();
+                    }, 500);
+                }
+            });
+    }
+
+    handleOpenDialogPayment() {
+        let billing = this.BillingComps.Billing;
+        billing.tanggal = formatDate(new Date(), 'dd-MM-yyyy', 'EN');
+
+        this.PaymentComps.tagihan = billing;
+        this.PaymentComps.ShowDialogPayment = true
+    }
+
+    handleCreateInvoice(args: any) {
+        let data = JSON.parse(JSON.stringify(args));
+
+        data.tanggal = formatDate(new Date(), 'yyyy-MM-dd', 'EN');
+        delete data.bayar;
+        delete data.kembalian;
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateInvoice(data))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+                    this.PaymentComps.ShowDialogPayment = false;
                 }
             });
     }

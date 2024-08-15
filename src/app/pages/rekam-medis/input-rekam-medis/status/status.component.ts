@@ -1,5 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Store } from '@ngxs/store';
+import { map, Subject, takeUntil } from 'rxjs';
+import { RekamMedisState } from 'src/app/store/rekam-medis';
 
 @Component({
     selector: 'app-status',
@@ -10,46 +13,58 @@ import { AfterViewInit, Component, OnDestroy } from '@angular/core';
     templateUrl: './status.component.html',
     styleUrl: './status.component.scss'
 })
-export class StatusComponent implements AfterViewInit, OnDestroy {
+export class StatusComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    Status: any[] = [
-        {
-            id: 'pulang',
-            icon: 'home',
-            label: 'Pulang'
-        },
-        {
-            id: 'rujuk_rajal',
-            icon: 'home',
-            label: 'Rujuk Rawat Jalan'
-        },
-        {
-            id: 'rujuk_ranap',
-            icon: 'home',
-            label: 'Rujuk Rawat Inap'
-        },
-        {
-            id: 'meninggal',
-            icon: 'home',
-            label: 'Meninggal'
-        },
-    ];
+    Destroy$ = new Subject();
 
-    SelectedStatus: 'pulang' | 'rujuk_rajal' | 'rujuk_ranap' | 'meninggal' = 'pulang';
+    Status: any[] = [];
+
+    SelectedStatus: string = "";
+
+    constructor(
+        private _store: Store,
+        private _cdr: ChangeDetectorRef
+    ) { }
+
+    ngOnInit(): void {
+        this.getAllStatusPulangVariable();
+    }
 
     ngAfterViewInit(): void {
-        setTimeout(() => {
-            const status: any = localStorage.getItem('status');
-
-            if (status) {
-                this.SelectedStatus = status;
-            } else {
-                this.SelectedStatus = 'pulang';
-            }
-        }, 100);
+        this.getStatusPulangPasien();
     }
 
     ngOnDestroy(): void {
-        localStorage.setItem('status', this.SelectedStatus);
+        this.Destroy$.next(0);
+        this.Destroy$.complete();
+    }
+
+    private getAllStatusPulangVariable() {
+        this._store
+            .select(RekamMedisState.rekamMedisVariable)
+            .pipe(
+                takeUntil(this.Destroy$),
+                map((result) => {
+                    return result?.status_pulang
+                })
+            )
+            .subscribe((result) => {
+                this.Status = result as any;
+            })
+    }
+
+    private getStatusPulangPasien() {
+        this._store
+            .select(RekamMedisState.rekamMedisDetail)
+            .pipe(
+                takeUntil(this.Destroy$),
+                map((result) => {
+                    return result?.status_pulang
+                })
+            )
+            .subscribe((result) => {
+                this.SelectedStatus = result as any;
+                this._cdr.detectChanges();
+            })
     }
 }
