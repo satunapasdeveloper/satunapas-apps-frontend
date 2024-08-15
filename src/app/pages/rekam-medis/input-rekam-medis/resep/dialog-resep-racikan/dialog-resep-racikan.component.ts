@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
+import { RekamMedisState } from 'src/app/store/rekam-medis';
 
 @Component({
     selector: 'app-dialog-resep-racikan',
@@ -26,29 +29,27 @@ import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.serv
     templateUrl: './dialog-resep-racikan.component.html',
     styleUrl: './dialog-resep-racikan.component.scss'
 })
-export class DialogResepRacikanComponent implements OnInit {
+export class DialogResepRacikanComponent implements OnInit, OnDestroy {
+
+    Destroy$ = new Subject();
 
     ShowDialog = false;
+
+    KeywordSearch$ = new BehaviorSubject(null);
 
     @ViewChild('DropdownObatComps') DropdownObatComps!: Dropdown;
 
     ObatRacikans: any[] = [];
 
-    ObatDatasource: any[] = [
-        {
-            id: 1,
-            nama_obat: 'Paracetamol 250 mg Sirup (OBAPA)',
-            harga: 12000
-        }
-    ];
+    ObatDatasource: any[] = [];
 
     SelectedObat: any;
 
-    WaktuPemberianObat: any[] = this._rekamMedisService.WaktuPemberianObat;
+    WaktuPemberianObat: any[] = []
 
-    WaktuSpesifikPemberianObat: any[] = this._rekamMedisService.WaktuSpesifikPemberianObat;
+    WaktuSpesifikPemberianObat: any[] = [];
 
-    RutePemberianObat: any[] = this._rekamMedisService.RutePemberianObat;
+    RutePemberianObat: any[] = [];
 
     FormState: 'insert' | 'update' = 'insert';
 
@@ -59,6 +60,7 @@ export class DialogResepRacikanComponent implements OnInit {
     ObatEditedIndex: number = 0;
 
     constructor(
+        private _store: Store,
         private _formBuilder: FormBuilder,
         private _rekamMedisService: RekamMedisService
     ) {
@@ -70,10 +72,60 @@ export class DialogResepRacikanComponent implements OnInit {
             waktu_spesifik_pemberian_obat: [[], []],
             rute_pemberian_obat: ["", []],
         });
+
+        this.KeywordSearch$
+            .pipe(
+                takeUntil(this.Destroy$),
+                debounceTime(500),
+                distinctUntilChanged()
+            )
+            .subscribe((result) => {
+                if (result) {
+                    this.getItemObat(result);
+                }
+            })
     }
 
     ngOnInit(): void {
+        this.getVariable();
+    }
 
+    ngOnDestroy(): void {
+        this.Destroy$.next(0);
+        this.Destroy$.complete();
+    }
+
+    handleSearchItemObat(args: any) {
+        this.KeywordSearch$.next(args.filter);
+    }
+
+    private getItemObat(keyword?: string) {
+        this._rekamMedisService
+            .getAllObat(keyword)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.ObatDatasource = result.data;
+            })
+    }
+
+    private getVariable() {
+        this._store
+            .select(RekamMedisState.rekamMedisVariable)
+            .pipe(
+                takeUntil(this.Destroy$),
+                map((result) => {
+                    return {
+                        rute_pemberian: result?.rute_pemberian,
+                        waktu: result?.waktu,
+                        waktu_spesifik: result?.waktu_spesifik,
+                    }
+                })
+            )
+            .subscribe((result) => {
+                this.WaktuPemberianObat = result.waktu as any;
+                this.WaktuSpesifikPemberianObat = result.waktu_spesifik as any;
+                this.RutePemberianObat = result.rute_pemberian as any;
+            })
     }
 
     handleOpenDialog(state: 'insert' | 'update', index?: number, data?: any) {
@@ -108,10 +160,11 @@ export class DialogResepRacikanComponent implements OnInit {
 
     handleAddObat() {
         this.ObatRacikans.push({
+            id_item: "",
             nama_obat: "",
             qty: 0,
             harga: 0,
-            total: 0
+            subtotal: 0
         })
     }
 
@@ -121,17 +174,20 @@ export class DialogResepRacikanComponent implements OnInit {
 
     handleChangeObat(args: any, index: number) {
         if (args.value) {
-            this.ObatRacikans[index].nama_obat = args.value.nama_obat;
+            this.ObatRacikans[index].id_item = args.value.id_item;
+            this.ObatRacikans[index].nama_obat = args.value.nama_item;
             this.ObatRacikans[index].qty = 1;
-            this.ObatRacikans[index].harga = args.value.harga;
-            this.ObatRacikans[index].total = args.value.harga;
+            this.ObatRacikans[index].harga = args.value.harga_jual;
+            this.ObatRacikans[index].subtotal = args.value.harga_jual;
         }
     }
 
     handleChangeQty(args: any, index: number) {
-        if (parseInt(args.target.value) > 0) {
-            this.ObatRacikans[index].qty = parseInt(args.target.value);
-            this.ObatRacikans[index].total = parseInt(args.target.value) * this.ObatRacikans[index].harga;
+        if (parseInt(args) > 0) {
+            this.ObatRacikans[index].qty = parseInt(args);
+            this.ObatRacikans[index].subtotal = parseInt(args) * parseFloat(this.ObatRacikans[index].harga);
+
+            console.log(this.ObatRacikans[index]);
         }
     }
 

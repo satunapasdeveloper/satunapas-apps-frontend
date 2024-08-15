@@ -1,28 +1,29 @@
 <p-dialog [header]="FormState == 'insert' ? 'Tambah Obat Racikan' : 'Edit Obat Racikan'" [modal]="true"
     [(visible)]="ShowDialog" [style]="{ width: '50rem' }" [draggable]="false" [resizable]="false">
 
-    <div class="grid w-full">
+    <div class="flex flex-col w-full">
         <div class="flex flex-col gap-2 p-2 border border-dashed border-gray-300 rounded-lg mb-4">
             <div *ngFor="let item of ObatRacikans; let i = index" class="flex flex-row gap-2">
                 <!-- Nama Obat -->
                 <div class="w-6/12 flex flex-col gap-1">
-                    <p-dropdown #DropdownObatComps [options]="ObatDatasource" optionLabel="nama_obat" filter="true"
+                    <p-dropdown #DropdownObatComps [options]="ObatDatasource" optionLabel="nama_item" filter="true"
                         [autoDisplayFirst]="false" appendTo="body" styleClass="p-inputtext-sm" [showClear]="true"
-                        (onChange)="handleChangeObat($event, i)" placeholder="Pilih obat">
+                        placeholder="Pilih obat" (onChange)="handleChangeObat($event, i)"
+                        (onFilter)="handleSearchItemObat($event)">
                     </p-dropdown>
                 </div>
 
                 <!-- Qty -->
                 <div class="w-2/12 flex flex-col gap-1">
                     <p-inputNumber styleClass="p-inputtext-sm" [(ngModel)]="item.qty" [min]="1"
-                        (onBlur)="handleChangeQty($event, i)">
+                        (ngModelChange)="handleChangeQty($event, i)">
                     </p-inputNumber>
                 </div>
 
                 <!-- Total -->
                 <div class="w-3/12 flex flex-col gap-1">
                     <p-inputNumber styleClass="p-inputtext-sm" [disabled]="true" [readonly]="true"
-                        [(ngModel)]="item.total">
+                        [(ngModel)]="item.subtotal">
                     </p-inputNumber>
                 </div>
 
@@ -67,7 +68,7 @@
                     Rute Pemberian Obat
                 </p>
                 <p-dropdown filter="true" [autoDisplayFirst]="false" appendTo="body" styleClass="p-inputtext-sm"
-                    [options]="RutePemberianObat" optionLabel="label" optionValue="value"
+                    [options]="RutePemberianObat" optionLabel="title" optionValue="value"
                     formControlName="rute_pemberian_obat">
                 </p-dropdown>
             </div>
@@ -81,7 +82,7 @@
                 </p>
                 <div class="flex flex-col gap-2">
                     <div *ngFor="let item of WaktuPemberianObat" class="field-checkbox">
-                        <p-checkbox formControlName="waktu_pemberian_obat" [label]="item.label"
+                        <p-checkbox formControlName="waktu_pemberian_obat" [label]="item.title"
                             name="waktu_pemberian_obat" [value]="item.value" />
                     </div>
                 </div>
@@ -94,7 +95,7 @@
                 </p>
                 <div class="flex flex-col gap-2">
                     <div *ngFor="let item of WaktuSpesifikPemberianObat" class="field-checkbox">
-                        <p-checkbox formControlName="waktu_spesifik_pemberian_obat" [label]="item.label"
+                        <p-checkbox formControlName="waktu_spesifik_pemberian_obat" [label]="item.title"
                             name="waktu_spesifik_pemberian_obat" [value]="item.value" />
                     </div>
                 </div>

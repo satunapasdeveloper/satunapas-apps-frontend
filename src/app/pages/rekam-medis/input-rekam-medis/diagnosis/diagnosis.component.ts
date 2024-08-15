@@ -82,8 +82,6 @@ export class DiagnosisComponent implements OnInit, AfterViewInit, OnDestroy {
                             is_edit: false
                         }
                     });
-
-                    console.log(this.DiagnosaDatasource);
                 }
             })
     }

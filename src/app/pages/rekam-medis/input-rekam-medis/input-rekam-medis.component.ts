@@ -89,7 +89,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             .dispatch(new RekamMedisActions.GetByIdRekamMedis(id_pendaftaran))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                console.log("detail rekam medis =>", result);
+                console.log("detail rekam medis =>", result.rekam_medis.single);
+                console.log("variable rekam medis =>", result.rekam_medis.variable);
             })
     }
 

@@ -95,7 +95,6 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 this.TindakanMedisDatasource = result;
-                console.log("setup tindakan medis =>", result);
             })
     }
 
