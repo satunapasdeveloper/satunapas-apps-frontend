@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogResepNonRacikanComponent } from './dialog-resep-non-racikan/dialog-resep-non-racikan.component';
 import { DialogResepRacikanComponent } from './dialog-resep-racikan/dialog-resep-racikan.component';
@@ -39,6 +39,7 @@ export class ResepComponent implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(
         private _store: Store,
+        private _cdr: ChangeDetectorRef,
         private _rekamMedisService: RekamMedisService
     ) { }
 
@@ -64,14 +65,16 @@ export class ResepComponent implements OnInit, AfterViewInit, OnDestroy {
                 })
             )
             .subscribe((result) => {
-                console.log(result);
+                this.ResepRacikan = result?.racikan ? result.racikan : [];
+                this.ResepNonRacikan = result?.obat ? result.obat : [];
+                this._cdr.detectChanges();
             })
     }
 
     onFormatAturanPakai(data: any) {
-        const aturan_pakai = data.aturan_pakai;
-        const waktu_spesifik_pemberian_obat = data.waktu_spesifik_pemberian_obat;
-        const waktu_pemberian_obat = data.waktu_pemberian_obat;
+        const aturan_pakai = data.aturan_pakai ? data.aturan_pakai : `${data.aturan_pakai_kali},${data.aturan_pakai_catatan}`;
+        const waktu_spesifik_pemberian_obat = data.waktu_spesifik_pemberian_obat ? data.waktu_spesifik_pemberian_obat : data.waktu_spesifik;
+        const waktu_pemberian_obat = data.waktu_pemberian_obat ? data.waktu_pemberian_obat : data.waktu;
         return `${aturan_pakai} | ${waktu_spesifik_pemberian_obat} | ${waktu_pemberian_obat}`;
     }
 
