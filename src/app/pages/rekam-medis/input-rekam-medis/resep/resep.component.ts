@@ -70,8 +70,8 @@ export class ResepComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onFormatAturanPakai(data: any) {
         const aturan_pakai = data.aturan_pakai;
-        const waktu_spesifik_pemberian_obat = data.waktu_spesifik_pemberian_obat.join(',');
-        const waktu_pemberian_obat = data.waktu_pemberian_obat.join(',');
+        const waktu_spesifik_pemberian_obat = data.waktu_spesifik_pemberian_obat;
+        const waktu_pemberian_obat = data.waktu_pemberian_obat;
         return `${aturan_pakai} | ${waktu_spesifik_pemberian_obat} | ${waktu_pemberian_obat}`;
     }
 

@@ -65,6 +65,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
     @ViewChild('TindakanComps') TindakanComps!: TindakanComponent;
 
+    @ViewChild('ResepComps') ResepComps!: ResepComponent;
+
     @ViewChild('PaymentComps') PaymentComps!: PaymentComponent;
 
     constructor(
@@ -89,8 +91,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             .dispatch(new RekamMedisActions.GetByIdRekamMedis(id_pendaftaran))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                console.log("detail rekam medis =>", result.rekam_medis.single);
-                console.log("variable rekam medis =>", result.rekam_medis.variable);
+                this.SelectedPasien = result.rekam_medis.single
             })
     }
 
@@ -167,6 +168,61 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
         this._store
             .dispatch(new RekamMedisActions.CreateTindakan(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        nextCallback.emit();
+                    }, 500);
+                }
+            });
+    }
+
+    handleCreateResep(nextCallback: any) {
+        const payload = {
+            id_pendaftaran: this.SelectedPasien.id_pendaftaran,
+            obat: this.ResepComps.ResepNonRacikan.map((item) => {
+                return {
+                    id_item: item.id_item,
+                    nama_obat: item.nama_obat,
+                    qty: parseFloat(item.qty),
+                    harga: parseFloat(item.harga),
+                    subtotal: parseFloat(item.subtotal),
+                    aturan_pakai_kali: item.aturan_pakai.split(",")[0],
+                    aturan_pakai_catatan: item.aturan_pakai.split(",")[1],
+                    waktu: item.waktu_pemberian_obat,
+                    waktu_spesifik: item.waktu_spesifik_pemberian_obat,
+                    rute_pemberian: item.rute_pemberian_obat,
+                }
+            }),
+            racikan: this.ResepComps.ResepRacikan.map((item) => {
+                return {
+                    nama_obat: item.nama_racikan,
+                    qty: 1,
+                    aturan_pakai_kali: item.aturan_pakai.split(",")[0],
+                    aturan_pakai_catatan: item.aturan_pakai.split(",")[1],
+                    waktu: item.waktu_pemberian_obat,
+                    waktu_spesifik: item.waktu_spesifik_pemberian_obat,
+                    rute_pemberian: item.rute_pemberian_obat,
+                    racikan: item.obats ? item.obats.map((obat: any) => {
+                        return {
+                            id_item: parseFloat(obat.id_item),
+                            nama_obat: obat.nama_obat,
+                            qty: parseFloat(obat.qty),
+                            harga: parseFloat(obat.harga),
+                            subtotal: parseFloat(obat.subtotal)
+                        }
+                    }) : []
+                }
+            }),
+            manual: []
+        };
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateResep(payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.rekam_medis.success) {

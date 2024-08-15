@@ -8,6 +8,7 @@ import { DialogModule } from 'primeng/dialog';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 import { RekamMedisState } from 'src/app/store/rekam-medis';
@@ -25,6 +26,7 @@ import { RekamMedisState } from 'src/app/store/rekam-medis';
         InputNumberModule,
         CheckboxModule,
         ButtonModule,
+        RadioButtonModule
     ],
     templateUrl: './dialog-resep-racikan.component.html',
     styleUrl: './dialog-resep-racikan.component.scss'
