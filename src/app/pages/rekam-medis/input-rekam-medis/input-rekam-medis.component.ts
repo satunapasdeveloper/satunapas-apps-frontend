@@ -67,6 +67,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
     @ViewChild('ResepComps') ResepComps!: ResepComponent;
 
+    @ViewChild('StatusComps') StatusComps!: StatusComponent;
+
     @ViewChild('PaymentComps') PaymentComps!: PaymentComponent;
 
     constructor(
@@ -223,6 +225,27 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
         this._store
             .dispatch(new RekamMedisActions.CreateResep(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        nextCallback.emit();
+                    }, 500);
+                }
+            });
+    }
+
+    handleCreateStatusPulang(nextCallback: any) {
+        const payload = {
+            id_pendaftaran: this.SelectedPasien.id_pendaftaran,
+            status_pulang: this.StatusComps.SelectedStatus
+        };
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateStatusPulang(payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.rekam_medis.success) {

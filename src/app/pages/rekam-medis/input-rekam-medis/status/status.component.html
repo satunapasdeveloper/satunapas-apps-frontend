@@ -7,12 +7,13 @@
     </p>
 
     <div class="flex flex-row gap-5">
-        <div *ngFor="let item of Status" class="w-3/12 flex flex-col gap-1 p-3 rounded-md shadow bg-gray-100 items-center justify-center h-[7rem] cursor-pointer
-        {{ SelectedStatus == item.id ? 'border border-solid border-sky-500' : 'border border-solid border-gray-300' }}"
-            (click)="SelectedStatus = item.id">
-            <i class="pi pi-{{ item.icon }}"></i>
+        <div *ngFor="let item of Status"
+            class="w-3/12 flex flex-col gap-1 p-3 rounded-md shadow bg-gray-100 items-center justify-center h-[7rem] cursor-pointer
+        {{ SelectedStatus == item.value ? 'border border-solid border-sky-500' : 'border border-solid border-gray-300' }}"
+            (click)="SelectedStatus = item.value">
+            <i class="pi pi-{{ item.image ? item.image : item.icon }}"></i>
             <p class="text-sm text-gray-700 font-medium">
-                {{ item.label }}
+                {{ item.title }}
             </p>
         </div>
     </div>

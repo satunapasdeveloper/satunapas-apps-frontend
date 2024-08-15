@@ -118,14 +118,14 @@
                     let-index="index">
                     <div class="flex flex-row gap-3">
                         <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                            <app-status></app-status>
+                            <app-status #StatusComps></app-status>
 
                             <div class="flex pt-4 justify-between">
                                 <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
                                     styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
 
                                 <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
-                                    styleClass="p-button-sm" (onClick)="nextCallback.emit()" />
+                                    styleClass="p-button-sm" (onClick)="handleCreateStatusPulang(nextCallback)" />
                             </div>
                         </div>
                         <div class="w-4/12">
