@@ -158,12 +158,11 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleChangeTindakanMedisDropdown(args: any, index: number) {
-        const value = args.value;
-
-        this.TindakanForSave[index].id_tindakan = value.id_tindakan;
-        this.TindakanForSave[index].kode_icd9 = value.kode_icd_9;
-        this.TindakanForSave[index].display_icd9 = value.nama_icd_9;
-        this.TindakanForSave[index].harga = value.harga;
+        this.TindakanForSave[index].id_tindakan = args.value.uuid;
+        this.TindakanForSave[index].tindakan = args.value.tindakan;
+        this.TindakanForSave[index].kode_icd9 = args.value.kode_icd_9;
+        this.TindakanForSave[index].display_icd9 = args.value.nama_icd_9;
+        this.TindakanForSave[index].harga = args.value.harga;
     }
 
     handleChangeTindakanMedisQty(args: any, index: number) {
@@ -202,19 +201,16 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleChangeBmhpDropdown(args: any, index: number) {
-        const value = args.value;
-
-        this.BmhpForSave[index].id_item = value.id_item;
-        this.BmhpForSave[index].kode_kfa = value.kode_kfa;
-        this.BmhpForSave[index].nama_item = value.nama_item;
-        this.BmhpForSave[index].harga = value.harga_jual;
+        this.BmhpForSave[index].id_item = args.value.id_item;
+        this.BmhpForSave[index].kode_kfa = args.value.kode_kfa;
+        this.BmhpForSave[index].nama_item = args.value.nama_item;
+        this.BmhpForSave[index].harga = args.value.harga_jual;
     }
 
     handleChangeBmhpQty(args: any, index: number) {
         const harga = this.BmhpForSave[index].harga ? parseFloat(this.BmhpForSave[index].harga) : 0;
         this.BmhpForSave[index].total = args * harga;
     }
-
 
     getTindakanForRekamMedis() {
         const bmhp_for_save = JSON.parse(JSON.stringify(this.BmhpForSave));
@@ -244,7 +240,7 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
         return {
             id_pendaftaran: this.FormTindakan.get('id_pendaftaran')?.value,
             kie: {
-                catatan: this.FormTindakan.get('is_ada_kie')?.value ? this.FormTindakan.get('keterangan_kie')?.value : ''
+                catatan: this.FormTindakan.get('keterangan_kie')?.value
             },
             tindakan: tindakan,
             bmhp: bmhp,

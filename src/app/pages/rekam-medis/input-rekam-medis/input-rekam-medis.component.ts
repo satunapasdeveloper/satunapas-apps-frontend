@@ -162,7 +162,20 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     }
 
     handleCreateTindakan(nextCallback: any) {
-        const value = this.TindakanComps.getTindakanForRekamMedis();
-        console.log("payload tindakan =>", value);
+        const payload: any = this.TindakanComps.getTindakanForRekamMedis();
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateTindakan(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        nextCallback.emit();
+                    }, 500);
+                }
+            });
     }
 }
