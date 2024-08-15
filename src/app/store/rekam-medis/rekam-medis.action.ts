@@ -55,4 +55,9 @@ export namespace RekamMedisActions {
         static readonly type = '[REKAM MEDIS] Create Status Pulang';
         constructor(public payload: KondisiPulangModel.IKondisiPulang) { }
     }
+
+    export class CreateInvoice {
+        static readonly type = '[REKAM MEDIS] Create Invoice';
+        constructor(public payload: any) { }
+    }
 }

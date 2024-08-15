@@ -293,4 +293,33 @@ export class RekamMedisState {
             )
     }
 
+    @Action(RekamMedisActions.CreateInvoice)
+    createInvoice(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .createInvoice(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    if (result.responseResult) {
+                        ctx.setState({
+                            ...state,
+                            success: true
+                        })
+                    } else {
+                        ctx.patchState({
+                            ...state,
+                            success: false
+                        })
+                    }
+                }),
+                switchMap((result: any) => {
+                    if (result.responseResult) {
+                        return ctx.dispatch(new RekamMedisActions.GetByIdRekamMedis(actions.payload.id_pendaftaran));
+                    } else {
+                        return of([]);
+                    }
+                })
+            )
+    }
+
 }

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngxs/store';
@@ -68,6 +68,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     @ViewChild('ResepComps') ResepComps!: ResepComponent;
 
     @ViewChild('StatusComps') StatusComps!: StatusComponent;
+
+    @ViewChild('BillingComps') BillingComps!: BillingComponent;
 
     @ViewChild('PaymentComps') PaymentComps!: PaymentComponent;
 
@@ -255,6 +257,33 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
                     setTimeout(() => {
                         nextCallback.emit();
                     }, 500);
+                }
+            });
+    }
+
+    handleOpenDialogPayment() {
+        let billing = this.BillingComps.Billing;
+        billing.tanggal = formatDate(new Date(), 'dd-MM-yyyy', 'EN');
+
+        this.PaymentComps.tagihan = billing;
+        this.PaymentComps.ShowDialogPayment = true
+    }
+
+    handleCreateInvoice(args: any) {
+        let data = JSON.parse(JSON.stringify(args));
+
+        data.tanggal = formatDate(new Date(), 'yyyy-MM-dd', 'EN');
+        delete data.bayar;
+        delete data.kembalian;
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateInvoice(data))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+                    this.PaymentComps.ShowDialogPayment = false;
                 }
             });
     }
