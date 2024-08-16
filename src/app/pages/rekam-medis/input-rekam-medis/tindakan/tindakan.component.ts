@@ -110,6 +110,40 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((result) => {
                 if (result) {
                     this.FormTindakan.get('id_pendaftaran')?.setValue(result.id_pendaftaran);
+                    this.FormTindakan.get('is_ada_kie')?.setValue(result.kie.catatan ? true : false);
+                    this.FormTindakan.get('keterangan_kie')?.setValue(result.kie.catatan);
+                    this.FormTindakan.get('is_ada_tindakan')?.setValue(result.tindakan.length ? true : false);
+                    this.FormTindakan.get('tanggal_tindakan')?.setValue(result.tanggal ? new Date(result.tanggal) : null);
+                    this.FormTindakan.get('waktu_tindakan')?.setValue(result.waktu ? new Date(result.waktu) : null);
+                    this.FormTindakan.get('petugas')?.setValue(result.id_user);
+
+                    this.TindakanForSave = result.tindakan.map((item: any) => {
+                        return {
+                            id_tindakan: item.id_tindakan,
+                            kode_icd9: item.kode_icd9,
+                            display_icd9: item.display_icd9,
+                            tindakan: item.tindakan,
+                            petugas: 0,
+                            qty: item.qty,
+                            harga: item.harga,
+                            total: item.total,
+                            is_new: false,
+                            is_edit: false
+                        }
+                    });
+
+                    this.BmhpForSave = result.bmhp.map((item: any) => {
+                        return {
+                            id_item: item.id_item,
+                            kode_kfa: item.kode_kfa,
+                            nama_item: item.nama_item,
+                            qty: item.qty,
+                            harga: item.harga,
+                            total: item.total,
+                            is_new: false,
+                            is_edit: false
+                        }
+                    })
                 }
             })
     }
@@ -157,7 +191,7 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleChangeTindakanMedisDropdown(args: any, index: number) {
-        this.TindakanForSave[index].id_tindakan = args.value.uuid;
+        this.TindakanForSave[index].id_tindakan = args.value.id_tindakan;
         this.TindakanForSave[index].tindakan = args.value.tindakan;
         this.TindakanForSave[index].kode_icd9 = args.value.kode_icd_9;
         this.TindakanForSave[index].display_icd9 = args.value.nama_icd_9;

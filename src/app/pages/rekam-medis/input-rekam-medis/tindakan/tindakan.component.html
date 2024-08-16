@@ -46,7 +46,7 @@
                 <p class="text-gray-700 text-sm">
                     Petugas
                 </p>
-                <p-dropdown [options]="PetugasDatasource" optionLabel="nama" optionValue="uuid"
+                <p-dropdown [options]="PetugasDatasource" optionLabel="nama" optionValue="id_user"
                     styleClass="p-inputtext-sm w-full" placeholder="Pilih Petugas" [autoDisplayFirst]="false"
                     [filter]="true" appendTo="body" formControlName="petugas">
                 </p-dropdown>
@@ -57,17 +57,17 @@
 
             <!-- Heading -->
             <div class="flex flex-row gap-2 items-center mb-0">
-                <div class="w-4/12">
+                <div class="w-6/12">
                     <p class="text-gray-700 text-sm font-medium">
                         Nama Tindakan
                     </p>
                 </div>
-                <div class="w-3/12">
+                <div class="w-2/12">
                     <p class="text-gray-700 text-sm font-medium">
                         Qty
                     </p>
                 </div>
-                <div class="w-3/12">
+                <div class="w-2/12">
                     <p class="text-gray-700 text-sm font-medium">
                         Harga Total
                     </p>
@@ -83,22 +83,22 @@
             @for(item of TindakanForSave; let i = $index; let last = $last; track item) {
             <!-- Add & edit -->
             <div *ngIf="item.is_new || item.is_edit" class="flex flex-row w-full gap-2 items-center mb-2">
-                <div class="w-4/12">
+                <div class="w-6/12">
                     <p-dropdown [options]="TindakanMedisDatasource" optionLabel="tindakan"
                         styleClass="p-inputtext-sm w-full" placeholder="Pilih Tindakan Medis" [autoDisplayFirst]="false"
                         [filter]="true" appendTo="body" (onChange)="handleChangeTindakanMedisDropdown($event, i)">
                     </p-dropdown>
                 </div>
-                <div class="w-3/12 flex">
+                <div class="w-2/12 flex">
                     <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.qty"
                         (ngModelChange)="handleChangeTindakanMedisQty($event, i)">
                     </p-inputNumber>
                 </div>
-                <div class="w-3/12 flex">
+                <div class="w-2/12 flex">
                     <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.total" [disabled]="true">
                     </p-inputNumber>
                 </div>
-                <div class="w-2/12 flex">
+                <div class="w-2/12 flex justify-center">
                     <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
                         styleClass="p-button-sm" (onClick)="handleDeleteTindakan(i)" />
                 </div>
@@ -106,22 +106,22 @@
 
             <!-- Just view -->
             <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center mb-2">
-                <div class="w-4/12">
+                <div class="w-6/12">
                     <p class="text-gray-700 text-sm">
-                        {{ item.nama_tindakan_medis | titlecase }}
+                        {{ item.tindakan | titlecase }}
                     </p>
                 </div>
-                <div class="w-3/12 flex">
+                <div class="w-2/12 flex">
                     <p class="text-gray-700 text-sm">
                         {{ item.qty | number }}
                     </p>
                 </div>
-                <div class="w-3/12 flex">
+                <div class="w-2/12 flex">
                     <p class="text-gray-700 text-sm">
                         {{ item.total | currency: 'Rp. ' }}
                     </p>
                 </div>
-                <div class="w-2/12">
+                <div class="w-2/12 flex justify-center">
                     <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
                         styleClass="p-button-sm" (onClick)="handleEditTindakan(i)" />
 

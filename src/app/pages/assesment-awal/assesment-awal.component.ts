@@ -4,10 +4,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { RekamMedisActions, RekamMedisState } from 'src/app/store/rekam-medis';
 
 @Component({
     selector: 'app-assesment-awal',
@@ -22,6 +24,8 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
     styleUrl: './assesment-awal.component.scss'
 })
 export class AssesmentAwalComponent implements OnInit {
+
+    Destroy$ = new Subject();
 
     ButtonNavigation: LayoutModel.IButtonNavigation[] = [
         {
@@ -53,119 +57,52 @@ export class AssesmentAwalComponent implements OnInit {
             id: 'form_assesment_pasien',
             fields: [
                 {
-                    id: 'tingkat_kesadaran',
+                    id: 'id_pendaftaran',
+                    label: 'Id Pendaftaran',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
+                },
+                {
+                    id: 'kesadaran',
                     label: 'Tingkat Kesadaran',
                     required: true,
                     type: 'radio',
-                    radioButtonProps: [
-                        {
-                            name: 'tingkat_kesadaran',
-                            label: 'Sadar Penuh',
-                            value: 'Sadar Penuh'
-                        },
-                        {
-                            name: 'tingkat_kesadaran',
-                            label: 'Tampak Mengantuk / Gelisah Bicara Tidak Jelas',
-                            value: 'Tampak Mengantuk / Gelisah Bicara Tidak Jelas'
-                        },
-                        {
-                            name: 'tingkat_kesadaran',
-                            label: 'Tidak Sadar',
-                            value: 'Tidak Sadar'
-                        },
-                    ],
-                    value: 'Sadar Penuh',
+                    radioButtonProps: [],
+                    value: '',
                 },
                 {
                     id: 'pernafasan',
                     label: 'Pernafasan',
                     required: true,
                     type: 'radio',
-                    radioButtonProps: [
-                        {
-                            name: 'pernafasan',
-                            label: 'Nafas Normal',
-                            value: 'Nafas Normal'
-                        },
-                        {
-                            name: 'pernafasan',
-                            label: 'Tampak Sesak',
-                            value: 'Tampak Sesak'
-                        },
-                        {
-                            name: 'pernafasan',
-                            label: 'Tidak Bernafas',
-                            value: 'Tidak Bernafas'
-                        },
-                    ],
-                    value: 'Nafas Normal',
+                    radioButtonProps: [],
+                    value: '',
                 },
                 {
                     id: 'resiko_jatuh',
                     label: 'Risiko Jatuh',
                     required: true,
                     type: 'radio',
-                    radioButtonProps: [
-                        {
-                            name: 'resiko_jatuh',
-                            label: 'Risiko Rendah',
-                            value: 'Risiko Rendah'
-                        },
-                        {
-                            name: 'resiko_jatuh',
-                            label: 'Risiko Sedang',
-                            value: 'Risiko Sedang'
-                        },
-                        {
-                            name: 'resiko_jatuh',
-                            label: 'Risiko Tinggi',
-                            value: 'Risiko Tinggi'
-                        },
-                    ],
-                    value: 'Risiko Rendah',
+                    radioButtonProps: [],
+                    value: '',
                 },
                 {
-                    id: 'skala_nyeri',
+                    id: 'nyeri',
                     label: 'Skala Nyeri',
                     required: true,
                     type: 'radio',
-                    radioButtonProps: [
-                        {
-                            name: 'skala_nyeri',
-                            label: 'Skor 1-3 (Nyeri Ringan)',
-                            value: 'Skor 1-3 (Nyeri Ringan)'
-                        },
-                        {
-                            name: 'skala_nyeri',
-                            label: 'Skor 4-7 (Nyeri Sedang)',
-                            value: 'Skor 4-7 (Nyeri Sedang)'
-                        },
-                        {
-                            name: 'skala_nyeri',
-                            label: 'Skor 8-10 (Nyeri Berat)',
-                            value: 'Skor 8-10 (Nyeri Berat)'
-                        },
-                    ],
-                    value: 'Skor 1-3 (Nyeri Ringan)',
+                    radioButtonProps: [],
+                    value: '',
                 },
                 {
                     id: 'batuk',
                     label: 'Batuk',
                     required: true,
                     type: 'radio',
-                    radioButtonProps: [
-                        {
-                            name: 'batuk',
-                            label: 'Tidak Ada / <2 Minggu',
-                            value: 'Tidak Ada / <2 Minggu'
-                        },
-                        {
-                            name: 'batuk',
-                            label: '>= 2 Minggu',
-                            value: '>= 2 Minggu'
-                        }
-                    ],
-                    value: 'Tidak Ada / <2 Minggu',
+                    radioButtonProps: [],
+                    value: '',
                 },
             ],
             style: 'not_inline',
@@ -209,14 +146,14 @@ export class AssesmentAwalComponent implements OnInit {
                     value: 0,
                 },
                 {
-                    id: 'diastole',
+                    id: 'distole',
                     label: 'Diastole (mm/Hg)',
                     required: true,
                     type: 'number',
                     value: 0,
                 },
                 {
-                    id: 'spo2',
+                    id: 'spO2',
                     label: 'SpO2 (%)',
                     required: false,
                     type: 'number',
@@ -237,7 +174,7 @@ export class AssesmentAwalComponent implements OnInit {
                     value: 0,
                 },
                 {
-                    id: 'pernafasan',
+                    id: 'pernafasan_menit',
                     label: 'Pernafasan (/menit)',
                     required: true,
                     type: 'number',
@@ -253,13 +190,87 @@ export class AssesmentAwalComponent implements OnInit {
 
     ngOnInit(): void {
         const id = this._activatedRoute.snapshot.queryParams['id'];
-        console.log("no id medis =>", id);
+        // console.log("no id medis =>", id);
 
         this.SelectedPasien = JSON.parse(localStorage.getItem('_SPSH_') as any);
-        console.log("selected pasien =>", this.SelectedPasien);
+        // console.log("selected pasien =>", this.SelectedPasien);
+
+        this.getVariable();
     }
 
     handleBackToList() {
         this._router.navigateByUrl('antrian');
+    }
+
+    private getVariable() {
+        this._store
+            .select(RekamMedisState.rekamMedisVariable)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                const tingkat_kesadaran_index = this.FormProps.fields.findIndex(item => item.id == 'kesadaran');
+                this.FormProps.fields[tingkat_kesadaran_index].radioButtonProps = result?.kesadaran.map((item) => {
+                    return {
+                        ...item,
+                        name: 'kesadaran',
+                        label: item.title
+                    }
+                });
+
+                const pernafasan_index = this.FormProps.fields.findIndex(item => item.id == 'pernafasan');
+                this.FormProps.fields[pernafasan_index].radioButtonProps = result?.pernafasan.map((item) => {
+                    return {
+                        ...item,
+                        name: 'pernafasan',
+                        label: item.title
+                    }
+                });
+
+                const resiko_jatuh_index = this.FormProps.fields.findIndex(item => item.id == 'resiko_jatuh');
+                this.FormProps.fields[resiko_jatuh_index].radioButtonProps = result?.resiko_jatuh.map((item) => {
+                    return {
+                        ...item,
+                        name: 'resiko_jatuh',
+                        label: item.title
+                    }
+                });
+
+                const nyeri_index = this.FormProps.fields.findIndex(item => item.id == 'nyeri');
+                this.FormProps.fields[nyeri_index].radioButtonProps = result?.nyeri.map((item) => {
+                    return {
+                        ...item,
+                        name: 'nyeri',
+                        label: item.title
+                    }
+                });
+
+                const batuk_index = this.FormProps.fields.findIndex(item => item.id == 'batuk');
+                this.FormProps.fields[batuk_index].radioButtonProps = result?.batuk.map((item) => {
+                    return {
+                        ...item,
+                        name: 'batuk',
+                        label: item.title
+                    }
+                });
+            })
+    }
+
+    handleSaveAssesmentAwal() {
+        let payload = {
+            ...this.FormComps.FormGroup.value,
+            ...this.FormKeadaanUmumComps.FormGroup.value,
+            ...this.FormVitalSignComps.FormGroup.value,
+        };
+
+        payload.id_pendaftaran = this.SelectedPasien.id_pendaftaran;
+
+        this._store
+            .dispatch(new RekamMedisActions.CreateAssessment(payload))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+                }
+            });
     }
 }

@@ -2,7 +2,7 @@ import { CommonModule, formatDate } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { StepperModule } from 'primeng/stepper';
@@ -21,6 +21,7 @@ import { RekamMedisActions, RekamMedisState } from 'src/app/store/rekam-medis';
 import { Subject, takeUntil } from 'rxjs';
 import { PaymentComponent } from './payment/payment.component';
 import { HistoryPaymentComponent } from './history-payment/history-payment.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
     selector: 'app-input-rekam-medis',
@@ -41,6 +42,7 @@ import { HistoryPaymentComponent } from './history-payment/history-payment.compo
         DialogModule,
         PaymentComponent,
         HistoryPaymentComponent,
+        ConfirmDialogModule
     ],
     templateUrl: './input-rekam-medis.component.html',
     styleUrl: './input-rekam-medis.component.scss'
@@ -83,6 +85,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
         private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
         private _rekamMedisService: RekamMedisService,
+        private _confirmationService: ConfirmationService,
     ) { }
 
     ngOnInit(): void {
@@ -113,10 +116,6 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             });
     }
 
-    private getTagihan() {
-
-    }
-
     handleBackToList() {
         this._router.navigateByUrl('antrian');
     }
@@ -127,19 +126,23 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
         delete payload.is_ada_riwayat_pengobatan;
         delete payload.is_ada_riwayat_penyakit_terdahulu;
 
-        this._store
-            .dispatch(new RekamMedisActions.CreateAnamesis(payload))
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result.rekam_medis.success) {
-                    this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+        if (this.SelectedPasien.status_billing) {
+            nextCallback.emit();
+        } else {
+            this._store
+                .dispatch(new RekamMedisActions.CreateAnamesis(payload))
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.rekam_medis.success) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
 
-                    setTimeout(() => {
-                        nextCallback.emit();
-                    }, 500);
-                }
-            });
+                        setTimeout(() => {
+                            nextCallback.emit();
+                        }, 500);
+                    }
+                });
+        }
     }
 
     handleCreatePemeriksaanFisik(nextCallback: any) {
@@ -150,19 +153,23 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             kondisi_tubuh: this.PemeriksaanFisikComps.CatatanKondisiTubuh$.value
         };
 
-        this._store
-            .dispatch(new RekamMedisActions.CreatePemeriksaanFisik(payload))
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result.rekam_medis.success) {
-                    this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+        if (this.SelectedPasien.status_billing) {
+            nextCallback.emit();
+        } else {
+            this._store
+                .dispatch(new RekamMedisActions.CreatePemeriksaanFisik(payload))
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.rekam_medis.success) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
 
-                    setTimeout(() => {
-                        nextCallback.emit();
-                    }, 500);
-                }
-            });
+                        setTimeout(() => {
+                            nextCallback.emit();
+                        }, 500);
+                    }
+                });
+        }
     }
 
     handleCreateDiagnosa(nextCallback: any) {
@@ -170,37 +177,45 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             diagnosisi: this.DiagnosisComps.DiagnosaDatasource
         };
 
-        this._store
-            .dispatch(new RekamMedisActions.CreateDiagnosa(payload))
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result.rekam_medis.success) {
-                    this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+        if (this.SelectedPasien.status_billing) {
+            nextCallback.emit();
+        } else {
+            this._store
+                .dispatch(new RekamMedisActions.CreateDiagnosa(payload))
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.rekam_medis.success) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
 
-                    setTimeout(() => {
-                        nextCallback.emit();
-                    }, 500);
-                }
-            });
+                        setTimeout(() => {
+                            nextCallback.emit();
+                        }, 500);
+                    }
+                });
+        }
     }
 
     handleCreateTindakan(nextCallback: any) {
         const payload: any = this.TindakanComps.getTindakanForRekamMedis();
 
-        this._store
-            .dispatch(new RekamMedisActions.CreateTindakan(payload))
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result.rekam_medis.success) {
-                    this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+        if (this.SelectedPasien.status_billing) {
+            nextCallback.emit();
+        } else {
+            this._store
+                .dispatch(new RekamMedisActions.CreateTindakan(payload))
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.rekam_medis.success) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
 
-                    setTimeout(() => {
-                        nextCallback.emit();
-                    }, 500);
-                }
-            });
+                        setTimeout(() => {
+                            nextCallback.emit();
+                        }, 500);
+                    }
+                });
+        }
     }
 
     handleCreateResep(nextCallback: any) {
@@ -243,19 +258,23 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             manual: []
         };
 
-        this._store
-            .dispatch(new RekamMedisActions.CreateResep(payload))
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result.rekam_medis.success) {
-                    this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+        if (this.SelectedPasien.status_billing) {
+            nextCallback.emit();
+        } else {
+            this._store
+                .dispatch(new RekamMedisActions.CreateResep(payload))
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.rekam_medis.success) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
 
-                    setTimeout(() => {
-                        nextCallback.emit();
-                    }, 500);
-                }
-            });
+                        setTimeout(() => {
+                            nextCallback.emit();
+                        }, 500);
+                    }
+                });
+        }
     }
 
     handleCreateStatusPulang(nextCallback: any) {
@@ -264,19 +283,23 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             status_pulang: this.StatusComps.SelectedStatus
         };
 
-        this._store
-            .dispatch(new RekamMedisActions.CreateStatusPulang(payload))
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result.rekam_medis.success) {
-                    this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
+        if (this.SelectedPasien.status_billing) {
+            nextCallback.emit();
+        } else {
+            this._store
+                .dispatch(new RekamMedisActions.CreateStatusPulang(payload))
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.rekam_medis.success) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
 
-                    setTimeout(() => {
-                        nextCallback.emit();
-                    }, 500);
-                }
-            });
+                        setTimeout(() => {
+                            nextCallback.emit();
+                        }, 500);
+                    }
+                });
+        }
     }
 
     handleOpenDialogPayment() {
@@ -302,6 +325,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
                     this._messageService.clear();
                     this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data Berhasil Disimpan' });
                     this.PaymentComps.ShowDialogPayment = false;
+                    this.selectDetailRekamMedisEntities();
                 }
             });
     }
@@ -316,15 +340,29 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     }
 
     handleCancelInvoice(args: string) {
-        this._store
-            .dispatch(new RekamMedisActions.CancelHistoryPayment(args))
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result.rekam_medis.success) {
-                    this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Invoice Berhasil Dibatalkan' });
-                    this.selectDetailRekamMedisEntities();
-                }
-            })
+        this._confirmationService.confirm({
+            target: (<any>event).target as EventTarget,
+            message: 'Invoice yang telah terbayar akan dibatalkan',
+            header: 'Apakah Anda Yakin?',
+            icon: 'pi pi-info-circle',
+            acceptButtonStyleClass: "p-button-danger p-button-sm",
+            rejectButtonStyleClass: "p-button-secondary p-button-sm",
+            acceptIcon: "none",
+            acceptLabel: 'Iya Saya Yakin',
+            rejectIcon: "none",
+            rejectLabel: 'Tidak, Kembali',
+            accept: () => {
+                this._store
+                    .dispatch(new RekamMedisActions.CancelHistoryPayment(args))
+                    .pipe(takeUntil(this.Destroy$))
+                    .subscribe((result) => {
+                        if (result.rekam_medis.success) {
+                            this._messageService.clear();
+                            this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Invoice Berhasil Dibatalkan' });
+                            this.selectDetailRekamMedisEntities();
+                        }
+                    })
+            }
+        });
     }
 }
