@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngxs/store';
@@ -8,7 +8,7 @@ import { TableModule } from 'primeng/table';
 import { Subject, takeUntil } from 'rxjs';
 import { BillingModel } from 'src/app/model/pages/rekam-medis/billing.model';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
-import { RekamMedisState } from 'src/app/store/rekam-medis';
+import { RekamMedisActions, RekamMedisState } from 'src/app/store/rekam-medis';
 
 @Component({
     selector: 'app-history-payment',
@@ -29,6 +29,8 @@ export class HistoryPaymentComponent implements OnInit, OnDestroy {
     Billing: any;
 
     Invoice!: BillingModel.IHistoryPembayaran;
+
+    @Output('onCancel') onCancel = new EventEmitter<any>();
 
     constructor(
         private _store: Store,
@@ -64,5 +66,9 @@ export class HistoryPaymentComponent implements OnInit, OnDestroy {
                     this.Billing = result.data;
                 }
             })
+    }
+
+    cancelInvoice() {
+        this.onCancel.emit(this._activatedRoute.snapshot.queryParams['id']);
     }
 }

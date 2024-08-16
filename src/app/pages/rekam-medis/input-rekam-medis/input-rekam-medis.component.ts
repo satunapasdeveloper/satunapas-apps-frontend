@@ -17,7 +17,7 @@ import { BillingComponent } from './billing/billing.component';
 import { InformasiPasienComponent } from './informasi-pasien/informasi-pasien.component';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 import { DialogModule } from 'primeng/dialog';
-import { RekamMedisActions } from 'src/app/store/rekam-medis';
+import { RekamMedisActions, RekamMedisState } from 'src/app/store/rekam-medis';
 import { Subject, takeUntil } from 'rxjs';
 import { PaymentComponent } from './payment/payment.component';
 import { HistoryPaymentComponent } from './history-payment/history-payment.component';
@@ -100,7 +100,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             .dispatch(new RekamMedisActions.GetByIdRekamMedis(id_pendaftaran))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                this.SelectedPasien = result.rekam_medis.single
+                this.SelectedPasien = result.rekam_medis.single;
             });
     }
 
@@ -111,6 +111,10 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 this.SelectedPasien = result.rekam_medis.single
             });
+    }
+
+    private getTagihan() {
+
     }
 
     handleBackToList() {
@@ -300,5 +304,27 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
                     this.PaymentComps.ShowDialogPayment = false;
                 }
             });
+    }
+
+    private selectDetailRekamMedisEntities() {
+        this._store
+            .select(RekamMedisState.rekamMedisDetail)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.SelectedPasien = result;
+            })
+    }
+
+    handleCancelInvoice(args: string) {
+        this._store
+            .dispatch(new RekamMedisActions.CancelHistoryPayment(args))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Invoice Berhasil Dibatalkan' });
+                    this.selectDetailRekamMedisEntities();
+                }
+            })
     }
 }

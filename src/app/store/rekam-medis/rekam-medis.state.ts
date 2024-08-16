@@ -406,7 +406,7 @@ export class RekamMedisState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new RekamMedisActions.GetHistoryPayment(actions.payload));
+                        return ctx.dispatch(new RekamMedisActions.GetByIdRekamMedis(actions.payload));
                     } else {
                         return of([]);
                     }

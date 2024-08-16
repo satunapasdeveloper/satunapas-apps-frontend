@@ -240,7 +240,9 @@
             <p-button severity="secondary" styleClass="p-button-sm w-full" label="Unduh Invoice"></p-button>
         </div>
         <div class="w-6/12 grid">
-            <p-button severity="secondary" styleClass="p-button-sm w-full" label="Batalkan Invoice"></p-button>
+            <p-button severity="secondary" styleClass="p-button-sm w-full" label="Batalkan Invoice"
+                (onClick)="cancelInvoice()">
+            </p-button>
         </div>
     </div>
 </div>

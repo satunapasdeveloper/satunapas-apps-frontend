@@ -154,7 +154,8 @@
 
                         <div *ngIf="SelectedPasien.status_billing"
                             class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                            <app-history-payment #HistoryPaymentComps></app-history-payment>
+                            <app-history-payment #HistoryPaymentComps (onCancel)="handleCancelInvoice($event)">
+                            </app-history-payment>
                         </div>
                         <div class="w-4/12">
                             <app-informasi-pasien></app-informasi-pasien>
