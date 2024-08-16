@@ -56,8 +56,23 @@ export namespace RekamMedisActions {
         constructor(public payload: KondisiPulangModel.IKondisiPulang) { }
     }
 
+    export class GetTagihan {
+        static readonly type = '[REKAM MEDIS] Get Tagihan';
+        constructor(public payload: string) { }
+    }
+
     export class CreateInvoice {
         static readonly type = '[REKAM MEDIS] Create Invoice';
         constructor(public payload: any) { }
+    }
+
+    export class GetHistoryPayment {
+        static readonly type = '[REKAM MEDIS] Get History Payment';
+        constructor(public payload: string) { }
+    }
+
+    export class CancelHistoryPayment {
+        static readonly type = '[REKAM MEDIS] Cancel History Payment';
+        constructor(public payload: string) { }
     }
 }

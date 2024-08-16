@@ -27,7 +27,7 @@
 
     <!-- Obat -->
     <div class="flex flex-col p-2 mb-1 border-b border-t-0 border-x-0 border-gray-200 border-solid">
-        <p class="text-gray-700 text-base mb-2 font-medium">
+        <p class="text-gray-700 text-sm mb-2 font-medium">
             1. Obat
         </p>
 
@@ -58,19 +58,19 @@
 
     <!-- Tindakan -->
     <div class="flex flex-col p-2 mb-1 border-b border-t-0 border-x-0 border-gray-200 border-solid">
-        <p class="text-gray-700 text-base mb-2 font-medium">
+        <p class="text-gray-700 text-sm mb-2 font-medium">
             2. Tindakan
         </p>
 
         <div *ngFor="let item of billing.tindakan" class="flex flex-row gap-2 mb-1 items-center">
             <div class="w-7/12">
                 <p class="text-sm">
-                    {{ item.nama_tindakan_medis }}
+                    {{ item.deskripsi }}
                 </p>
             </div>
             <div class="w-2/12">
                 <p class="text-sm text-center">
-                    {{ item.qty }}
+                    {{ item.jumlah }}
                 </p>
             </div>
             <div class="w-3/12">
@@ -89,14 +89,14 @@
 
     <!-- BMHP -->
     <div class="flex flex-col p-2 mb-10">
-        <p class="text-gray-700 text-base mb-2 font-medium">
+        <p class="text-gray-700 text-sm mb-2 font-medium">
             3. BMHP
         </p>
 
         <div *ngFor="let item of billing.bmhp" class="flex flex-row gap-2 mb-1 items-center">
             <div class="w-7/12">
                 <p class="text-sm">
-                    {{ item.nama_item }}
+                    {{ item.deskripsi }}
                 </p>
             </div>
             <div class="w-2/12">
@@ -106,7 +106,7 @@
             </div>
             <div class="w-3/12">
                 <p class="text-sm text-end">
-                    {{ item.total | currency: 'Rp. ' }}
+                    {{ item.total_harga | currency: 'Rp. ' }}
                 </p>
             </div>
         </div>

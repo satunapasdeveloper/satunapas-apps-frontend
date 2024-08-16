@@ -100,7 +100,16 @@ export class AntrianComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.getAllPoli();
-        // this.handleSearchPoli(this.SelectedPoli);
+
+        const prevFilter = JSON.parse(localStorage.getItem('_ANTRIAN_FILTER_SEARCH_') as any);
+        if (prevFilter) {
+            this._store
+                .dispatch(new RekamMedisActions.GetAllRekamMedis(prevFilter))
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    this.AntrianDatasource = result.rekam_medis.entities;
+                })
+        }
     }
 
     ngOnDestroy(): void {
@@ -145,6 +154,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
             .dispatch(new RekamMedisActions.GetAllRekamMedis(payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
+                localStorage.setItem('_ANTRIAN_FILTER_SEARCH_', JSON.stringify(payload));
                 this.AntrianDatasource = result.rekam_medis.entities;
             })
     }
