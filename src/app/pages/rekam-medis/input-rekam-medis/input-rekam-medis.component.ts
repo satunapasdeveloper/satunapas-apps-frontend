@@ -20,6 +20,7 @@ import { DialogModule } from 'primeng/dialog';
 import { RekamMedisActions } from 'src/app/store/rekam-medis';
 import { Subject, takeUntil } from 'rxjs';
 import { PaymentComponent } from './payment/payment.component';
+import { HistoryPaymentComponent } from './history-payment/history-payment.component';
 
 @Component({
     selector: 'app-input-rekam-medis',
@@ -38,7 +39,8 @@ import { PaymentComponent } from './payment/payment.component';
         StatusComponent,
         BillingComponent,
         DialogModule,
-        PaymentComponent
+        PaymentComponent,
+        HistoryPaymentComponent,
     ],
     templateUrl: './input-rekam-medis.component.html',
     styleUrl: './input-rekam-medis.component.scss'
@@ -73,6 +75,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
     @ViewChild('PaymentComps') PaymentComps!: PaymentComponent;
 
+    @ViewChild('HistoryPaymentComps') HistoryPaymentComps!: HistoryPaymentComponent;
+
     constructor(
         private _store: Store,
         private _router: Router,
@@ -83,6 +87,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.getById(this._activatedRoute.snapshot.queryParams['id']);
+        this.getHistoryPembayaran(this._activatedRoute.snapshot.queryParams['id']);
     }
 
     ngOnDestroy(): void {
@@ -96,7 +101,16 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 this.SelectedPasien = result.rekam_medis.single
-            })
+            });
+    }
+
+    private getHistoryPembayaran(id_pendaftaran: string) {
+        this._store
+            .dispatch(new RekamMedisActions.GetHistoryPayment(id_pendaftaran))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.SelectedPasien = result.rekam_medis.single
+            });
     }
 
     handleBackToList() {

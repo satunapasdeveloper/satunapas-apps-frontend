@@ -160,7 +160,7 @@ export class RekamMedisService {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/StatusPulang`, payload);
     }
 
-    getTagihan(id_pendaftaran: string): Observable<RekamMedisModel.GetByIdRekamMedis> {
+    getTagihan(id_pendaftaran: string): Observable<BillingModel.GetTagihan> {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/RekamMedis/GetTagihanByIdPendaftaran/${id_pendaftaran}`);
     }
 
@@ -168,8 +168,19 @@ export class RekamMedisService {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/BuatInvoicePaymnet`, payload);
     }
 
-    getAllHistoryPembayaran(parameter?: PostRequestByDynamicFiterModel[]): Observable<BillingModel.GetAllHistoryPembayaran> {
-        const filter = { filter: parameter ? parameter : [] };
+    getAllHistoryPembayaran(id_pendaftaran: string): Observable<BillingModel.GetAllHistoryPembayaran> {
+        const filter = {
+            filter: [
+                {
+                    columnName: "pendaftaran.id_pendaftaran",
+                    filter: "equel",
+                    searchText: id_pendaftaran,
+                    searchText2: "",
+                    withOr: true
+                }
+            ]
+        };
+
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/HistoryPembayaran`, filter);
     }
 

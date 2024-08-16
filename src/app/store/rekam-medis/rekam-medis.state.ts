@@ -5,11 +5,14 @@ import { RekamMedisModel } from "src/app/model/pages/rekam-medis/rekam-medis.mod
 import { RekamMedisActions } from "./rekam-medis.action";
 import { RekamMedisService } from "src/app/services/rekam-medis/rekam-medis.service";
 import { ActivatedRoute } from "@angular/router";
+import { BillingModel } from "src/app/model/pages/rekam-medis/billing.model";
 
 interface RekamMedisStateModel {
     entities: RekamMedisModel.IRekamMedis[];
     single?: RekamMedisModel.IRekamMedis | null;
     variable?: RekamMedisModel.IVariableRekamMedis | null;
+    invoice?: BillingModel.IInvoice | null;
+    history_payment?: BillingModel.IHistoryPembayaran | null;
     success?: boolean;
 }
 
@@ -19,6 +22,8 @@ interface RekamMedisStateModel {
         entities: [],
         single: null,
         variable: null,
+        invoice: null,
+        history_payment: null,
         success: true
     }
 })
@@ -43,6 +48,16 @@ export class RekamMedisState {
     @Selector()
     static rekamMedisVariable(state: RekamMedisStateModel) {
         return state.variable;
+    }
+
+    @Selector()
+    static rekamMedisInvoice(state: RekamMedisStateModel) {
+        return state.invoice;
+    }
+
+    @Selector()
+    static rekamMedisHistoryPayment(state: RekamMedisStateModel) {
+        return state.history_payment;
     }
 
     @Action(RekamMedisActions.GetAllRekamMedis)
@@ -293,6 +308,30 @@ export class RekamMedisState {
             )
     }
 
+    @Action(RekamMedisActions.GetTagihan)
+    getTagihan(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .getTagihan(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    if (result.responseResult) {
+                        ctx.setState({
+                            ...state,
+                            success: true,
+                            invoice: result.data as any
+                        })
+                    } else {
+                        ctx.patchState({
+                            ...state,
+                            success: false,
+                            invoice: null
+                        })
+                    }
+                })
+            )
+    }
+
     @Action(RekamMedisActions.CreateInvoice)
     createInvoice(ctx: StateContext<RekamMedisStateModel>, actions: any) {
         return this._rekamMedisService
@@ -322,4 +361,56 @@ export class RekamMedisState {
             )
     }
 
+    @Action(RekamMedisActions.GetHistoryPayment)
+    getHistoryPayment(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .getAllHistoryPembayaran(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    if (result.responseResult) {
+                        ctx.setState({
+                            ...state,
+                            success: true,
+                            history_payment: result.data.length ? result.data[0] : null
+                        })
+                    } else {
+                        ctx.patchState({
+                            ...state,
+                            success: false,
+                            history_payment: null
+                        })
+                    }
+                })
+            )
+    }
+
+    @Action(RekamMedisActions.CancelHistoryPayment)
+    cancelInvoice(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .batalInvoice(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    if (result.responseResult) {
+                        ctx.setState({
+                            ...state,
+                            success: true
+                        })
+                    } else {
+                        ctx.patchState({
+                            ...state,
+                            success: false
+                        })
+                    }
+                }),
+                switchMap((result: any) => {
+                    if (result.responseResult) {
+                        return ctx.dispatch(new RekamMedisActions.GetHistoryPayment(actions.payload));
+                    } else {
+                        return of([]);
+                    }
+                })
+            )
+    }
 }
