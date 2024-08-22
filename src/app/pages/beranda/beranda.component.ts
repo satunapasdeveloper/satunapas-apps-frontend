@@ -6,6 +6,8 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 import { Subject, takeUntil } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
+import { Store } from '@ngxs/store';
+import { BerandaState } from 'src/app/store/beranda';
 
 @Component({
     selector: 'app-beranda',
@@ -36,48 +38,14 @@ export class BerandaComponent implements OnInit, OnDestroy {
 
     TindakanMedisHariIni: number = 10;
 
-    DokterPraktekHariIniDatasource: any[] = [
-        {
-            id: '1',
-            nama_dokter: 'dr. John Doe',
-            nama_poli: 'Poli Umum',
-            jam_praktek: '08.00 - 12.00'
-        },
-        {
-            id: '2',
-            nama_dokter: 'dr. Jane Doe',
-            nama_poli: 'Poli Umum',
-            jam_praktek: '13.00 - 15.00'
-        },
-        {
-            id: '3',
-            nama_dokter: 'dr. Lisa Manobal',
-            nama_poli: 'Poli Umum',
-            jam_praktek: '16.00 - 20.00'
-        },
-    ];
+    DokterPraktekHariIniDatasource: any[] = [];
 
-    PenyakitTerpopuler: any[] = [
-        {
-            id: '1',
-            nama_penyakit: 'Cholera, unspecified',
-            jumlah: '4'
-        },
-        {
-            id: '2',
-            nama_penyakit: 'Congenital syphilis',
-            jumlah: '2'
-        },
-        {
-            id: '3',
-            nama_penyakit: 'Paratyphoid fever A',
-            jumlah: '2'
-        },
-    ];
+    PenyakitTerpopuler: any[] = [];
 
     ChartPendapatan: any = {};
 
     constructor(
+        private _store: Store,
         private _router: Router,
         private _utilityService: UtilityService,
         private _authenticationService: AuthenticationService,
@@ -99,11 +67,38 @@ export class BerandaComponent implements OnInit, OnDestroy {
                 },
             },
         };
+
+        this.getDashboard();
     }
 
     ngOnDestroy(): void {
         this.Destroy$.next(0);
         this.Destroy$.complete();
+    }
+
+    private getDashboard() {
+        this._store
+            .select(BerandaState.berandaDashboardEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.DokterPraktekHariIniDatasource = result.jadwal_dokter;
+                this.PasienTerlayani = result.pasien_terlayani_today;
+                this.TotalPasien = result.total_pasien;
+                this.DokterPraktekHariIni = result.dokter_praktek_today;
+                this.TindakanMedisHariIni = result.tindakan_medis_today;
+                this.PenyakitTerpopuler = result.penyakit_popular;
+
+                this.ChartPendapatan.labels = [];
+                this.ChartPendapatan.labels = result.pendapatan.map((item: any) => formatDate(item.tanggal, 'dd-MM-yyyy', 'EN'));
+
+                this.ChartPendapatan.series = [];
+                this.ChartPendapatan.series = [
+                    {
+                        name: 'Jumlah Pendapatan',
+                        data: result.pendapatan.map((item: any) => item.total_pendapatan),
+                    }
+                ];
+            })
     }
 
     private _fixSvgFill(element: Element): void {
@@ -213,44 +208,6 @@ export class BerandaComponent implements OnInit, OnDestroy {
                 },
             },
         };
-
-        const fakeDataPendapatan = [
-            {
-                "tanggal": "2024-06-02T00:00:00",
-                "nominal": 0.0000
-            },
-            {
-                "tanggal": "2024-06-03T00:00:00",
-                "nominal": 1048000.0000
-            },
-            {
-                "tanggal": "2024-06-04T00:00:00",
-                "nominal": 2000000.0000
-            },
-            {
-                "tanggal": "2024-06-05T00:00:00",
-                "nominal": 4000000.0000
-            },
-            {
-                "tanggal": "2024-06-06T00:00:00",
-                "nominal": 0.0000
-            },
-            {
-                "tanggal": "2024-06-07T00:00:00",
-                "nominal": 6000000
-            }
-        ];
-
-        this.ChartPendapatan.labels = [];
-        this.ChartPendapatan.labels = fakeDataPendapatan.map(item => formatDate(item.tanggal, 'dd-MM-yyyy', 'EN'));
-
-        this.ChartPendapatan.series = [];
-        this.ChartPendapatan.series = [
-            {
-                name: 'Jumlah Pendapatan',
-                data: fakeDataPendapatan.map(item => item.nominal),
-            }
-        ];
     }
 
     handleNavigateToPendaftaranPasienBaru() {

@@ -4,10 +4,12 @@ import { environment } from "src/environments/environment";
 import { SETUP_DATA_STATE } from "./setup-data";
 import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
 import { RekamMedisState } from "./rekam-medis";
+import { BerandaState } from "./beranda";
 
 const STATES = [
     ...SETUP_DATA_STATE,
-    RekamMedisState
+    RekamMedisState,
+    BerandaState
 ];
 
 @NgModule({

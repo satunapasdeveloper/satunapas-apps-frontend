@@ -9,6 +9,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { BillingModel } from 'src/app/model/pages/rekam-medis/billing.model';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 import { RekamMedisActions, RekamMedisState } from 'src/app/store/rekam-medis';
+import jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
     selector: 'app-history-payment',
@@ -70,5 +72,22 @@ export class HistoryPaymentComponent implements OnInit, OnDestroy {
 
     cancelInvoice() {
         this.onCancel.emit(this._activatedRoute.snapshot.queryParams['id']);
+    }
+
+    downloadInvoice() {
+        let data = document.getElementById('invoice') as any;  //Id of the table
+        html2canvas(data).then(canvas => {
+            // Few necessary setting options  
+            let imgWidth = 208;
+            let pageHeight = 295;
+            let imgHeight = canvas.height * imgWidth / canvas.width;
+            let heightLeft = imgHeight;
+
+            const contentDataURL = canvas.toDataURL('image/png')
+            let pdf = new jspdf('p', 'mm', 'a4'); // A4 size page of PDF  
+            let position = 0;
+            pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
+            pdf.save(`Invoice ${this.Invoice.nama_lengkap} ${this.Invoice.no_invoice}.pdf`); // Generated PDF   
+        });
     }
 }
