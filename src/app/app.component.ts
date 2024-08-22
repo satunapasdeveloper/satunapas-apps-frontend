@@ -8,6 +8,7 @@ import { SetupItemActions } from './store/setup-data/item';
 import { ManajemenUserActions } from './store/setup-data/manajemen-user';
 import { RekamMedisActions } from './store/rekam-medis';
 import { RekananPenunjangActions } from './store/setup-data/rekanan-penunjang';
+import { BerandaActions } from './store/beranda';
 
 @Component({
     selector: 'app-root',
@@ -54,6 +55,11 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     private initAllNeededState() {
+        // ** Get All Poli
+        this._store
+            .dispatch(new BerandaActions.GetAll())
+            .pipe(takeUntil(this.Destroy$));
+
         // ** Get All Poli
         this._store
             .dispatch(new SetupPoliActions.GetAllPoli())

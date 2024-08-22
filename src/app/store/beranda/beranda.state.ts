@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { tap } from "rxjs";
-import { RekamMedisModel } from "src/app/model/pages/rekam-medis/rekam-medis.model";
 import { BerandaActions } from "./beranda.action";
 import { BerandaService } from "src/app/services/beranda/beranda.service";
 import { BerandaModel } from "src/app/model/pages/beranda/beranda.model";
@@ -19,7 +18,7 @@ interface BerandaStateModel {
     }
 })
 @Injectable()
-export class RekamMedisState {
+export class BerandaState {
 
     constructor(
         private _berandaService: BerandaService,
