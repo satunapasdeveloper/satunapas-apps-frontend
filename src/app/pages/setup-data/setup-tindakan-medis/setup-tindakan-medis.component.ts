@@ -87,7 +87,7 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'icd9',
+                    id: 'icd_9',
                     label: 'Display ICD 9',
                     required: true,
                     type: 'text',
@@ -110,7 +110,8 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
                         this.KfaKeywordSearch$.next(args.filter);
                     },
                     onChange: (args) => {
-                        this.FormComps.FormGroup.get('icd9')?.setValue(args ? args.nama_icd_9 : null);
+                        console.log(args);
+                        this.FormComps.FormGroup.get('icd_9')?.setValue(args ? args.id : null);
                     }
                 },
                 {
