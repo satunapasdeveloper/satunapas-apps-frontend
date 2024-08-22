@@ -87,7 +87,7 @@ export class HistoryPaymentComponent implements OnInit, OnDestroy {
             let pdf = new jspdf('p', 'mm', 'a4'); // A4 size page of PDF  
             let position = 0;
             pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
-            pdf.save(`Invoice-${this.Invoice.nama_lengkap}-${this.Invoice.no_invoice}.pdf`); // Generated PDF   
+            pdf.save(`Invoice ${this.Invoice.nama_lengkap} ${this.Invoice.no_invoice}.pdf`); // Generated PDF   
         });
     }
 }
