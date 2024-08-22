@@ -113,6 +113,7 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     required: true,
                     type: 'text',
                     mask: '0000-0000-0000-0000',
+                    dropSpecialCharacters: true,
                     value: '',
                 },
                 {
@@ -181,6 +182,8 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     label: 'NIK Ibu Kandung',
                     required: true,
                     type: 'text',
+                    mask: '0000-0000-0000-0000',
+                    dropSpecialCharacters: true,
                     value: '',
                 },
                 {
@@ -492,7 +495,7 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     required: false,
                     type: 'text',
                     mask: '0000-0000-00000',
-                    dropSpecialCharacters: false,
+                    dropSpecialCharacters: true,
                     value: '',
                 },
                 {
@@ -500,7 +503,7 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     label: 'No. Telepon Rumah',
                     required: false,
                     mask: '(000)-00000000',
-                    dropSpecialCharacters: false,
+                    dropSpecialCharacters: true,
                     type: 'text',
                     value: '',
                 },
