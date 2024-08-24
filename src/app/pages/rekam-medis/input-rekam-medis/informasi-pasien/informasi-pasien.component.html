@@ -42,7 +42,7 @@
                 </p>
 
                 <span class="py-1 px-2 text-xs bg-green-200 rounded-lg"
-                    (click)="handleOpenDialogDetailRiwayatRekamMedis()">
+                    (click)="handleOpenDialogDetailRiwayatRekamMedis(item)">
                     <p class="text-green-700">
                         Lihat Detail
                     </p>
@@ -99,9 +99,9 @@
     </div>
 
     <!-- Dialog Detail Riwayat Rekam Medis -->
-    <p-dialog header="Detail Kunjungan" [modal]="true" [(visible)]="ShowDialogDetail" [style]="{ width: '30rem' }"
+    <p-dialog header="Detail Kunjungan" [modal]="true" [(visible)]="ShowDialogDetail" [style]="{ width: '50rem' }"
         [draggable]="false" [resizable]="false" [showHeader]="false">
-        <div class="flex flex-col items-center">
+        <div class="w-full">
             <app-riwayat-rekam-medis></app-riwayat-rekam-medis>
         </div>
     </p-dialog>

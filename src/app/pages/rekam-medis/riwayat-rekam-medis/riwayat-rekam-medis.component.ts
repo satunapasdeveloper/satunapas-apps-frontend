@@ -1,7 +1,10 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
+import { PasienModel } from 'src/app/model/pages/pasien/pasien.model';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { PasienService } from 'src/app/services/pasien/pasien.service';
 import { RekamMedisState } from 'src/app/store/rekam-medis';
 
 @Component({
@@ -17,12 +20,30 @@ export class RiwayatRekamMedisComponent implements OnInit, OnDestroy {
 
     Destroy$ = new Subject();
 
+    UserData$ = this._authenticationService
+        .UserData$
+        .pipe(takeUntil(this.Destroy$));
+
+    ResumeMedis$ = this._store
+        .select(RekamMedisState.rekamMedisResumeMedis)
+        .pipe(
+            takeUntil(this.Destroy$),
+            tap((result) => {
+                if (result) {
+                    this.getDetailPasien(result?.id_pasien!);
+                }
+            })
+        );
+
+    Pasien$ = new BehaviorSubject<PasienModel.IPasien>(null as any);
+
     constructor(
-        private _store: Store
+        private _store: Store,
+        private _pasienService: PasienService,
+        private _authenticationService: AuthenticationService,
     ) { }
 
     ngOnInit(): void {
-        this.getDetailRekamMedis();
     }
 
     ngOnDestroy(): void {
@@ -30,12 +51,16 @@ export class RiwayatRekamMedisComponent implements OnInit, OnDestroy {
         this.Destroy$.complete();
     }
 
-    private getDetailRekamMedis() {
-        this._store
-            .select(RekamMedisState.rekamMedisDetail)
+    private getDetailPasien(id_pasien: string) {
+        this._pasienService
+            .getById(id_pasien)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                console.log(result);
+                this.Pasien$.next(result.data);
             })
+    }
+
+    formatDate(date: string): string {
+        return formatDate(new Date(date), 'dd-MM-yyyy', 'EN');
     }
 }

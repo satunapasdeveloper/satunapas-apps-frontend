@@ -20,6 +20,10 @@ export class PasienService {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/pasien/GetAllPasienByParams`, filter);
     }
 
+    getById(id_pasien: string): Observable<PasienModel.GetByIdPasien> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/pasien/GetPasienById/${id_pasien}`, null);
+    }
+
     create(payload: PasienModel.CreatePasien): Observable<HttpBaseResponse> {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/pasien/PendaftaranPasienBaru`, payload);
     }

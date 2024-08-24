@@ -4,7 +4,7 @@
             <!-- Anamesis -->
             <p-stepperPanel header="Anamesis">
                 <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
-                    <div class="flex flex-row gap-3">
+                    <div class="flex flex-row gap-3 relative">
                         <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
                             <app-anamesis #AnamesisComps></app-anamesis>
 
@@ -13,7 +13,7 @@
                                     styleClass="p-button-sm" (onClick)="handleCreateAnamesis(nextCallback)" />
                             </div>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-4/12 ">
                             <app-informasi-pasien></app-informasi-pasien>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                                     styleClass="p-button-sm" (onClick)="handleCreatePemeriksaanFisik(nextCallback)" />
                             </div>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-4/12 ">
                             <app-informasi-pasien></app-informasi-pasien>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                                     styleClass="p-button-sm" (onClick)="handleCreateDiagnosa(nextCallback)" />
                             </div>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-4/12 ">
                             <app-informasi-pasien></app-informasi-pasien>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                                     styleClass="p-button-sm" (onClick)="handleCreateTindakan(nextCallback)" />
                             </div>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-4/12 ">
                             <app-informasi-pasien></app-informasi-pasien>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                                     styleClass="p-button-sm" (onClick)="handleCreateResep(nextCallback)" />
                             </div>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-4/12 ">
                             <app-informasi-pasien></app-informasi-pasien>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                                     styleClass="p-button-sm" (onClick)="handleCreateStatusPulang(nextCallback)" />
                             </div>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-4/12 ">
                             <app-informasi-pasien></app-informasi-pasien>
                         </div>
                     </div>
@@ -157,7 +157,7 @@
                             <app-history-payment #HistoryPaymentComps (onCancel)="handleCancelInvoice($event)">
                             </app-history-payment>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-4/12 ">
                             <app-informasi-pasien></app-informasi-pasien>
                         </div>
                     </div>

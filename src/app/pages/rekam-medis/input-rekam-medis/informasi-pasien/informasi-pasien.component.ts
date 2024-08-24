@@ -7,8 +7,9 @@ import { DialogModule } from 'primeng/dialog';
 import { map, Subject, takeUntil } from 'rxjs';
 import { PostRequestByDynamicFiterModel } from 'src/app/model/http/http-request.model';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
-import { RekamMedisState } from 'src/app/store/rekam-medis';
+import { RekamMedisActions, RekamMedisState } from 'src/app/store/rekam-medis';
 import { RiwayatRekamMedisComponent } from '../../riwayat-rekam-medis/riwayat-rekam-medis.component';
+import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
 
 @Component({
     selector: 'app-informasi-pasien',
@@ -94,7 +95,14 @@ export class InformasiPasienComponent implements OnInit, OnDestroy {
             })
     }
 
-    handleOpenDialogDetailRiwayatRekamMedis() {
-        this.ShowDialogDetail = true;
+    handleOpenDialogDetailRiwayatRekamMedis(data: RekamMedisModel.IRekamMedis) {
+        this._store
+            .dispatch(new RekamMedisActions.GetResumeMedis(data.id_pendaftaran))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.rekam_medis.success) {
+                    this.ShowDialogDetail = true;
+                }
+            });
     }
 }
