@@ -7,6 +7,8 @@ import { RiwayatRekamMedisComponent } from '../../rekam-medis/riwayat-rekam-medi
 import { Store } from '@ngxs/store';
 import { RekamMedisActions } from 'src/app/store/rekam-medis';
 import { Subject, takeUntil } from 'rxjs';
+import { UtilityService } from 'src/app/services/utility/utility.service';
+import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
 
 @Component({
     selector: 'app-resume-medis',
@@ -32,10 +34,13 @@ export class ResumeMedisComponent implements OnInit, OnDestroy {
         }
     ];
 
+    SelectedRekamMedis!: RekamMedisModel.IRekamMedis;
+
     ShowRiwayatRekamMedis = false;
 
     constructor(
         private _store: Store,
+        private _utilityService: UtilityService,
     ) { }
 
     ngOnInit(): void {
@@ -48,10 +53,22 @@ export class ResumeMedisComponent implements OnInit, OnDestroy {
     }
 
     handleClickButtonNavigation(args: any) {
-        console.log(args);
+        if (args.id == 'cetak') {
+            const el = document.getElementById('riwayat_rekam_medis') as HTMLElement;
+
+            if (el) {
+                this._utilityService
+                    .exportToPdf(
+                        'riwayat_rekam_medis',
+                        `Resume Medis - ${this.SelectedRekamMedis.nama_lengkap} - ${this.SelectedRekamMedis.no_rekam_medis}`
+                    )
+            }
+        }
     }
 
     handleChooseRiwayatKunjungan(args: any) {
+        this.SelectedRekamMedis = args;
+
         this._store
             .dispatch(new RekamMedisActions.GetResumeMedis(args.id_pendaftaran))
             .pipe(takeUntil(this.Destroy$))

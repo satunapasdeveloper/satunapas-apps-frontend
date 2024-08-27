@@ -8,7 +8,7 @@ import { TableModule } from 'primeng/table';
 import { Subject, takeUntil } from 'rxjs';
 import { BillingModel } from 'src/app/model/pages/rekam-medis/billing.model';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
-import { RekamMedisActions, RekamMedisState } from 'src/app/store/rekam-medis';
+import { RekamMedisState } from 'src/app/store/rekam-medis';
 import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 
