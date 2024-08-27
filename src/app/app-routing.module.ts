@@ -103,6 +103,21 @@ const routes: Routes = [
         ]
     },
     {
+        path: 'layanan-dokumen',
+        children: [
+            {
+                path: 'resume-medis',
+                loadComponent: async () => (await import('./pages/layanan-dokumen/resume-medis/resume-medis.component')).ResumeMedisComponent,
+                data: {
+                    title: 'Dokumen Resume Medis',
+                    breadcrumbs: [
+                        "Beranda", "Layanan Dokumen", "Resume Medis"
+                    ]
+                },
+            },
+        ]
+    },
+    {
         path: '**',
         loadComponent: async () => (await import('./pages/wildcard-not-found/wildcard-not-found.component')).WildcardNotFoundComponent,
         data: {

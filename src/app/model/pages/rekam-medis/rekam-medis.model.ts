@@ -27,6 +27,7 @@ export namespace RekamMedisModel {
         jam_mulai: string
         jam_selesai: string
         dokter: string
+        poli: string
         anamnesis?: AnamesisModel.IAnamnesis
         pemeriksaan_fisik?: PemeriksaanFisikModel.IPemeriksaanFisik
         diagnosisi?: DiagnosisModel.IDiagnosisi | any
