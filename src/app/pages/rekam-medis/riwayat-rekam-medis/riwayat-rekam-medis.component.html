@@ -132,7 +132,7 @@
     </div>
 
     <!-- Rekam Medis -->
-    <div class="flex flex-col gap-0">
+    <div class="flex flex-col gap-0 mb-4">
         <!-- Anamesis -->
         <div class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
             <div class="w-4/12 bg-gray-200 p-1">
@@ -440,6 +440,21 @@
                     {{ resume.status_pulang }}
                 </p>
             </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex flex-row justify-end gap-0">
+        <div class="w-4/12 flex-col gap-0 items-center justify-center">
+            <p class="text-xs text-gray-700 text-center mb-1">
+                {{ formatDate(resume.tanggal_visit!) }}
+            </p>
+            <p class="text-xs text-gray-700 mb-14 text-center">
+                (DPJP)
+            </p>
+            <p class="text-xs text-gray-700 text-center">
+                ({{ resume.dokter }})
+            </p>
         </div>
     </div>
 </div>
