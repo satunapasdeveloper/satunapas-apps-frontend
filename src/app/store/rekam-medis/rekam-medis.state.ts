@@ -10,6 +10,7 @@ import { BillingModel } from "src/app/model/pages/rekam-medis/billing.model";
 interface RekamMedisStateModel {
     entities: RekamMedisModel.IRekamMedis[];
     single?: RekamMedisModel.IRekamMedis | null;
+    resume_medis?: RekamMedisModel.IRekamMedis | null;
     variable?: RekamMedisModel.IVariableRekamMedis | null;
     invoice?: BillingModel.IInvoice | null;
     history_payment?: BillingModel.IHistoryPembayaran | null;
@@ -21,6 +22,7 @@ interface RekamMedisStateModel {
     defaults: {
         entities: [],
         single: null,
+        resume_medis: null,
         variable: null,
         invoice: null,
         history_payment: null,
@@ -58,6 +60,11 @@ export class RekamMedisState {
     @Selector()
     static rekamMedisHistoryPayment(state: RekamMedisStateModel) {
         return state.history_payment;
+    }
+
+    @Selector()
+    static rekamMedisResumeMedis(state: RekamMedisStateModel) {
+        return state.resume_medis;
     }
 
     @Action(RekamMedisActions.GetAllRekamMedis)
@@ -100,6 +107,21 @@ export class RekamMedisState {
                     ctx.setState({
                         ...state,
                         variable: result.data,
+                    });
+                })
+            )
+    }
+
+    @Action(RekamMedisActions.GetResumeMedis)
+    getResumeMedis(ctx: StateContext<RekamMedisStateModel>, actions: any) {
+        return this._rekamMedisService
+            .getById(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        resume_medis: result.data,
                     });
                 })
             )

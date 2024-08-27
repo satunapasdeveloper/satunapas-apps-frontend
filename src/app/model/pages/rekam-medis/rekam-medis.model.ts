@@ -9,6 +9,7 @@ import { TindakanModel } from "./tindakan.model"
 export namespace RekamMedisModel {
     export interface IRekamMedis {
         id_pendaftaran: string
+        id_pasien: string
         no_pendaftaran: string
         no_antrian: string
         angka_antrian: number
@@ -28,7 +29,7 @@ export namespace RekamMedisModel {
         dokter: string
         anamnesis?: AnamesisModel.IAnamnesis
         pemeriksaan_fisik?: PemeriksaanFisikModel.IPemeriksaanFisik
-        diagnosisi?: DiagnosisModel.IDiagnosisi
+        diagnosisi?: DiagnosisModel.IDiagnosisi | any
         tindakan?: TindakanModel.ITindakan
         resep?: ResepModel.IResep
         pulang?: KondisiPulangModel.IKondisiPulang

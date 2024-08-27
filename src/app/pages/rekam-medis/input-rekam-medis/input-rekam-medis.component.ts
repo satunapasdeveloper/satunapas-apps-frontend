@@ -1,5 +1,5 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -78,6 +78,11 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     @ViewChild('PaymentComps') PaymentComps!: PaymentComponent;
 
     @ViewChild('HistoryPaymentComps') HistoryPaymentComps!: HistoryPaymentComponent;
+
+    @HostListener('document:scroll', ['$event'])
+    onWindowScroll(args: any) {
+        console.log("scroll")
+    }
 
     constructor(
         private _store: Store,

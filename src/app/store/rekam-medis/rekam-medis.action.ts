@@ -21,6 +21,11 @@ export namespace RekamMedisActions {
         static readonly type = '[REKAM MEDIS] Get All Variable';
     }
 
+    export class GetResumeMedis {
+        static readonly type = '[REKAM MEDIS] Get Resume Medis';
+        constructor(public payload: string) { }
+    }
+
     export class CreateAssessment {
         static readonly type = '[REKAM MEDIS] Create Assessment';
         constructor(public payload: AssesmentModel.IAssesment) { }

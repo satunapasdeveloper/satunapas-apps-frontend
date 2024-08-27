@@ -51,6 +51,13 @@ export namespace PasienModel {
         data!: IPasien[]
     }
 
+    export class GetByIdPasien implements HttpBaseResponse {
+        responseResult!: boolean
+        statusCode!: number
+        message!: string
+        data!: IPasien
+    }
+
     export interface CreatePasien {
         nik: string
         wna: string
