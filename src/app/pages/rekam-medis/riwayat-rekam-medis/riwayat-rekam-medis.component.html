@@ -310,7 +310,8 @@
         </div>
 
         <!-- Diagnosis Primer (ICD-10) -->
-        <div class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+        <div *ngIf="resume.diagnosisi.diagnosisi.length"
+            class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
             <div class="w-4/12 bg-gray-200 p-1">
                 <p class="text-xs text-gray-700">
                     Diagnosis Primer (ICD-10)
@@ -325,7 +326,8 @@
         </div>
 
         <!-- Diagnosis Sekunder (ICD-10) -->
-        <div class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+        <div *ngIf="resume.diagnosisi.diagnosisi.length > 1"
+            class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
             <div class="w-4/12 bg-gray-200 p-1">
                 <p class="text-xs text-gray-700">
                     Diagnosis Sekunder (ICD-10)
@@ -351,7 +353,7 @@
                 <!-- Obat Non Racikan -->
                 @if (resume.resep!.obat?.length) {
                 <div *ngFor="let item of resume.resep!.obat; let i = index; let last = last"
-                    class="flex flex-row w-full {{ last ? '' : 'border-t-0 border-b border-x-0 pb-1 border-solid border-gray-300' }}">
+                    class="flex flex-row w-full border-t-0 border-b border-x-0 pb-1 border-solid border-gray-300">
                     <div class="w-6/12">
                         <p class="text-xs text-gray-700">
                             {{ item.nama_obat }} x{{ item.qty }}
