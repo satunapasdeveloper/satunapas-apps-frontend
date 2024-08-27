@@ -4,7 +4,7 @@ export namespace TindakanModel {
     export interface ITindakan {
         id_pendaftaran: string
         kie: IKie
-        tindakan: ITindakan[]
+        tindakan: ITindakanDetail[]
         bmhp: IBmhp[]
         tanggal: string
         waktu: string

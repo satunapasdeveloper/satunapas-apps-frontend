@@ -1,7 +1,7 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, map, Subject, takeUntil, tap } from 'rxjs';
 import { PasienModel } from 'src/app/model/pages/pasien/pasien.model';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { PasienService } from 'src/app/services/pasien/pasien.service';
@@ -28,8 +28,39 @@ export class RiwayatRekamMedisComponent implements OnInit, OnDestroy {
         .select(RekamMedisState.rekamMedisResumeMedis)
         .pipe(
             takeUntil(this.Destroy$),
+            map((result) => {
+                let racikan: any[] = [];
+
+                result?.resep?.racikan.forEach((item) => {
+                    item.racikan.forEach((obat) => {
+                        racikan.push({
+                            aturan_pakai_catatan: item.aturan_pakai_catatan,
+                            aturan_pakai_kali: item.aturan_pakai_kali,
+                            harga: obat.harga,
+                            id_item: obat.id_item,
+                            nama_obat: obat.nama_obat,
+                            qty: obat.qty,
+                            rute_pemberian: item.rute_pemberian,
+                            subtotal: obat.subtotal,
+                            waktu: item.waktu,
+                            waktu_spesifik: item.waktu_spesifik,
+                        })
+                    })
+                });
+
+                return {
+                    ...result,
+                    resep: {
+                        ...result?.resep,
+                        racikan: racikan
+                    }
+                };
+
+            }),
             tap((result) => {
-                if (result) {
+                console.log(result);
+
+                if (result.id_pasien) {
                     this.getDetailPasien(result?.id_pasien!);
                 }
             })
