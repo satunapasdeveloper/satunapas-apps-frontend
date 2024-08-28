@@ -115,6 +115,16 @@ const routes: Routes = [
                     ]
                 },
             },
+            {
+                path: 'surat-sehat',
+                loadComponent: async () => (await import('./pages/layanan-dokumen/surat-sehat/surat-sehat.component')).SuratSehatComponent,
+                data: {
+                    title: 'Surat Sehat',
+                    breadcrumbs: [
+                        "Beranda", "Layanan Dokumen", "Surat Sehat"
+                    ]
+                },
+            },
         ]
     },
     {

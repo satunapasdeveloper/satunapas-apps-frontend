@@ -58,8 +58,6 @@ export class RiwayatRekamMedisComponent implements OnInit, OnDestroy {
 
             }),
             tap((result) => {
-                console.log(result);
-
                 if (result.id_pasien) {
                     this.getDetailPasien(result?.id_pasien!);
                 }

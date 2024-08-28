@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DynamicFormComponent } from '../dynamic-form/dynamic-form.component';
 import { InputTextModule } from 'primeng/inputtext';
@@ -12,6 +12,7 @@ import { PasienService } from 'src/app/services/pasien/pasien.service';
 import { PasienModel } from 'src/app/model/pages/pasien/pasien.model';
 import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
 import { RekamMedisActions } from 'src/app/store/rekam-medis';
+import { FormModel } from 'src/app/model/components/form.model';
 
 @Component({
     selector: 'app-form-pilih-pasien-for-dokumen',
@@ -40,6 +41,12 @@ export class FormPilihPasienForDokumenComponent implements OnInit, OnDestroy {
     RiwayatKunjunganDatasource: RekamMedisModel.IRekamMedis[] = [];
 
     @Output('onSelectRiwayatKunjungan') onSelectRiwayatKunjungan = new EventEmitter<RekamMedisModel.IRekamMedis>();
+
+    @ViewChild('DynamicFormComps') DynamicFormComps!: DynamicFormComponent;
+
+    ShowForm = false;
+
+    FormValue = new BehaviorSubject<any>(null);
 
     constructor(
         private _store: Store,
@@ -93,8 +100,21 @@ export class FormPilihPasienForDokumenComponent implements OnInit, OnDestroy {
             .getAll(payload)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                console.log(result.data);
                 this.PasienDatasource = result.data;
+            })
+    }
+
+    handleListenFormChanges() {
+        this.DynamicFormComps
+            .FormGroup
+            .valueChanges
+            .pipe(
+                takeUntil(this.Destroy$),
+                debounceTime(500),
+                distinctUntilChanged()
+            )
+            .subscribe((result) => {
+                this.FormValue.next(result);
             })
     }
 
@@ -113,11 +133,28 @@ export class FormPilihPasienForDokumenComponent implements OnInit, OnDestroy {
             .dispatch(new RekamMedisActions.GetAllRekamMedis(payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
+                this.ShowForm = false;
                 this.RiwayatKunjunganDatasource = result.rekam_medis.entities;
             })
     }
 
     handleSelectRiwayatKunjungan(data: RekamMedisModel.IRekamMedis) {
-        this.onSelectRiwayatKunjungan.emit(data);
+        if (this.props.dynamic_form) {
+            this.ShowForm = true;
+
+            this._pasienService
+                .getById(data.id_pasien)
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.responseResult) {
+                        this.handleListenFormChanges();
+                        this.DynamicFormComps.FormGroup.patchValue(data);
+                        this.DynamicFormComps.FormGroup.patchValue(result.data);
+                    }
+                });
+
+        } else {
+            this.onSelectRiwayatKunjungan.emit(data);
+        }
     }
 }
