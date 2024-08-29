@@ -141,6 +141,7 @@ export class FormPilihPasienForDokumenComponent implements OnInit, OnDestroy {
     handleSelectRiwayatKunjungan(data: RekamMedisModel.IRekamMedis) {
         if (this.props.dynamic_form) {
             this.ShowForm = true;
+            this.onSelectRiwayatKunjungan.emit(data);
 
             this._pasienService
                 .getById(data.id_pasien)

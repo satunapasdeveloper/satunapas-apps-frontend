@@ -234,13 +234,13 @@ export class SuratSehatComponent implements OnInit, AfterViewInit, OnDestroy {
 
     handleClickButtonNavigation(args: any) {
         if (args.id == 'cetak') {
-            const el = document.getElementById('riwayat_rekam_medis') as HTMLElement;
+            const el = document.getElementById('surat_sehat') as HTMLElement;
 
             if (el) {
                 this._utilityService
                     .exportToPdf(
-                        'riwayat_rekam_medis',
-                        `Resume Medis - ${this.SelectedRekamMedis.nama_lengkap} - ${this.SelectedRekamMedis.no_rekam_medis}`
+                        'surat_sehat',
+                        `Surat Sehat - ${this.SelectedRekamMedis.nama_lengkap} - ${this.SelectedRekamMedis.no_rekam_medis}`
                     )
             }
         }
