@@ -1,7 +1,7 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { BehaviorSubject, map, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { FormPilihPasienForDokumenComponent } from 'src/app/components/form/form-pilih-pasien-for-dokumen/form-pilih-pasien-for-dokumen.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
@@ -9,7 +9,6 @@ import { PilihPasienFormModel } from 'src/app/model/components/pilih-pasien-form
 import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
-import { RekamMedisActions } from 'src/app/store/rekam-medis';
 
 @Component({
     selector: 'app-surat-sehat',

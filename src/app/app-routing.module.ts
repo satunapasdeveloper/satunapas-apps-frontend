@@ -135,6 +135,16 @@ const routes: Routes = [
                     ]
                 },
             },
+            {
+                path: 'invoice',
+                loadComponent: async () => (await import('./pages/layanan-dokumen/invoice-rekam-medis/invoice-rekam-medis.component')).InvoiceRekamMedisComponent,
+                data: {
+                    title: 'Invoice Rekam Medis',
+                    breadcrumbs: [
+                        "Beranda", "Layanan Dokumen", "Invoice Rekam Medis"
+                    ]
+                },
+            },
         ]
     },
     {
