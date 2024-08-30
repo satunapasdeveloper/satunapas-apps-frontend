@@ -6,28 +6,28 @@
             </app-form-pilih-pasien-for-dokumen>
         </div>
 
-        <div *ngIf="FormValue | async as form" id="surat_sehat"
-            class="w-8/12 flex flex-col bg-white rounded-lg shadow-sm p-3">
+        <div *ngIf="FormValue | async as form" id="surat_sakit"
+            class="w-8/12 flex flex-col bg-white rounded-lg shadow-sm p-5">
             <!-- Nama Klinik -->
-            <div *ngIf="UserData$ | async as user" class="flex flex-col w-full gap-0 mb-2
-            border-b border-t-0 border-x-0 border-dashed border-gray-400 pb-2">
-                <p class="text-base font-medium text-gray-800 text-center ">
+            <div *ngIf="UserData$ | async as user"
+                class="flex flex-col w-full gap-0 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-400 pb-2">
+                <p class="text-base font-medium text-gray-800 text-center">
                     {{ user.layanan | titlecase }}
                 </p>
-                <p class="text-sm text-gray-800 text-center ">
+                <p class="text-sm text-gray-800 text-center">
                     No. Ijin : -
                 </p>
-                <p class="text-sm text-gray-800 text-center ">
+                <p class="text-sm text-gray-800 text-center">
                     Jalan Indonesia Raya 1
                 </p>
             </div>
 
             <!-- Heading -->
-            <div class="flex flex-col mb-10">
-                <p class="text-xl font-semibold text-gray-700 text-center">
-                    Surat Keterangan Sehat
+            <div class="flex flex-col w-full mb-10">
+                <p class="text-lg font-semibold text-gray-700 text-center">
+                    Surat Keterangan Sakit
                 </p>
-                <p class="text-base text-gray-700 text-center">
+                <p class="text-sm text-gray-700 text-center">
                     Nomor : (Terisi Otomatis)
                 </p>
             </div>
@@ -109,95 +109,18 @@
                 </div>
             </div>
 
-            <!-- Keterangan -->
-            <div class="flex flex-col gap-0 mb-5">
-                <p class="text-sm text-gray-700 mb-5">
-                    Keterangan :
-                </p>
-
-                <!-- Berat Badan -->
-                <div class="flex flex-row gap-2 pl-5 mb-2">
-                    <div class="w-3/12">
-                        <p class="text-sm text-gray-700">
-                            Berat Badan
-                        </p>
-                    </div>
-                    <div class="w-9/12">
-                        <p class="text-sm text-gray-800 font-medium">
-                            : {{ form.berat_badan }} kg
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Tinggi Badan -->
-                <div class="flex flex-row gap-2 pl-5 mb-2">
-                    <div class="w-3/12">
-                        <p class="text-sm text-gray-700">
-                            Tinggi Badan
-                        </p>
-                    </div>
-                    <div class="w-9/12">
-                        <p class="text-sm text-gray-800 font-medium">
-                            : {{ form.tinggi_badan }} cm
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Tekanan Darah -->
-                <div class="flex flex-row gap-2 pl-5 mb-2">
-                    <div class="w-3/12">
-                        <p class="text-sm text-gray-700">
-                            Tekanan Darah
-                        </p>
-                    </div>
-                    <div class="w-9/12">
-                        <p class="text-sm text-gray-800 font-medium">
-                            : {{ form.sistole }} mmHg / {{ form.diastole }} mmHg
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Buta Warna -->
-                <div class="flex flex-row gap-2 pl-5 mb-2">
-                    <div class="w-3/12">
-                        <p class="text-sm text-gray-700">
-                            Buta Warna
-                        </p>
-                    </div>
-                    <div class="w-9/12">
-                        <p class="text-sm text-gray-800 font-medium">
-                            : {{ form.buta_warna }}
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Keterangan Lain -->
-                <div class="flex flex-row gap-2 pl-5 mb-2">
-                    <div class="w-3/12">
-                        <p class="text-sm text-gray-700">
-                            Keterangan Lain
-                        </p>
-                    </div>
-                    <div class="w-9/12">
-                        <p class="text-sm text-gray-800 font-medium">
-                            : {{ form.keterangan_lain }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
             <!-- Footer -->
             <div class="flex flex-col gap-0 mb-5">
                 <p class="text-sm text-gray-700 mb-2">
-                    Telah dilakukan pemeriksaan dan dinyatakan
+                    perlu beristirahat selama
                     <span class="font-semibold text-gray-800">
-                        {{ form.kondisi | uppercase }}
-                    </span>
-                </p>
-                <p class="text-sm text-gray-700 mb-2">
-                    Surat Keterangan Sehat ini dipergunakan sebagai :
+                        {{ JumlahHari }}
+                    </span> hari, terhitung mulai
                     <span class="font-semibold text-gray-800">
-                        {{ form.tujuan | titlecase }}
+                        {{ TanggalMulai }}
+                    </span> sampai dengan
+                    <span class="font-semibold text-gray-800">
+                        {{ TanggalSelesai }}
                     </span>
                 </p>
                 <p class="text-sm text-gray-700 mb-10">
