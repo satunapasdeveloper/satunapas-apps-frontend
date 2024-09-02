@@ -78,8 +78,9 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.Destroy$))
                 .subscribe((result) => {
                     if (result.responseResult) {
-                        this._router.navigateByUrl("beranda");
+                        this._authenticationService.getProfile();
                         this._authenticationService.setUserData();
+                        this._router.navigateByUrl("beranda");
                     }
                 })
         }

@@ -107,6 +107,12 @@ export class DynamicFormComponent implements OnInit {
                 })
             };
 
+            if (item.type == 'number_split') {
+                item.splitProps.forEach((text: any) => {
+                    this.FormGroup.addControl(text.id, new FormControl(0, [Validators.required]));
+                })
+            };
+
             if (item.type == 'switch') {
                 this.FormGroup.addControl(item.id, new FormControl(false, [Validators.required]));
             }

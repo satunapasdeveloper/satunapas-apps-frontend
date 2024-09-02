@@ -3,8 +3,10 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
+import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
@@ -15,6 +17,7 @@ import { SearchPasienDialogComponent } from 'src/app/components/dialog/search-pa
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { LookupModel } from 'src/app/model/components/lookup.model';
+import { PendaftaranService } from 'src/app/services/pendaftaran/pendaftaran.service';
 import { RekamMedisActions } from 'src/app/store/rekam-medis';
 import { SetupPoliState } from 'src/app/store/setup-data/setup-poli';
 
@@ -32,6 +35,7 @@ import { SetupPoliState } from 'src/app/store/setup-data/setup-poli';
         OverlayPanelModule,
         DialogModule,
         SearchPasienDialogComponent,
+        ConfirmDialogModule,
     ],
     templateUrl: './antrian.component.html',
     styleUrl: './antrian.component.scss'
@@ -96,10 +100,13 @@ export class AntrianComponent implements OnInit, OnDestroy {
     constructor(
         private _store: Store,
         private _router: Router,
+        private _pendaftaranService: PendaftaranService,
+        private _confirmationService: ConfirmationService,
     ) { }
 
     ngOnInit(): void {
         this.getAllPoli();
+        this.getAntrianDalamPemeriksaan();
 
         const prevFilter = JSON.parse(localStorage.getItem('_ANTRIAN_FILTER_SEARCH_') as any);
         if (prevFilter) {
@@ -132,7 +139,16 @@ export class AntrianComponent implements OnInit, OnDestroy {
             })
     }
 
-    handleSearchAntrian(id_poli: string, tanggal_visit: Date) {
+    getAntrianDalamPemeriksaan() {
+        this._pendaftaranService
+            .getAntrianHariIni()
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.AntrianDalamPemeriksaan = result.data;
+            })
+    }
+
+    handleSearchAntrian(kode_poli: string, tanggal_visit: Date) {
         let payload: any[] = [
             {
                 "columnName": 'pendaftaran.tanggal_visit',
@@ -141,13 +157,13 @@ export class AntrianComponent implements OnInit, OnDestroy {
                 "searchText2": formatDate(new Date(tanggal_visit), 'yyyy-MM-dd', 'EN'),
                 "withOr": false
             },
-            // {
-            //     "columnName": 'jadwal_dokter.id_poli',
-            //     "filter": "equel",
-            //     "searchText": id_poli,
-            //     "searchText2": "",
-            //     "withOr": false
-            // }
+            {
+                "columnName": 'poli.kode_poli',
+                "filter": "like",
+                "searchText": kode_poli,
+                "searchText2": "",
+                "withOr": false
+            }
         ];
 
         this._store
@@ -212,5 +228,44 @@ export class AntrianComponent implements OnInit, OnDestroy {
     handleGoToAssesmentAwal(args: any) {
         localStorage.setItem('_SPSH_', JSON.stringify(args));
         this._router.navigateByUrl(`/antrian/assesment-awal?id=${args.id_pendaftaran}`)
+    }
+
+    handleGoToInputRekamMedis(args: any): void {
+        this._router.navigateByUrl(`/rekam-medis/baru?id=${args.id_pendaftaran}`)
+    }
+
+    handleCancelAntrian(args: any): void {
+        this._confirmationService.confirm({
+            target: (<any>event).target as EventTarget,
+            message: 'Data yang dihapus tidak bisa dikembalikan',
+            header: 'Apakah Anda Yakin?',
+            icon: 'pi pi-info-circle',
+            acceptButtonStyleClass: "p-button-danger p-button-sm",
+            rejectButtonStyleClass: "p-button-secondary p-button-sm",
+            acceptIcon: "none",
+            acceptLabel: 'Iya Saya Yakin',
+            rejectIcon: "none",
+            rejectLabel: 'Tidak, Kembali',
+            accept: () => {
+                this._pendaftaranService
+                    .cancel(args.id_pendaftaran)
+                    .pipe(takeUntil(this.Destroy$))
+                    .subscribe((result) => {
+                        if (result.responseResult) {
+                            this.getAntrianDalamPemeriksaan();
+
+                            const prevFilter = JSON.parse(localStorage.getItem('_ANTRIAN_FILTER_SEARCH_') as any);
+                            if (prevFilter) {
+                                this._store
+                                    .dispatch(new RekamMedisActions.GetAllRekamMedis(prevFilter))
+                                    .pipe(takeUntil(this.Destroy$))
+                                    .subscribe((result) => {
+                                        this.AntrianDatasource = result.rekam_medis.entities;
+                                    })
+                            }
+                        }
+                    })
+            }
+        });
     }
 }

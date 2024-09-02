@@ -128,6 +128,14 @@
                     (change)="handleChangeInputText($event, text)" [value]="text.value" />
             </div>
 
+            <!-- Input Text Split -->
+            <div *ngIf="item.type == 'number_split'" class="flex gap-4 items-center">
+                <p-inputNumber *ngFor="let text of item.splitProps" inputId="integeronly" class="p-inputtext-sm w-full"
+                    formControlName="{{ text.id }}" [readonly]="text.readonly! || props.state == 'read'"
+                    (onBlur)="item.onChange?.(FormGroup.get(text.id)?.value)">
+                </p-inputNumber>
+            </div>
+
             <!-- Switch -->
             <div *ngIf="item.type == 'switch'" class="flex w-full items-center gap-4">
                 <p-inputSwitch formControlName="{{ item.id }}" (onChange)="handleChangeSwitch($event, item)" />

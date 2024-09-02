@@ -10,6 +10,7 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { PendaftaranService } from 'src/app/services/pendaftaran/pendaftaran.service';
+import { UtilityService } from 'src/app/services/utility/utility.service';
 import { ManajemenUserState } from 'src/app/store/setup-data/manajemen-user';
 import { SetupPoliState } from 'src/app/store/setup-data/setup-poli';
 
@@ -50,6 +51,7 @@ export class TambahAntrianComponent implements OnInit, OnDestroy {
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
+        private _utilityService: UtilityService,
         private _pendaftaranService: PendaftaranService,
     ) {
         this.FormProps = {
@@ -195,7 +197,7 @@ export class TambahAntrianComponent implements OnInit, OnDestroy {
         data.id_poli = parseInt(data.id_poli);
         data.id_pasien = parseInt(data.id_pasien);
         data.id_jadwal_dokter = parseInt(data.id_jadwal_dokter);
-        data.tanggal_visit = new Date(data.tanggal_visit);
+        data.tanggal_visit = this._utilityService.onFormatDate(new Date(data.tanggal_visit), 'yyyy-MM-DD');
 
         this._pendaftaranService
             .create(data)

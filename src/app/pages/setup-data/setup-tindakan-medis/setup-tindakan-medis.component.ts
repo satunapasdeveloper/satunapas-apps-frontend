@@ -58,6 +58,7 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
         toolbar: ['Delete', "Ubah Status", 'Detail'],
         showPaging: true,
         showSearch: true,
+        showSort: true,
         searchKeyword: 'nama_tindakan_medis',
         searchPlaceholder: 'Cari Nama Tindakan Medis Disini'
     };

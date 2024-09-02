@@ -58,6 +58,7 @@ export class DokterComponent implements OnInit, OnDestroy {
         toolbar: ['Delete', 'Detail'],
         showPaging: true,
         showSearch: true,
+        showSort: true,
         searchKeyword: 'nama_dokter',
         searchPlaceholder: 'Cari Nama Dokter Disini'
     };

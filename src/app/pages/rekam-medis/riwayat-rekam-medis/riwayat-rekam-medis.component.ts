@@ -29,39 +29,42 @@ export class RiwayatRekamMedisComponent implements OnInit, OnDestroy {
         .pipe(
             takeUntil(this.Destroy$),
             map((result) => {
-                let racikan: any[] = [];
+                if (result) {
+                    let racikan: any[] = [];
 
-                result?.resep?.racikan.forEach((item) => {
-                    item.racikan.forEach((obat) => {
-                        racikan.push({
-                            aturan_pakai_catatan: item.aturan_pakai_catatan,
-                            aturan_pakai_kali: item.aturan_pakai_kali,
-                            harga: obat.harga,
-                            id_item: obat.id_item,
-                            nama_obat: obat.nama_obat,
-                            qty: obat.qty,
-                            rute_pemberian: item.rute_pemberian,
-                            subtotal: obat.subtotal,
-                            waktu: item.waktu,
-                            waktu_spesifik: item.waktu_spesifik,
+                    result?.resep?.racikan.forEach((item) => {
+                        item.racikan.forEach((obat) => {
+                            racikan.push({
+                                aturan_pakai_catatan: item.aturan_pakai_catatan,
+                                aturan_pakai_kali: item.aturan_pakai_kali,
+                                harga: obat.harga,
+                                id_item: obat.id_item,
+                                nama_obat: obat.nama_obat,
+                                qty: obat.qty,
+                                rute_pemberian: item.rute_pemberian,
+                                subtotal: obat.subtotal,
+                                waktu: item.waktu,
+                                waktu_spesifik: item.waktu_spesifik,
+                            })
                         })
-                    })
-                });
+                    });
 
-                return {
-                    ...result,
-                    resep: {
-                        ...result?.resep,
-                        racikan: racikan
-                    }
-                };
-
+                    return {
+                        ...result,
+                        resep: {
+                            ...result?.resep,
+                            racikan: racikan
+                        }
+                    };
+                } else {
+                    return null;
+                }
             }),
             tap((result) => {
-                console.log(result);
-
-                if (result.id_pasien) {
-                    this.getDetailPasien(result?.id_pasien!);
+                if (result) {
+                    if (result.id_pasien) {
+                        this.getDetailPasien(result?.id_pasien!);
+                    }
                 }
             })
         );

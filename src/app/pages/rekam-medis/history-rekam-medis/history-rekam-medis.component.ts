@@ -55,6 +55,7 @@ export class HistoryRekamMedisComponent implements OnInit, OnDestroy {
         toolbar: ['Mulai Periksa'],
         showPaging: true,
         showSearch: false,
+        showSort: true,
         searchKeyword: 'nama_lengkap',
         searchPlaceholder: 'Cari Nama Pasien Disini'
     };

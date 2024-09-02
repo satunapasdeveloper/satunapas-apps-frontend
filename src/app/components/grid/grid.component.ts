@@ -159,6 +159,8 @@ export class GridComponent implements OnInit {
                     if (col.format) {
                         if (col.format == 'date') {
                             value = formatDate(item[col.field], 'dd-MM-yyyy', 'EN');
+                        } else {
+                            value = item[col.field];
                         }
                     } else {
                         value = item[col.field];

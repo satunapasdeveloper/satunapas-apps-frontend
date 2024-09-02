@@ -52,6 +52,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
         toolbar: ['Delete', 'Detail'],
         showPaging: true,
         showSearch: true,
+        showSort: true,
         searchKeyword: 'poli',
         searchPlaceholder: 'Cari Nama Poli Disini'
     };

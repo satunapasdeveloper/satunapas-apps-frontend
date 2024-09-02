@@ -26,6 +26,7 @@ export namespace GridModel {
         showSearch?: boolean;
         searchKeyword?: string;
         searchPlaceholder?: string;
+        showSort?: boolean;
         toolbar?: string[];
     }
 }

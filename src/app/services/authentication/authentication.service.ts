@@ -93,35 +93,35 @@ export class AuthenticationService {
                 {
                     id: '71',
                     caption: 'Resume Medis',
-                    icon: 'pi pi-circle-fill',
+                    icon: 'pi pi-file',
                     toggle_child: false,
                     url: '/layanan-dokumen/resume-medis'
                 },
                 {
                     id: '72',
                     caption: 'Surat Sehat',
-                    icon: 'pi pi-circle-fill',
+                    icon: 'pi pi-file',
                     toggle_child: false,
                     url: '/layanan-dokumen/surat-sehat'
                 },
                 {
                     id: '73',
                     caption: 'Surat Sakit',
-                    icon: 'pi pi-circle-fill',
+                    icon: 'pi pi-file',
                     toggle_child: false,
                     url: '/layanan-dokumen/surat-sakit'
                 },
                 {
                     id: '74',
                     caption: 'Surat Rujukan',
-                    icon: 'pi pi-circle-fill',
+                    icon: 'pi pi-file',
                     toggle_child: false,
                     url: '/layanan-dokumen/surat-rujukan'
                 },
                 {
                     id: '74',
                     caption: 'Invoice',
-                    icon: 'pi pi-circle-fill',
+                    icon: 'pi pi-file',
                     toggle_child: false,
                     url: '/layanan-dokumen/invoice'
                 },
@@ -131,7 +131,44 @@ export class AuthenticationService {
             id: '8',
             caption: 'Laporan',
             icon: 'pi pi-folder',
-            toggle_child: false
+            toggle_child: false,
+            sidebarChild: [
+                {
+                    id: '81',
+                    caption: 'Laporan Pendapatan',
+                    icon: 'pi pi-file',
+                    toggle_child: false,
+                    url: '/laporan/laporan-pendapatan'
+                },
+                {
+                    id: '82',
+                    caption: 'Laporan Penyakit',
+                    icon: 'pi pi-file',
+                    toggle_child: false,
+                    url: '/laporan/laporan-penyakit'
+                },
+                {
+                    id: '83',
+                    caption: 'Laporan Kunjungan',
+                    icon: 'pi pi-file',
+                    toggle_child: false,
+                    url: '/laporan/laporan-kunjungan'
+                },
+                {
+                    id: '84',
+                    caption: 'Laporan Kunjungan Harian',
+                    icon: 'pi pi-file',
+                    toggle_child: false,
+                    url: '/laporan/laporan-kunjungan-harian'
+                },
+                {
+                    id: '85',
+                    caption: 'Laporan Pemakaian Obat & BMHP',
+                    icon: 'pi pi-file',
+                    toggle_child: false,
+                    url: '/laporan/laporan-pemakaian-obat-dan-bmhp'
+                },
+            ]
         },
     ]);
 
@@ -152,9 +189,31 @@ export class AuthenticationService {
             )
     }
 
+    getProfile() {
+        this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/satunapas/profile_layanan/ProfileLayanan`)
+            .pipe(
+                tap((result) => {
+                    if (result.responseResult) {
+                        localStorage.setItem("_CISPL_", JSON.stringify(result.data));
+                    }
+                })
+            )
+            .subscribe((result) => {
+
+            })
+    }
+
     setUserData() {
-        const user_data = localStorage.getItem("_CISUD_")
-        this.UserData$.next(JSON.parse(user_data as any));
+        const user_data = localStorage.getItem("_CISUD_");
+        const layanan_data = localStorage.getItem("_CISPL_");
+        this.UserData$.next({ ...JSON.parse(user_data as any), ...JSON.parse(layanan_data as any) });
+    }
+
+    getUserData() {
+        const user_data = localStorage.getItem("_CISUD_");
+        const layanan_data = localStorage.getItem("_CISPL_");
+        return { ...JSON.parse(user_data as any), ...JSON.parse(layanan_data as any) };
     }
 
     private handleSignIn(data: AuthenticationModel.IAuthentication) {

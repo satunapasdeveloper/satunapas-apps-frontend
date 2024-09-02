@@ -13,7 +13,7 @@
             @for (item of AntrianDalamPemeriksaan; track $index) {
             <div class="flex flex-col items-center w-3/12 bg-white rounded-lg shadow-sm p-3">
                 <p class="text-sm text-gray-700">
-                    {{ item.nama_poli }}
+                    {{ item.poli }}
                 </p>
 
                 <p
@@ -33,14 +33,14 @@
                 <p class="text-sm text-gray-700 text-center">
                     Pasien<br>
                     <span class="font-medium">
-                        {{ item.nama_pasien }}
+                        {{ item.nama_lengkap }}
                     </span>
                 </p>
             </div>
             }
         </div>
 
-        <div class="flex w-full items-center justify-center p-5">
+        <div *ngIf="!AntrianDalamPemeriksaan.length" class="flex w-full items-center justify-center p-5">
             <p class="text-gray-800 font-semibold">
                 Tidak Ada Pemeriksaan
             </p>
@@ -54,7 +54,7 @@
                 <!-- Dropdown Poli -->
                 <div class="w-5/12">
                     <p-dropdown styleClass="p-inputtext-sm w-full" placeholder="Pilih Poli" [options]="PoliDatasource"
-                        optionLabel="poli" optionValue="id_poli" appendTo="body" [(ngModel)]="SelectedPoli">
+                        optionLabel="poli" optionValue="kode_poli" appendTo="body" [(ngModel)]="SelectedPoli">
                     </p-dropdown>
                 </div>
 
@@ -80,6 +80,7 @@
                 <tr>
                     <th class="text-sm">No. Antrian</th>
                     <th class="text-sm">No. Rekam Medis</th>
+                    <th class="text-sm">Poli</th>
                     <th class="text-sm">Nama Pasien</th>
                     <th class="text-sm">Metode Bayar</th>
                     <th class="text-sm text-center">Assesment</th>
@@ -89,7 +90,7 @@
             </ng-template>
             <ng-template pTemplate="groupheader" let-antrian>
                 <tr pRowGroupHeader>
-                    <td colspan="7" class="bg-sky-50">
+                    <td colspan="8" class="bg-sky-50">
                         <span class="font-normal text-base text-sky-800">
                             Antrian Kunjungan :
                             <span class="font-bold">
@@ -103,6 +104,7 @@
                 <tr>
                     <td class="text-sm">{{ antrian.no_antrian }}</td>
                     <td class="text-sm">{{ antrian.no_rekam_medis }}</td>
+                    <td class="text-sm">{{ antrian.poli }}</td>
                     <td class="text-sm">{{ antrian.nama_lengkap }}</td>
                     <td class="text-sm">{{ antrian.debitur }}</td>
                     <td class="text-sm text-center">
@@ -140,18 +142,14 @@
                                 </span>
 
                                 <span
-                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer"
+                                    (click)="handleGoToInputRekamMedis(antrian)">
                                     <i class="pi pi-play" style="font-size: 12px"></i>
                                     Mulai Periksa
                                 </span>
 
-                                <span
-                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
-                                    <i class="pi pi-info-circle" style="font-size: 12px"></i>
-                                    Detail Antrian
-                                </span>
-
-                                <span class="text-sm text-gray-700">
+                                <span class="text-sm text-gray-700 cursor-pointer"
+                                    (click)="handleCancelAntrian(antrian)">
                                     <i class="pi pi-trash" style="font-size: 12px"></i>
                                     Hapus
                                 </span>
@@ -201,4 +199,6 @@
     <!-- Dialog Search Pasien -->
     <app-search-pasien-dialog #SearchPasienDialogComps (onSelect)="handleSelectLookupPasien($event)">
     </app-search-pasien-dialog>
+
+    <p-confirmDialog />
 </app-dashboard>
