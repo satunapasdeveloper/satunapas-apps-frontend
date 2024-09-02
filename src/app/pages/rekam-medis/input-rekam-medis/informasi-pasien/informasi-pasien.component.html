@@ -33,9 +33,9 @@
     </div>
 
     <!-- List -->
-    <div *ngIf="RiwayatRekamMedis.length" class="flex flex-col w-full gap-2">
-        @for (item of RiwayatRekamMedis; track $index) {
-        <div class="flex flex-col p-1 cursor-pointer">
+    <div *ngIf="RiwayatRekamMedis.length" class="flex flex-col w-full gap-1">
+        @for (item of RiwayatRekamMedis; track $index; let last = $last) {
+        <div class="flex flex-col {{ last ? 'p-1' : 'px-1 pt-1 pb-2 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300' }} cursor-pointer">
             <div class="flex flex-row justify-between mb-2 items-center">
                 <p class="text-sm font-semibold text-gray-800">
                     {{ item.no_pendaftaran }}
