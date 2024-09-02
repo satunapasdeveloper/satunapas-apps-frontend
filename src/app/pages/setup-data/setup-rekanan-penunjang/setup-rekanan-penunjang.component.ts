@@ -55,6 +55,7 @@ export class SetupRekananPenunjangComponent implements OnInit, OnDestroy {
         toolbar: ['Delete', 'Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
+        showSort: true,
         searchKeyword: 'nama_rekanan',
         searchPlaceholder: 'Cari Nama Rekanan Disini'
     };

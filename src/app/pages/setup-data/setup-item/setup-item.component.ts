@@ -57,6 +57,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         toolbar: ['Delete', "Ubah Status", 'Detail'],
         showPaging: true,
         showSearch: true,
+        showSort: true,
         searchKeyword: 'nama_item',
         searchPlaceholder: 'Cari Nama Item Disini'
     };

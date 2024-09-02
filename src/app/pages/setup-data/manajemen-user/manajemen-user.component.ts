@@ -65,6 +65,7 @@ export class ManajemenUserComponent implements OnInit, OnDestroy {
         toolbar: ['Delete', "Ubah Status", 'Detail'],
         showPaging: true,
         showSearch: true,
+        showSort: true,
         searchKeyword: 'nama_User',
         searchPlaceholder: 'Cari Nama User Disini'
     };

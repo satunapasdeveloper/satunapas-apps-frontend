@@ -61,6 +61,7 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
         toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
+        showSort: true,
         searchKeyword: 'nama_lengkap',
         searchPlaceholder: 'Cari Nama Pasien Disini'
     };
