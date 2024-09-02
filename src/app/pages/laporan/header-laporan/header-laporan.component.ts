@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 
@@ -12,7 +12,7 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
     templateUrl: './header-laporan.component.html',
     styleUrl: './header-laporan.component.scss'
 })
-export class HeaderLaporanComponent implements OnDestroy {
+export class HeaderLaporanComponent implements OnInit, OnDestroy {
 
     Destroy$ = new Subject();
 
@@ -20,13 +20,16 @@ export class HeaderLaporanComponent implements OnDestroy {
 
     @Input('periode') periode: string = "-";
 
-    UserData$ = this._authenticationService
-        .UserData$
-        .pipe(takeUntil(this.Destroy$));
+    UserData$ = this._authenticationService.getUserData();
 
     constructor(
         private _authenticationService: AuthenticationService,
     ) { }
+
+    ngOnInit(): void {
+        const userData = this._authenticationService.getUserData();
+        console.log("userdata =>", userData);
+    }
 
     ngOnDestroy(): void {
         this.Destroy$.next(0);

@@ -189,13 +189,31 @@ export class AuthenticationService {
             )
     }
 
-    private getProfile() {
+    getProfile() {
+        this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/satunapas/profile_layanan/ProfileLayanan`)
+            .pipe(
+                tap((result) => {
+                    if (result.responseResult) {
+                        localStorage.setItem("_CISPL_", JSON.stringify(result.data));
+                    }
+                })
+            )
+            .subscribe((result) => {
 
+            })
     }
 
     setUserData() {
-        const user_data = localStorage.getItem("_CISUD_")
-        this.UserData$.next(JSON.parse(user_data as any));
+        const user_data = localStorage.getItem("_CISUD_");
+        const layanan_data = localStorage.getItem("_CISPL_");
+        this.UserData$.next({ ...JSON.parse(user_data as any), ...JSON.parse(layanan_data as any) });
+    }
+
+    getUserData() {
+        const user_data = localStorage.getItem("_CISUD_");
+        const layanan_data = localStorage.getItem("_CISPL_");
+        return { ...JSON.parse(user_data as any), ...JSON.parse(layanan_data as any) };
     }
 
     private handleSignIn(data: AuthenticationModel.IAuthentication) {
