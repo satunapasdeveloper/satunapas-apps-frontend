@@ -26,7 +26,7 @@ export class PendaftaranService {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Pendaftaran/Create`, payload);
     }
 
-    cancel(id_pendaftaran: number): Observable<HttpBaseResponse> {
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Pendaftaran/BatalAntrian`, { id_pendaftaran: id_pendaftaran });
+    cancel(id_pendaftaran: string): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Pendaftaran/BatalAntrian`, { id_pendaftaran: parseInt(id_pendaftaran) });
     }
 }
