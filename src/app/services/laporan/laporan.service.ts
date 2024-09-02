@@ -21,8 +21,8 @@ export class LaporanService {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Laporan/laporanPenyakit`, { start: start, end: end });
     }
 
-    getLaporanKunjungan(start: string, end: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Laporan/laporanKunjungan`, { start: start, end: end });
+    getLaporanKunjungan(start: string, end: string, kode_icd10: string): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Laporan/laporanKunjungan`, { start: start, end: end, kode_icd10: kode_icd10 });
     }
 
     getLaporanKunjunganHarian(start: string, end: string): Observable<HttpBaseResponse> {
