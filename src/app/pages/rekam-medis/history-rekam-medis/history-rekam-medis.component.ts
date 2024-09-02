@@ -207,6 +207,7 @@ export class HistoryRekamMedisComponent implements OnInit, OnDestroy {
 
     onToolbarClicked(args: any): void {
         if (args.type == "mulai periksa") {
+            localStorage.setItem('_SPSH_', JSON.stringify(args.data));
             this._router.navigateByUrl(`/rekam-medis/baru?id=${args.data.id_pendaftaran}`)
         }
     }

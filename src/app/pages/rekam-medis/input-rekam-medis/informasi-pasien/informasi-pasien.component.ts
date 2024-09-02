@@ -43,7 +43,15 @@ export class InformasiPasienComponent implements OnInit, OnDestroy {
         this.Pasien = JSON.parse(localStorage.getItem('_SPSH_') as any);
 
         if (this.Pasien) {
-            this.getRiwayatRekamMedis(this.Pasien.no_rekam_medis, this.Pasien.id_pendaftaran);
+            this.getRiwayatRekamMedis(this.Pasien.no_rekam_medis, this.Pasien.id_pendaftaran!);
+        } else {
+            this._store
+                .select(RekamMedisState.rekamMedisDetail)
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    this.Pasien = result;
+                    this.getRiwayatRekamMedis(result?.no_rekam_medis!, result?.id_pendaftaran!);
+                })
         }
     }
 
