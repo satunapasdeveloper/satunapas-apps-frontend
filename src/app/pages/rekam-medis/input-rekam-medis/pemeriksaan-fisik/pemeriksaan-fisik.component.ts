@@ -209,7 +209,14 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result?.pemeriksaan_fisik) {
-                    this.FormComps.FormGroup.patchValue(result.pemeriksaan_fisik);
+                    this.FormComps.FormGroup.patchValue({
+                        id_pendaftaran: result.assesment!.id_pendaftaran,
+                        tingkat_kesadaran: result.assesment!.kesadaran,
+                        pernafasan: result.assesment!.pernafasan,
+                        resiko_jatuh: result.assesment!.resiko_jatuh,
+                        nyeri: result.assesment!.nyeri,
+                        batuk: result.assesment!.batuk,
+                    });
                     this.FormKeadaanUmumComps.FormGroup.patchValue(result.pemeriksaan_fisik);
                     this.FormVitalSignComps.FormGroup.patchValue(result.pemeriksaan_fisik);
 
