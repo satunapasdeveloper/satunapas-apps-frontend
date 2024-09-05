@@ -9,6 +9,7 @@ import { PilihPasienFormModel } from 'src/app/model/components/pilih-pasien-form
 import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
+import { HeaderLayananDokumenComponent } from '../header-layanan-dokumen/header-layanan-dokumen.component';
 
 @Component({
     selector: 'app-surat-sakit',
@@ -16,6 +17,7 @@ import { UtilityService } from 'src/app/services/utility/utility.service';
     imports: [
         CommonModule,
         DashboardComponent,
+        HeaderLayananDokumenComponent,
         FormPilihPasienForDokumenComponent,
     ],
     templateUrl: './surat-sakit.component.html',

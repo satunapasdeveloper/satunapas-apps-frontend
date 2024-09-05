@@ -1,5 +1,5 @@
 <div *ngIf="ResumeMedis$ | async as resume" class="grid w-full gap-2">
-    <div *ngIf="UserData$ | async as user" class="flex flex-col w-full items-center text-center gap-0 mb-2
+    <div *ngIf="UserData$  as user" class="flex flex-col w-full items-center text-center gap-0 mb-2
     border-b border-t-0 border-x-0 border-dashed border-gray-400 pb-2">
         <p class="text-base font-medium text-gray-800">
             {{ user.layanan | titlecase }}
@@ -8,7 +8,7 @@
             No. Ijin : -
         </p>
         <p class="text-sm text-gray-800">
-            Jalan Indonesia Raya 1
+            {{ user.alamat_lengkap | titlecase }}
         </p>
     </div>
 
@@ -319,8 +319,7 @@
             </div>
             <div class="w-8/12 bg-white p-1">
                 <p class="text-xs text-gray-700">
-                    {{ resume.diagnosisi!.diagnosisi[0].kode_icd10 }} -
-                    {{ resume.diagnosisi!.diagnosisi[0].display_icd10 }}
+                    {{ getDiagnosaPrimer(resume.diagnosisi.diagnosisi) }}
                 </p>
             </div>
         </div>
@@ -335,7 +334,7 @@
             </div>
             <div class="w-8/12 bg-white p-1">
                 <p class="text-xs text-gray-700">
-
+                    {{ getDiagnosaSekunder(resume.diagnosisi.diagnosisi) }}
                 </p>
             </div>
         </div>

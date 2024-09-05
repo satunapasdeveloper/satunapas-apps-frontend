@@ -1,5 +1,5 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
@@ -8,13 +8,12 @@ import { Subject, takeUntil, BehaviorSubject } from 'rxjs';
 import { FormPilihPasienForDokumenComponent } from 'src/app/components/form/form-pilih-pasien-for-dokumen/form-pilih-pasien-for-dokumen.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { PilihPasienFormModel } from 'src/app/model/components/pilih-pasien-form.model';
-import { BillingModel } from 'src/app/model/pages/rekam-medis/billing.model';
 import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
-import { RekamMedisActions, RekamMedisState } from 'src/app/store/rekam-medis';
+import { RekamMedisActions } from 'src/app/store/rekam-medis';
+import { HeaderLayananDokumenComponent } from '../header-layanan-dokumen/header-layanan-dokumen.component';
 
 @Component({
     selector: 'app-invoice-rekam-medis',
@@ -25,6 +24,7 @@ import { RekamMedisActions, RekamMedisState } from 'src/app/store/rekam-medis';
         TableModule,
         ButtonModule,
         DashboardComponent,
+        HeaderLayananDokumenComponent,
         FormPilihPasienForDokumenComponent,
     ],
     templateUrl: './invoice-rekam-medis.component.html',

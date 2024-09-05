@@ -20,9 +20,7 @@ export class RiwayatRekamMedisComponent implements OnInit, OnDestroy {
 
     Destroy$ = new Subject();
 
-    UserData$ = this._authenticationService
-        .UserData$
-        .pipe(takeUntil(this.Destroy$));
+    UserData$ = this._authenticationService.getUserData();
 
     ResumeMedis$ = this._store
         .select(RekamMedisState.rekamMedisResumeMedis)
@@ -96,5 +94,15 @@ export class RiwayatRekamMedisComponent implements OnInit, OnDestroy {
 
     formatDate(date: string): string {
         return formatDate(new Date(date), 'dd-MM-yyyy', 'EN');
+    }
+
+    getDiagnosaPrimer(data: any[]) {
+        const diagnosa = data.find(item => item.jenis_diagnosis == 'Diagnosa Utama / Primer');
+        return diagnosa ? `${diagnosa.kode_icd10} - ${diagnosa.display_icd10}` : null;
+    }
+
+    getDiagnosaSekunder(data: any[]) {
+        const diagnosa = data.find(item => item.jenis_diagnosis == 'Diagnosa Tambahan / Sekunder');
+        return diagnosa ? `${diagnosa.kode_icd10} - ${diagnosa.display_icd10}` : null;
     }
 }

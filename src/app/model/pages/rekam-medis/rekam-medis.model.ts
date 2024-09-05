@@ -1,5 +1,6 @@
 import { HttpBaseResponse } from "../../http/http-request.model"
 import { AnamesisModel } from "./anamesis.model"
+import { AssesmentModel } from "./assesment.model"
 import { DiagnosisModel } from "./diagnosis.model"
 import { PemeriksaanFisikModel } from "./pemeriksaan-fisik.model"
 import { KondisiPulangModel } from "./pulang.model"
@@ -28,6 +29,7 @@ export namespace RekamMedisModel {
         jam_selesai: string
         dokter: string
         poli: string
+        assesment?: AssesmentModel.IAssesment
         anamnesis?: AnamesisModel.IAnamnesis
         pemeriksaan_fisik?: PemeriksaanFisikModel.IPemeriksaanFisik
         diagnosisi?: DiagnosisModel.IDiagnosisi | any
