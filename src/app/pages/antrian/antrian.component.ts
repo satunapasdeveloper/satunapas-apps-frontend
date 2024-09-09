@@ -18,6 +18,7 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { LookupModel } from 'src/app/model/components/lookup.model';
 import { PendaftaranService } from 'src/app/services/pendaftaran/pendaftaran.service';
+import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 import { RekamMedisActions } from 'src/app/store/rekam-medis';
 import { SetupPoliState } from 'src/app/store/setup-data/setup-poli';
 
@@ -100,6 +101,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
     constructor(
         private _store: Store,
         private _router: Router,
+        private _rekamMedisService: RekamMedisService,
         private _pendaftaranService: PendaftaranService,
         private _confirmationService: ConfirmationService,
     ) { }
@@ -210,6 +212,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
         this.ShowModalPanggilPasien = true;
 
         setTimeout(() => {
+            this.onUpdateStatusPasien(data.id_pendaftaran, 3);
             this.onCallAntrian(data);
         }, 200);
     }
@@ -241,8 +244,11 @@ export class AntrianComponent implements OnInit, OnDestroy {
     }
 
     handleGoToInputRekamMedis(args: any): void {
-        localStorage.setItem('_SPSH_', JSON.stringify(args));
-        this._router.navigateByUrl(`/rekam-medis/baru?id=${args.id_pendaftaran}`)
+        this.onUpdateStatusPasien(args.id_pendaftaran, 4);
+        setTimeout(() => {
+            localStorage.setItem('_SPSH_', JSON.stringify(args));
+            this._router.navigateByUrl(`/rekam-medis/baru?id=${args.id_pendaftaran}`)
+        }, 500);
     }
 
     handleCancelAntrian(args: any): void {
@@ -278,5 +284,21 @@ export class AntrianComponent implements OnInit, OnDestroy {
                     })
             }
         });
+    }
+
+    handleTidakHadirAntrian(id_pendaftaran: string) {
+        this.onUpdateStatusPasien(id_pendaftaran, 2);
+        this.ShowModalPanggilPasien = false;
+    }
+
+    private onUpdateStatusPasien(id_pendaftaran: string, kode: number) {
+        this._rekamMedisService
+            .updateStatus(id_pendaftaran, kode)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.handleSearchAntrian(this.SelectedPoli, this.SelectedTanggal);
+                }
+            })
     }
 }

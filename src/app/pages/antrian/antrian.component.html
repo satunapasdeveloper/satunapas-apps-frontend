@@ -196,7 +196,7 @@
                     (click)="ShowModalPanggilPasien = false" />
 
                 <p-button label="Tidak Hadir" severity="danger" styleClass="p-button-sm"
-                    (click)="ShowModalPanggilPasien = false" />
+                    (click)="handleTidakHadirAntrian(SelectedPasien.id_pendaftaran)" />
 
                 <p-button label="Mulai Periksa" severity="info" styleClass="p-button-sm"
                     (click)="handleGoToInputRekamMedis(SelectedPasien)" />

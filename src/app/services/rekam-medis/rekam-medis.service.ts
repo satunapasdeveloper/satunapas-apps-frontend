@@ -187,4 +187,11 @@ export class RekamMedisService {
     batalInvoice(id_pendaftaran: string): Observable<RekamMedisModel.GetByIdRekamMedis> {
         return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/RekamMedis/BatalInvoice/${id_pendaftaran}`, null);
     }
+
+    updateStatus(id_pendaftaran: string, kode: number): Observable<any> {
+        return this._httpRequestService.postRequestWithoutLoading(`${environment.webApiUrl}/satunapas/RekamMedis/UpdateStatusPasien`, {
+            id_pendaftaran: id_pendaftaran,
+            kode: kode
+        });
+    }
 }
