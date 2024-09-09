@@ -62,6 +62,11 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        const userData = this._authenticationService.getUserData();
+
+        if (userData) {
+            this._router.navigateByUrl("beranda");
+        };
     }
 
     ngOnDestroy(): void {

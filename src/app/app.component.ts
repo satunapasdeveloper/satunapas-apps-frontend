@@ -51,6 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
         if (isUserLoggedIn) {
             this.initAllNeededState();
+            this.isLoading = false;
         } else {
             this.isLoading = false;
         }
