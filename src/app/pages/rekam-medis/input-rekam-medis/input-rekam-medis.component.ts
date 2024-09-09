@@ -5,7 +5,7 @@ import { Store } from '@ngxs/store';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { StepperModule } from 'primeng/stepper';
+import { Stepper, StepperModule } from 'primeng/stepper';
 import { ButtonModule } from 'primeng/button';
 import { AnamesisComponent } from './anamesis/anamesis.component'
 import { PemeriksaanFisikComponent } from './pemeriksaan-fisik/pemeriksaan-fisik.component';
@@ -54,7 +54,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     ButtonNavigation: LayoutModel.IButtonNavigation[] = [
         {
             id: 'back',
-            title: 'Kembali',
+            title: 'Kembali Ke Daftar Rekam Medis',
             icon: 'pi pi-chevron-left'
         }
     ];
@@ -78,11 +78,6 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     @ViewChild('PaymentComps') PaymentComps!: PaymentComponent;
 
     @ViewChild('HistoryPaymentComps') HistoryPaymentComps!: HistoryPaymentComponent;
-
-    @HostListener('document:scroll', ['$event'])
-    onWindowScroll(args: any) {
-        console.log("scroll")
-    }
 
     constructor(
         private _store: Store,
@@ -122,7 +117,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     }
 
     handleBackToList() {
-        this._router.navigateByUrl('antrian');
+        this._router.navigateByUrl('rekam-medis/data');
     }
 
     handleCreateAnamesis(nextCallback: any) {
@@ -233,8 +228,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
                     qty: parseFloat(item.qty),
                     harga: parseFloat(item.harga),
                     subtotal: parseFloat(item.subtotal),
-                    aturan_pakai_kali: item.aturan_pakai.split(",")[0],
-                    aturan_pakai_catatan: item.aturan_pakai.split(",")[1],
+                    aturan_pakai: item.aturan_pakai,
                     waktu: item.waktu_pemberian_obat,
                     waktu_spesifik: item.waktu_spesifik_pemberian_obat,
                     rute_pemberian: item.rute_pemberian_obat,
@@ -244,8 +238,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
                 return {
                     nama_obat: item.nama_racikan,
                     qty: 1,
-                    aturan_pakai_kali: item.aturan_pakai.split(",")[0],
-                    aturan_pakai_catatan: item.aturan_pakai.split(",")[1],
+                    aturan_pakai: item.aturan_pakai,
                     waktu: item.waktu_pemberian_obat,
                     waktu_spesifik: item.waktu_spesifik_pemberian_obat,
                     rute_pemberian: item.rute_pemberian_obat,

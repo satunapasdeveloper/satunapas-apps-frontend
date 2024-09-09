@@ -18,6 +18,7 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { LookupModel } from 'src/app/model/components/lookup.model';
 import { PendaftaranService } from 'src/app/services/pendaftaran/pendaftaran.service';
+import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
 import { RekamMedisActions } from 'src/app/store/rekam-medis';
 import { SetupPoliState } from 'src/app/store/setup-data/setup-poli';
 
@@ -100,6 +101,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
     constructor(
         private _store: Store,
         private _router: Router,
+        private _rekamMedisService: RekamMedisService,
         private _pendaftaranService: PendaftaranService,
         private _confirmationService: ConfirmationService,
     ) { }
@@ -110,6 +112,9 @@ export class AntrianComponent implements OnInit, OnDestroy {
 
         const prevFilter = JSON.parse(localStorage.getItem('_ANTRIAN_FILTER_SEARCH_') as any);
         if (prevFilter) {
+            this.SelectedTanggal = new Date(prevFilter[0].searchText);
+            this.SelectedPoli = prevFilter[1].searchText;
+
             this._store
                 .dispatch(new RekamMedisActions.GetAllRekamMedis(prevFilter))
                 .pipe(takeUntil(this.Destroy$))
@@ -175,22 +180,29 @@ export class AntrianComponent implements OnInit, OnDestroy {
             })
     }
 
-    handleFormatStatusAntrian(status: 'Skip' | 'MENUNGGU/BELUM DI PANGGIL' | 'Sedang Diperiksa') {
+    handleFormatStatusAntrian(status: 'TIDAK HADIR' | 'MENUNGGU/BELUM DI PANGGIL' | 'MEMANGGIL' | 'SEDANG DI PERIKSA' | 'PULANG') {
         let classColor = 'bg-red-200 text-red-700';
 
         switch (status) {
-            case 'Skip':
+            case 'TIDAK HADIR':
                 classColor = 'bg-red-200 text-red-700';
                 break;
             case 'MENUNGGU/BELUM DI PANGGIL':
                 classColor = 'bg-orange-200 text-orange-700';
                 break;
-            case 'Sedang Diperiksa':
-                classColor = 'bg-blue-200 text-blue-700';
+            case 'MEMANGGIL':
+                classColor = 'bg-yellow-200 text-yellow-700';
+                break;
+            case 'SEDANG DI PERIKSA':
+                classColor = 'bg-sky-200 text-sky-700';
+                break;
+            case 'PULANG':
+                classColor = 'bg-emerald-200 text-emerald-700';
                 break;
             default:
                 break;
         }
+
 
         return classColor;
     }
@@ -200,6 +212,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
         this.ShowModalPanggilPasien = true;
 
         setTimeout(() => {
+            this.onUpdateStatusPasien(data.id_pendaftaran, 3);
             this.onCallAntrian(data);
         }, 200);
     }
@@ -214,7 +227,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
         msg.lang = "id-ID";
         msg.voice = voice.find((item: any) => { return item.name == 'Google Bahasa Indonesia' });
 
-        msg.text = `Panggilan....Kepada....Nomor....antrian....${data.no_antrian},....pasien....${data.nama_lengkap},....menuju....${data.nama_poli}`;
+        msg.text = `Panggilan....Kepada....Nomor....antrian....${data.no_antrian},....pasien....${data.nama_lengkap},....menuju....${data.poli}`;
 
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(msg);
@@ -231,8 +244,11 @@ export class AntrianComponent implements OnInit, OnDestroy {
     }
 
     handleGoToInputRekamMedis(args: any): void {
-        localStorage.setItem('_SPSH_', JSON.stringify(args));
-        this._router.navigateByUrl(`/rekam-medis/baru?id=${args.id_pendaftaran}`)
+        this.onUpdateStatusPasien(args.id_pendaftaran, 4);
+        setTimeout(() => {
+            localStorage.setItem('_SPSH_', JSON.stringify(args));
+            this._router.navigateByUrl(`/rekam-medis/baru?id=${args.id_pendaftaran}`)
+        }, 500);
     }
 
     handleCancelAntrian(args: any): void {
@@ -268,5 +284,21 @@ export class AntrianComponent implements OnInit, OnDestroy {
                     })
             }
         });
+    }
+
+    handleTidakHadirAntrian(id_pendaftaran: string) {
+        this.onUpdateStatusPasien(id_pendaftaran, 2);
+        this.ShowModalPanggilPasien = false;
+    }
+
+    private onUpdateStatusPasien(id_pendaftaran: string, kode: number) {
+        this._rekamMedisService
+            .updateStatus(id_pendaftaran, kode)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.handleSearchAntrian(this.SelectedPoli, this.SelectedTanggal);
+                }
+            })
     }
 }

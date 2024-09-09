@@ -93,6 +93,34 @@ export class HttpRequestService {
     }
 
     /**
+     * @description Post Request Method
+     * @param url 
+     * @param data 
+     * @param showSuccessNotif -> (Optional) jika ingin menampilkan notification success
+     * @returns Observable<HttpBaseResponse>
+    */
+    postRequestWithoutLoading(url: string, data: any): Observable<HttpBaseResponse> {
+        return this._httpClient.post<HttpBaseResponse>(url, data)
+            .pipe(
+                map((result) => {
+                    // ** Jika responseResult = false
+                    if (!result.responseResult) {
+                        this._messageService.clear();
+                        (<any>result.message).forEach((item: string) => {
+                            this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(item) })
+                        })
+                    }
+
+                    return result;
+                }),
+                catchError((error: any) => {
+                    this.handlingError(error);
+                    throw error;
+                })
+            )
+    }
+
+    /**
      * @description Post Request Method For External API
      * @param url 
      * @param data 

@@ -88,7 +88,7 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     value: '',
                 },
                 {
-                    id: 'nyeri',
+                    id: 'skala_nyeri',
                     label: 'Skala Nyeri',
                     required: true,
                     type: 'radio',
@@ -214,7 +214,7 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                         tingkat_kesadaran: result.assesment!.kesadaran,
                         pernafasan: result.assesment!.pernafasan,
                         resiko_jatuh: result.assesment!.resiko_jatuh,
-                        nyeri: result.assesment!.nyeri,
+                        skala_nyeri: result.assesment!.nyeri,
                         batuk: result.assesment!.batuk,
                     });
                     this.FormKeadaanUmumComps.FormGroup.patchValue(result.pemeriksaan_fisik);
@@ -266,11 +266,11 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     }
                 });
 
-                const nyeri_index = this.FormProps.fields.findIndex(item => item.id == 'nyeri');
+                const nyeri_index = this.FormProps.fields.findIndex(item => item.id == 'skala_nyeri');
                 this.FormProps.fields[nyeri_index].radioButtonProps = result?.nyeri.map((item) => {
                     return {
                         ...item,
-                        name: 'nyeri',
+                        name: 'skala_nyeri',
                         label: item.title
                     }
                 });

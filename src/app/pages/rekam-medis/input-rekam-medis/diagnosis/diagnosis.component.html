@@ -29,8 +29,8 @@
         <div *ngIf="item.is_new || item.is_edit" class="flex flex-row gap-2 items-center">
             <div class="w-6/12">
                 <p-dropdown [filter]="true" styleClass="p-inputtext-sm w-full" [options]="Icd10"
-                    optionLabel="nama_icd_10" optionValue="nama_icd_10" [(ngModel)]="item.kode_icd10"
-                    (onFilter)="handleSearchIcd10($event)">
+                    optionLabel="nama_icd_10" optionValue="joined" (onFilter)="handleSearchIcd10($event)"
+                    (onChange)="handleChangeIcd10($event, i)">
                 </p-dropdown>
             </div>
             <div class="w-4/12">
@@ -48,7 +48,7 @@
         <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center">
             <div class="w-6/12">
                 <p class="text-gray-700 text-sm">
-                    {{ item.kode_icd10 | titlecase }}
+                    {{ item.kode_icd10 }} - {{ item.display_icd10 | titlecase }}
                 </p>
             </div>
             <div class="w-4/12">
