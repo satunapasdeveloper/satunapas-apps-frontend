@@ -12,8 +12,7 @@ export namespace ResepModel {
         qty: number
         harga: number
         subtotal: number
-        aturan_pakai_kali: string
-        aturan_pakai_catatan: string
+        aturan_pakai: string
         waktu: string
         waktu_spesifik: string
         rute_pemberian: string
@@ -22,8 +21,7 @@ export namespace ResepModel {
     export interface IRacikan {
         nama_obat: string
         qty: number
-        aturan_pakai_kali: string
-        aturan_pakai_catatan: string
+        aturan_pakai: string
         waktu: string
         waktu_spesifik: string
         rute_pemberian: string
@@ -41,8 +39,7 @@ export namespace ResepModel {
     export interface IManual {
         nama_obat: string
         qty: number
-        aturan_pakai_kali: string
-        aturan_pakai_catatan: string
+        aturan_pakai: string
         waktu: string
         waktu_spesifik: string
         rute_pemberian: string

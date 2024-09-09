@@ -33,8 +33,7 @@ export class RiwayatRekamMedisComponent implements OnInit, OnDestroy {
                     result?.resep?.racikan.forEach((item) => {
                         item.racikan.forEach((obat) => {
                             racikan.push({
-                                aturan_pakai_catatan: item.aturan_pakai_catatan,
-                                aturan_pakai_kali: item.aturan_pakai_kali,
+                                aturan_pakai: item.aturan_pakai,
                                 harga: obat.harga,
                                 id_item: obat.id_item,
                                 nama_obat: obat.nama_obat,

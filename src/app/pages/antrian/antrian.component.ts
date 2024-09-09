@@ -110,6 +110,9 @@ export class AntrianComponent implements OnInit, OnDestroy {
 
         const prevFilter = JSON.parse(localStorage.getItem('_ANTRIAN_FILTER_SEARCH_') as any);
         if (prevFilter) {
+            this.SelectedTanggal = new Date(prevFilter[0].searchText);
+            this.SelectedPoli = prevFilter[1].searchText;
+
             this._store
                 .dispatch(new RekamMedisActions.GetAllRekamMedis(prevFilter))
                 .pipe(takeUntil(this.Destroy$))
@@ -175,22 +178,29 @@ export class AntrianComponent implements OnInit, OnDestroy {
             })
     }
 
-    handleFormatStatusAntrian(status: 'Skip' | 'MENUNGGU/BELUM DI PANGGIL' | 'Sedang Diperiksa') {
+    handleFormatStatusAntrian(status: 'TIDAK HADIR' | 'MENUNGGU/BELUM DI PANGGIL' | 'MEMANGGIL' | 'SEDANG DI PERIKSA' | 'PULANG') {
         let classColor = 'bg-red-200 text-red-700';
 
         switch (status) {
-            case 'Skip':
+            case 'TIDAK HADIR':
                 classColor = 'bg-red-200 text-red-700';
                 break;
             case 'MENUNGGU/BELUM DI PANGGIL':
                 classColor = 'bg-orange-200 text-orange-700';
                 break;
-            case 'Sedang Diperiksa':
-                classColor = 'bg-blue-200 text-blue-700';
+            case 'MEMANGGIL':
+                classColor = 'bg-yellow-200 text-yellow-700';
+                break;
+            case 'SEDANG DI PERIKSA':
+                classColor = 'bg-sky-200 text-sky-700';
+                break;
+            case 'PULANG':
+                classColor = 'bg-emerald-200 text-emerald-700';
                 break;
             default:
                 break;
         }
+
 
         return classColor;
     }
@@ -214,7 +224,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
         msg.lang = "id-ID";
         msg.voice = voice.find((item: any) => { return item.name == 'Google Bahasa Indonesia' });
 
-        msg.text = `Panggilan....Kepada....Nomor....antrian....${data.no_antrian},....pasien....${data.nama_lengkap},....menuju....${data.nama_poli}`;
+        msg.text = `Panggilan....Kepada....Nomor....antrian....${data.no_antrian},....pasien....${data.nama_lengkap},....menuju....${data.poli}`;
 
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(msg);

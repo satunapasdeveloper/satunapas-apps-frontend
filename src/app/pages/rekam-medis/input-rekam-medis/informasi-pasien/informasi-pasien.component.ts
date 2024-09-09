@@ -42,6 +42,8 @@ export class InformasiPasienComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.Pasien = JSON.parse(localStorage.getItem('_SPSH_') as any);
 
+        console.log("pasien =>", this.Pasien);
+
         if (this.Pasien) {
             this.getRiwayatRekamMedis(this.Pasien.no_rekam_medis, this.Pasien.id_pendaftaran!);
         } else {

@@ -84,13 +84,14 @@
                     <th class="text-sm">Nama Pasien</th>
                     <th class="text-sm">Metode Bayar</th>
                     <th class="text-sm text-center">Assesment</th>
+                    <th class="text-sm text-center">Terbayar</th>
                     <th class="text-sm text-center">Status</th>
                     <th class="text-sm text-center">Aksi</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="groupheader" let-antrian>
                 <tr pRowGroupHeader>
-                    <td colspan="8" class="bg-sky-50">
+                    <td colspan="9" class="bg-sky-50">
                         <span class="font-normal text-base text-sky-800">
                             Antrian Kunjungan :
                             <span class="font-bold">
@@ -109,6 +110,13 @@
                     <td class="text-sm">{{ antrian.debitur }}</td>
                     <td class="text-sm text-center">
                         @if (antrian.pre_assessment) {
+                        Sudah
+                        } @else {
+                        Belum
+                        }
+                    </td>
+                    <td class="text-sm text-center">
+                        @if (antrian.status_billing) {
                         Sudah
                         } @else {
                         Belum
@@ -162,7 +170,7 @@
     </div>
 
     <!-- Dialog Call Pasien -->
-    <p-dialog header="Memanggil Pasien" [modal]="true" [(visible)]="ShowModalPanggilPasien" [style]="{ width: '30rem' }"
+    <p-dialog header="Memanggil Pasien" [modal]="true" [(visible)]="ShowModalPanggilPasien" [style]="{ width: '35rem' }"
         [draggable]="false" [resizable]="false" [showHeader]="false">
         <div class="flex flex-col items-center">
             <img src="../../../assets/gif/loading.gif" alt="loading">
@@ -184,13 +192,16 @@
             </p>
 
             <div class="flex justify-center gap-3 pt-5 border-t border-x-0 border-b-0 border-dashed border-gray-400">
+                <p-button label="Tutup" severity="secondary" styleClass="p-button-sm"
+                    (click)="ShowModalPanggilPasien = false" />
+
                 <p-button label="Tidak Hadir" severity="danger" styleClass="p-button-sm"
                     (click)="ShowModalPanggilPasien = false" />
 
                 <p-button label="Mulai Periksa" severity="info" styleClass="p-button-sm"
-                    (click)="ShowModalPanggilPasien = false" />
+                    (click)="handleGoToInputRekamMedis(SelectedPasien)" />
 
-                <p-button label="Panggil Ulang" severity="success" styleClass="p-button-sm"
+                <p-button label=" Panggil Ulang" severity="success" styleClass="p-button-sm"
                     (click)="onCallAntrian(SelectedPasien)" />
             </div>
         </div>

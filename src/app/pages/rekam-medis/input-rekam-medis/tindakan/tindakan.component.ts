@@ -114,7 +114,7 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.FormTindakan.get('keterangan_kie')?.setValue(result.kie.catatan);
                     this.FormTindakan.get('is_ada_tindakan')?.setValue(result.tindakan.length ? true : false);
                     this.FormTindakan.get('tanggal_tindakan')?.setValue(result.tanggal ? new Date(result.tanggal) : null);
-                    this.FormTindakan.get('waktu_tindakan')?.setValue(result.waktu ? new Date(result.waktu) : null);
+                    this.FormTindakan.get('waktu_tindakan')?.setValue(result.tanggal ? new Date(result.tanggal) : null);
                     this.FormTindakan.get('petugas')?.setValue(result.id_user);
 
                     this.TindakanForSave = result.tindakan.map((item: any) => {

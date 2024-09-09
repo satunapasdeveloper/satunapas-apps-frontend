@@ -90,12 +90,29 @@ export class DiagnosisComponent implements OnInit, AfterViewInit, OnDestroy {
         this.KeywordSearch$.next(args.filter);
     }
 
+    handleChangeIcd10(args: any, index: number) {
+        if (args.value) {
+            const kode_icd10 = args.value.split("-")[0];
+            const display_icd10 = args.value.split("-")[1];
+
+            this.DiagnosaDatasource[index].kode_icd10 = kode_icd10;
+            this.DiagnosaDatasource[index].display_icd10 = display_icd10;
+
+            console.log("diagnosa =>", this.DiagnosaDatasource);
+        }
+    }
+
     private getAllIcd10(keyword?: string) {
         this._rekamMedisService
             .getAllIcd10(keyword)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                this.Icd10 = result.data;
+                this.Icd10 = result.data.map((item) => {
+                    return {
+                        ...item,
+                        joined: `${item.kode_icd_10} - ${item.nama_icd_10}`
+                    }
+                });
             })
     }
 
