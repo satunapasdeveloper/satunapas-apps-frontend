@@ -1,5 +1,5 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -82,6 +82,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     constructor(
         private _store: Store,
         private _router: Router,
+        private _cdr: ChangeDetectorRef,
         private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
         private _rekamMedisService: RekamMedisService,
@@ -104,6 +105,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 this.SelectedPasien = result.rekam_medis.single;
+                this._rekamMedisService.SelectedPasien$.next(this.SelectedPasien);
             });
     }
 
@@ -228,21 +230,21 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
                     qty: parseFloat(item.qty),
                     harga: parseFloat(item.harga),
                     subtotal: parseFloat(item.subtotal),
-                    aturan_pakai: item.aturan_pakai,
-                    waktu: item.waktu_pemberian_obat,
-                    waktu_spesifik: item.waktu_spesifik_pemberian_obat,
-                    rute_pemberian: item.rute_pemberian_obat,
+                    aturan_pakai: item.aturan_pakai ? item.aturan_pakai : '',
+                    waktu: item.waktu,
+                    waktu_spesifik: item.waktu_spesifik,
+                    rute_pemberian: item.rute_pemberian,
                 }
             }),
             racikan: this.ResepComps.ResepRacikan.map((item) => {
                 return {
-                    nama_obat: item.nama_racikan,
+                    nama_obat: item.nama_obat,
                     qty: 1,
-                    aturan_pakai: item.aturan_pakai,
-                    waktu: item.waktu_pemberian_obat,
-                    waktu_spesifik: item.waktu_spesifik_pemberian_obat,
-                    rute_pemberian: item.rute_pemberian_obat,
-                    racikan: item.obats ? item.obats.map((obat: any) => {
+                    aturan_pakai: item.aturan_pakai ? item.aturan_pakai : '',
+                    waktu: item.waktu,
+                    waktu_spesifik: item.waktu_spesifik,
+                    rute_pemberian: item.rute_pemberian,
+                    racikan: item.racikan ? item.racikan.map((obat: any) => {
                         return {
                             id_item: parseFloat(obat.id_item),
                             nama_obat: obat.nama_obat,
@@ -334,6 +336,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 this.SelectedPasien = result;
+                this._rekamMedisService.SelectedPasien$.next(this.SelectedPasien);
+                this._cdr.detectChanges();
             })
     }
 

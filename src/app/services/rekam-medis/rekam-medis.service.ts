@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { HttpRequestService } from '../http/http-request.service';
 import { HttpBaseResponse, PostRequestByDynamicFiterModel } from 'src/app/model/http/http-request.model';
 import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
@@ -17,6 +17,8 @@ import { KondisiPulangModel } from 'src/app/model/pages/rekam-medis/pulang.model
     providedIn: 'root'
 })
 export class RekamMedisService {
+
+    SelectedPasien$ = new BehaviorSubject<any>(null);
 
     BodyParts: any[] = [
         { id: 'kulit', label: 'Kulit', keterangan: '' },

@@ -163,6 +163,7 @@ export class DialogResepNonRacikanComponent implements OnInit, OnDestroy {
 
     handleCloseDialog() {
         this.ShowDialog = false;
+        this.FormResep.reset();
     }
 
     handleChangeObat(args: any) {

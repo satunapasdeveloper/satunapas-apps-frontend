@@ -65,6 +65,8 @@ export class ResepComponent implements OnInit, AfterViewInit, OnDestroy {
                 })
             )
             .subscribe((result) => {
+                console.log(result);
+
                 this.ResepRacikan = result?.racikan ? result.racikan : [];
                 this.ResepNonRacikan = result?.obat ? result.obat : [];
                 this._cdr.detectChanges();
@@ -88,7 +90,7 @@ export class ResepComponent implements OnInit, AfterViewInit, OnDestroy {
 
     handleSaveObatNonRacikan(args: any) {
         if (args.state == 'insert') {
-            this.ResepNonRacikan.push(args.data);
+            this.ResepNonRacikan = [...this.ResepNonRacikan, args.data];
         } else {
             this.ResepNonRacikan[args.index] = args.data;
         }
@@ -108,7 +110,7 @@ export class ResepComponent implements OnInit, AfterViewInit, OnDestroy {
 
     handleSaveObatRacikan(args: any) {
         if (args.state == 'insert') {
-            this.ResepRacikan.push(args.data);
+            this.ResepRacikan = [...this.ResepRacikan, args.data]
         } else {
             this.ResepRacikan[args.index] = args.data;
         }

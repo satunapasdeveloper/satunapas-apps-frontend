@@ -8,8 +8,7 @@
                 <div class="w-6/12 flex flex-col gap-1">
                     <p-dropdown #DropdownObatComps [options]="ObatDatasource" optionLabel="nama_item" filter="true"
                         [autoDisplayFirst]="false" appendTo="body" styleClass="p-inputtext-sm" [showClear]="true"
-                        placeholder="Pilih obat" (onChange)="handleChangeObat($event, i)"
-                        (onFilter)="handleSearchItemObat($event)">
+                        placeholder="Pilih obat" (onChange)="handleChangeObat($event, i)">
                     </p-dropdown>
                 </div>
 

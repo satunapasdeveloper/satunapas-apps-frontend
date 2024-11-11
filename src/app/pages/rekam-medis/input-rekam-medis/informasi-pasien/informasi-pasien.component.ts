@@ -37,13 +37,17 @@ export class InformasiPasienComponent implements OnInit, OnDestroy {
         private _store: Store,
         private _activatedRoute: ActivatedRoute,
         private _rekamMedisService: RekamMedisService
-    ) { }
+    ) {
+        this._rekamMedisService
+            .SelectedPasien$
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.Pasien = result;
+            })
+
+    }
 
     ngOnInit(): void {
-        this.Pasien = JSON.parse(localStorage.getItem('_SPSH_') as any);
-
-        console.log("pasien =>", this.Pasien);
-
         if (this.Pasien) {
             this.getRiwayatRekamMedis(this.Pasien.no_rekam_medis, this.Pasien.id_pendaftaran!);
         } else {

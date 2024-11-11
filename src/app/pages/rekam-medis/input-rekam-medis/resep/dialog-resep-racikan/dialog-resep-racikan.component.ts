@@ -90,6 +90,7 @@ export class DialogResepRacikanComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.getVariable();
+        this.getItemObat("");
     }
 
     ngOnDestroy(): void {

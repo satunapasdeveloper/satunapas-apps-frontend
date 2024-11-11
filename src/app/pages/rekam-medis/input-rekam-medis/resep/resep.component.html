@@ -10,7 +10,8 @@
 
         <div class="flex flex-col gap-2 p-2 rounded-lg border-dashed border-gray-300 border">
             @if (ResepNonRacikan.length) {
-            <div *ngFor="let item of ResepNonRacikan; let i = index;" class="flex flex-col gap-2">
+            <div *ngFor="let item of ResepNonRacikan; let i = index; let last = last"
+                class="flex flex-col gap-2 {{ last ? '' : 'pb-2 border-b border-dashed border-gray-300 border-t-0 border-x-0' }}">
                 <p class="text-sm text-gray-800 font-medium">
                     {{ item.nama_obat }} x {{ item.qty }}
                 </p>
@@ -72,7 +73,8 @@
 
         <div class="flex flex-col gap-2 p-2 rounded-lg border-dashed border-gray-300 border">
             @if (ResepRacikan.length) {
-            <div *ngFor="let item of ResepRacikan; let i = index;" class="flex flex-col gap-2">
+            <div *ngFor="let item of ResepRacikan; let i = index; let last = last"
+                class="flex flex-col gap-2 {{ last ? '' : 'pb-2 border-b border-dashed border-gray-300 border-t-0 border-x-0' }}">
                 <p class="text-base text-gray-800 font-medium">
                     {{ item.nama_racikan ? item.nama_racikan : item.nama_obat }}
                 </p>
