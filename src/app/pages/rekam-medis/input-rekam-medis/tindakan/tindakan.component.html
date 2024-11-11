@@ -105,7 +105,7 @@
             </div>
 
             <!-- Just view -->
-            <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center mb-2">
+            <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center mb-1">
                 <div class="w-6/12">
                     <p class="text-gray-700 text-sm">
                         {{ item.tindakan | titlecase }}
@@ -176,7 +176,7 @@
             </div>
 
             @for(item of BmhpForSave; let i = $index; let last = $last; track item) {
-            <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center mb-2">
+            <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center mb-1">
                 <div class="w-6/12">
                     <p class="text-gray-700 text-sm">
                         {{ item.nama_item | titlecase }}
@@ -265,7 +265,7 @@
             </div>
 
             @for(item of ProcedureForSave; let i = $index; let last = $last; track item) {
-            <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center mb-2">
+            <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center mb-1">
                 <div class="w-6/12 flex">
                     <p class="text-gray-700 text-sm">
                         {{ item.display_icd9 | titlecase }}
@@ -278,7 +278,7 @@
                 </div>
                 <div class="w-2/12 flex justify-center">
                     <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
-                        styleClass="p-button-sm" (onClick)="handleEditProcedure(i)" />
+                        styleClass="p-button-sm" (onClick)="handleEditProcedure(i, item)" />
 
                     <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
                         styleClass="p-button-sm" (onClick)="handleDeleteProcedure(i)" />

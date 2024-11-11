@@ -175,14 +175,14 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
                         }
                     })
 
-                    // this.ProcedureForSave = result.procedure.map((item: any) => {
-                    //     return {
-                    //         code_icd9: item.code_icd9,
-                    //         display_icd9: item.display_icd9,
-                    //         is_new: false,
-                    //         is_edit: false
-                    //     }
-                    // })
+                    this.ProcedureForSave = result.procedure.map((item: any) => {
+                        return {
+                            code_icd9: item.code,
+                            display_icd9: item.nama,
+                            is_new: false,
+                            is_edit: false
+                        }
+                    })
                 }
             })
     }
@@ -293,15 +293,20 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    handleEditProcedure(index: number) {
-        let value = this.ProcedureForSave.map((data: any, indexes: number) => {
-            return {
-                ...data,
-                is_edit: indexes == index ? true : false
-            }
-        });
+    handleEditProcedure(index: number, data: any) {
+        this.Icd9KeywordSearch$.next(null);
+        this.Icd9KeywordSearch$.next(data.display_icd9);
 
-        this.ProcedureForSave = value;
+        setTimeout(() => {
+            let value = this.ProcedureForSave.map((data: any, indexes: number) => {
+                return {
+                    ...data,
+                    is_edit: indexes == index ? true : false
+                }
+            });
+
+            this.ProcedureForSave = value;
+        }, 1000);
     }
 
     handleDeleteProcedure(index: number) {
