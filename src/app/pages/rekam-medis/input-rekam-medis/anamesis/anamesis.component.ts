@@ -66,6 +66,8 @@ export class AnamesisComponent implements OnInit, AfterViewInit, OnDestroy {
                         } else {
                             this.FormProps.fields[4].hidden = true;
                         }
+
+                        this.handleChangeFormClass(this.FormComps.FormGroup.value);
                     }
                 },
                 {
@@ -91,6 +93,8 @@ export class AnamesisComponent implements OnInit, AfterViewInit, OnDestroy {
                         } else {
                             this.FormProps.fields[6].hidden = true;
                         }
+
+                        this.handleChangeFormClass(this.FormComps.FormGroup.value);
                     }
                 },
                 {
@@ -113,11 +117,11 @@ export class AnamesisComponent implements OnInit, AfterViewInit, OnDestroy {
                     onChange: (args: any) => {
                         if (args.checked) {
                             this.FormProps.fields[8].hidden = false;
-                            this.FormProps.class = 'grid-rows-8 grid-cols-1';
                         } else {
                             this.FormProps.fields[8].hidden = true;
-                            this.FormProps.class = 'grid-rows-7 grid-cols-1';
                         }
+
+                        this.handleChangeFormClass(this.FormComps.FormGroup.value);
                     }
                 },
                 {
@@ -189,5 +193,57 @@ export class AnamesisComponent implements OnInit, AfterViewInit, OnDestroy {
                     this._cdr.detectChanges();
                 }
             })
+    }
+
+    private handleChangeFormClass(value: any) {
+        console.log("value =>", value);
+
+        this.FormProps.class = 'grid-rows-6 grid-cols-1';
+
+        if (value.is_ada_riwayat_penyakit_terdahulu && !value.is_ada_riwayat_alergi && !value.is_ada_riwayat_pengobatan) {
+            this.FormProps.class = 'grid-rows-6 grid-cols-1';
+        }
+
+        if (value.is_ada_riwayat_penyakit_terdahulu && value.is_ada_riwayat_alergi && !value.is_ada_riwayat_pengobatan) {
+            this.FormProps.class = 'grid-rows-7 grid-cols-1';
+        }
+
+        if (value.is_ada_riwayat_penyakit_terdahulu && !value.is_ada_riwayat_alergi && value.is_ada_riwayat_pengobatan) {
+            this.FormProps.class = 'grid-rows-7 grid-cols-1';
+        }
+
+        // !! =======================================
+
+        if (!value.is_ada_riwayat_penyakit_terdahulu && value.is_ada_riwayat_alergi && !value.is_ada_riwayat_pengobatan) {
+            this.FormProps.class = 'grid-rows-6 grid-cols-1';
+        }
+
+        if (!value.is_ada_riwayat_penyakit_terdahulu && value.is_ada_riwayat_alergi && value.is_ada_riwayat_pengobatan) {
+            this.FormProps.class = 'grid-rows-7 grid-cols-1';
+        }
+
+        if (value.is_ada_riwayat_penyakit_terdahulu && value.is_ada_riwayat_alergi && !value.is_ada_riwayat_pengobatan) {
+            this.FormProps.class = 'grid-rows-7 grid-cols-1';
+        }
+
+        // !! =======================================
+
+        if (!value.is_ada_riwayat_penyakit_terdahulu && !value.is_ada_riwayat_alergi && value.is_ada_riwayat_pengobatan) {
+            this.FormProps.class = 'grid-rows-6 grid-cols-1';
+        }
+
+        if (!value.is_ada_riwayat_penyakit_terdahulu && value.is_ada_riwayat_alergi && value.is_ada_riwayat_pengobatan) {
+            this.FormProps.class = 'grid-rows-7 grid-cols-1';
+        }
+
+        if (value.is_ada_riwayat_penyakit_terdahulu && !value.is_ada_riwayat_alergi && value.is_ada_riwayat_pengobatan) {
+            this.FormProps.class = 'grid-rows-7 grid-cols-1';
+        }
+
+        if (value.is_ada_riwayat_penyakit_terdahulu && value.is_ada_riwayat_alergi && value.is_ada_riwayat_pengobatan) {
+            this.FormProps.class = 'grid-rows-8 grid-cols-1';
+        }
+
+
     }
 }
