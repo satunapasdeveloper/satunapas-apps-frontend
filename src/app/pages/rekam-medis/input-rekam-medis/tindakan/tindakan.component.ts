@@ -8,8 +8,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { map, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
 import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
+import { TindakanMedisService } from 'src/app/services/setup-data/tindakan-medis.service';
 import { RekamMedisState } from 'src/app/store/rekam-medis';
 import { ManajemenUserState } from 'src/app/store/setup-data/manajemen-user';
 import { SetupTindakanMedisState } from 'src/app/store/setup-data/tindakan-medis';
@@ -47,10 +48,17 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
 
     BmhpForSave: any[] = [];
 
+    ProcedureDatasource: any[] = [];
+
+    ProcedureForSave: any[] = [];
+
+    Icd9KeywordSearch$ = new BehaviorSubject(null);
+
     constructor(
         private _store: Store,
         private _formBuilder: FormBuilder,
         private _rekamMedisService: RekamMedisService,
+        private _tindakanMedisService: TindakanMedisService,
     ) {
         this.FormTindakan = this._formBuilder.group({
             id_pendaftaran: [false, []],
@@ -61,8 +69,21 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
             waktu_tindakan: [null, []],
             petugas: [null, []],
             tindakan: [[], []],
-            bmhp: [[], []]
-        })
+            bmhp: [[], []],
+            procedure: [[], []],
+        });
+
+        this.Icd9KeywordSearch$
+            .pipe(
+                takeUntil(this.Destroy$),
+                debounceTime(300),
+                distinctUntilChanged()
+            )
+            .subscribe((result) => {
+                if (result) {
+                    this.getAllProcedure(result);
+                }
+            })
     };
 
     ngOnInit(): void {
@@ -86,6 +107,15 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 this.BmhpDatasource = result.data;
+            })
+    }
+
+    private getAllProcedure(keyword: string) {
+        this._tindakanMedisService
+            .getAllIcd9(keyword)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.ProcedureDatasource = result.data;
             })
     }
 
@@ -144,6 +174,15 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
                             is_edit: false
                         }
                     })
+
+                    // this.ProcedureForSave = result.procedure.map((item: any) => {
+                    //     return {
+                    //         code_icd9: item.code_icd9,
+                    //         display_icd9: item.display_icd9,
+                    //         is_new: false,
+                    //         is_edit: false
+                    //     }
+                    // })
                 }
             })
     }
@@ -245,9 +284,45 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
         this.BmhpForSave[index].total = args * harga;
     }
 
+    handleAddProcedure() {
+        this.ProcedureForSave.push({
+            code_icd9: '',
+            display_icd9: '',
+            is_new: true,
+            is_edit: false
+        });
+    }
+
+    handleEditProcedure(index: number) {
+        let value = this.ProcedureForSave.map((data: any, indexes: number) => {
+            return {
+                ...data,
+                is_edit: indexes == index ? true : false
+            }
+        });
+
+        this.ProcedureForSave = value;
+    }
+
+    handleDeleteProcedure(index: number) {
+        if (this.ProcedureForSave.length > 1) {
+            this.ProcedureForSave.splice(index, 1);
+        }
+    }
+
+    handleFilterProcedureDropdown(args: any) {
+        this.Icd9KeywordSearch$.next(args.filter);
+    }
+
+    handleChangeProcedureDropdown(args: any, index: number) {
+        this.ProcedureForSave[index].code_icd9 = args.value.kode_icd_9;
+        this.ProcedureForSave[index].display_icd9 = args.value.nama_icd_9;
+    }
+
     getTindakanForRekamMedis() {
         const bmhp_for_save = JSON.parse(JSON.stringify(this.BmhpForSave));
         const tindakan_for_save = JSON.parse(JSON.stringify(this.TindakanForSave));
+        const procedure_for_save = JSON.parse(JSON.stringify(this.ProcedureForSave));
 
         const
             tanggal_tindakan = this.FormTindakan.get('tanggal_tindakan')?.value,
@@ -268,6 +343,14 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
                 return {
                     ...item,
                 }
+            }),
+            procedure = procedure_for_save.map((item: any) => {
+                delete item.is_new;
+                delete item.is_edit;
+
+                return {
+                    ...item,
+                }
             });
 
         return {
@@ -277,6 +360,7 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
             },
             tindakan: tindakan,
             bmhp: bmhp,
+            procedure: procedure,
             tanggal: tanggal_tindakan ? formatDate(tanggal_tindakan, 'yyyy-MM-dd', 'EN') : null,
             waktu: waktu_tindakan ? formatDate(waktu_tindakan, 'HH:mm', 'EN') : null,
             id_user: this.FormTindakan.get('petugas')?.value,
@@ -301,5 +385,9 @@ export class TindakanComponent implements OnInit, AfterViewInit, OnDestroy {
 
     get bmhp(): AbstractControl {
         return this.FormTindakan.get('bmhp') as AbstractControl
+    }
+
+    get procedure(): AbstractControl {
+        return this.FormTindakan.get('procedure') as AbstractControl
     }
 }

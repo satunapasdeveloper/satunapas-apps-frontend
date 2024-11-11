@@ -6,6 +6,7 @@ export namespace TindakanModel {
         kie: IKie
         tindakan: ITindakanDetail[]
         bmhp: IBmhp[]
+        procedure: IProcedure[]
         tanggal: string
         waktu: string
         id_user: number
@@ -51,5 +52,17 @@ export namespace TindakanModel {
         statusCode!: number
         message!: string
         data!: IItemBmhp[]
+    }
+
+    export interface IProcedure {
+        code_icd9: string
+        display_icd9: number
+    }
+
+    export class GetProcedure implements HttpBaseResponse {
+        responseResult!: boolean
+        statusCode!: number
+        message!: string
+        data!: IProcedure[]
     }
 }

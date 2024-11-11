@@ -143,6 +143,14 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
                     type: 'number',
                     value: 0,
                 },
+                {
+                    id: 'uuid',
+                    label: 'UUID',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
+                },
             ],
             style: 'not_inline',
             class: 'grid-rows-4 grid-cols-1',
@@ -281,7 +289,7 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.updateStatusItem(args.data.uuid);
+                    this.updateStatusTindakanMedis(args.data.uuid);
                 }
             });
         }
@@ -317,7 +325,7 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
             })
     }
 
-    private updateStatusItem(uuid: string) {
+    private updateStatusTindakanMedis(uuid: string) {
         this._store
             .dispatch(new SetupTindakanMedisActions.UpdateStatusTindakanMedis(uuid))
             .pipe(takeUntil(this.Destroy$))
