@@ -62,14 +62,20 @@
                 formControlName="{{ item.id }}" appendTo="body" [disabled]="props.state == 'read'"
                 (onChange)="handleChangeDropdown($event, item)" (onFilter)="handleFilterDropdown($event, item)">
                 <ng-template *ngIf="item.dropdownProps.customField" let-data pTemplate="item">
-                    <div class="flex flex-col gap-2">
+                    <div class="flex flex-col gap-0">
                         <p class="text-blue-500 text-sm font-semibold">
                             {{ data[item.dropdownProps.customField.title] }}
                         </p>
                         <p class="text-gray-800 text-xs">
+                            <span *ngIf="item.dropdownProps.customField.subtitle_key">
+                                {{ item.dropdownProps.customField.subtitle_key }} :
+                            </span>
                             {{ data[item.dropdownProps.customField.subtitle] }}
                         </p>
                         <p *ngIf="item.dropdownProps.customField.description" class="text-gray-600 text-xs">
+                            <span *ngIf="item.dropdownProps.customField.description_key">
+                                {{ item.dropdownProps.customField.description_key }} :
+                            </span>
                             {{ data[item.dropdownProps.customField.description] ?
                             data[item.dropdownProps.customField.description] : '-' }}
                         </p>

@@ -22,7 +22,9 @@ export namespace FormModel {
     export interface DropdownCustomField {
         title: string;
         subtitle: string;
+        subtitle_key?: string;
         description?: string;
+        description_key?: string;
         footer?: DropdownCustomFieldFooter;
     }
 

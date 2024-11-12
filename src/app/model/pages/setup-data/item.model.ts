@@ -17,6 +17,8 @@ export namespace ItemModel {
         kode_kfa: string
         satuan: string
         nama_item: string
+        produsen: string
+        nama_dagang: string;
     }
 
     export class GetAllItem implements HttpBaseResponse {

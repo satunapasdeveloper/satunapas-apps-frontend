@@ -13,6 +13,10 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
 import { ItemService } from 'src/app/services/setup-data/item.service';
 import { SetupItemActions, SetupItemState } from 'src/app/store/setup-data/item';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { FormsModule } from '@angular/forms';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
     selector: 'app-setup-item',
@@ -23,7 +27,11 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
-        ConfirmDialogModule
+        InputTextareaModule,
+        ConfirmDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        InputNumberModule,
     ],
     templateUrl: './setup-item.component.html',
     styleUrl: './setup-item.component.scss'
@@ -57,15 +65,29 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         toolbar: ['Delete', "Ubah Status", 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        showSort: false,
         searchKeyword: 'nama_item',
         searchPlaceholder: 'Cari Nama Item Disini'
     };
     GridSelectedData: any;
 
     FormState: 'insert' | 'update' = 'insert';
-    FormProps: FormModel.IForm;
+
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
+    FormProps: FormModel.IForm;
+
+    SelectedObat: any;
+
+    @ViewChild('FormResultKfaComps') FormResultKfaComps!: DynamicFormComponent;
+    FormResultKfaProps: FormModel.IForm;
+
+    Catatan: string = "";
+
+    IsNotifExp = false;
+    NotifExpDay = 0;
+
+    @ViewChild('FormHargaJualComps') FormHargaJualComps!: DynamicFormComponent;
+    FormHargaJualProps: FormModel.IForm;
 
     KfaKeywordSearch$ = new BehaviorSubject(null);
 
@@ -75,9 +97,18 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         private _messageService: MessageService,
         private _confirmationService: ConfirmationService,
     ) {
+
         this.FormProps = {
             id: 'form_setup_item',
             fields: [
+                {
+                    id: 'uuid',
+                    label: 'UUID',
+                    hidden: true,
+                    required: false,
+                    type: 'text',
+                    value: "",
+                },
                 {
                     id: 'kategori',
                     label: 'Kategori',
@@ -85,8 +116,8 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [
-                            { name: 'Obat', value: 'OBAT' },
-                            { name: 'BMHP', value: 'BMHP' },
+                            { name: 'Obat', value: 'obat' },
+                            { name: 'Alkes', value: 'alkes' },
                         ],
                         optionName: 'name',
                         optionValue: 'value',
@@ -103,18 +134,45 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                         options: [],
                         optionName: 'nama_item',
                         optionValue: 'nama_item',
-                        autoDisplayFirst: false
+                        autoDisplayFirst: false,
+                        customField: {
+                            title: 'nama_dagang',
+                            subtitle: 'nama_item',
+                            subtitle_key: 'Nama Produk',
+                            description: 'produsen',
+                            description_key: 'Produsen',
+                        }
+
                     },
                     value: '',
                     onFilter: (args) => {
-                        this.KfaKeywordSearch$.next(args.filter);
+                        const kategori = this.FormComps.FormGroup.get('kategori')?.value;
+
+                        if (kategori) {
+                            this.KfaKeywordSearch$.next({ kategori: kategori, cari: args.filter } as any);
+                        } else {
+                            this.KfaKeywordSearch$.next({ cari: args.filter } as any);
+                        }
                     },
                     onChange: (args) => {
                         this.FormComps.FormGroup.get('kategori')?.setValue(args ? args.kategori : null);
-                        this.FormComps.FormGroup.get('kode_kfa')?.setValue(args ? args.kode_kfa : "");
-                        this.FormComps.FormGroup.get('satuan')?.setValue(args ? args.satuan : "");
+                        this.FormResultKfaComps.FormGroup.patchValue(args);
+
+                        if (args.kategori == 'obat') {
+                            this.SelectedObat = args;
+                        }
                     }
                 },
+            ],
+            style: 'not_inline',
+            class: 'grid-rows-2 grid-cols-1',
+            state: 'write',
+            defaultValue: null,
+        };
+
+        this.FormResultKfaProps = {
+            id: 'form_result_kfa',
+            fields: [
                 {
                     id: 'kode_kfa',
                     label: 'Kode Item KFA',
@@ -124,31 +182,178 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     readonly: true
                 },
                 {
-                    id: 'satuan',
-                    label: 'Satuan',
+                    id: 'produsen',
+                    label: 'Produsen',
                     required: false,
                     type: 'text',
                     value: '',
                     readonly: true
                 },
                 {
-                    id: 'harga_jual',
-                    label: 'Harga Jual',
-                    required: false,
-                    type: 'number',
-                    value: 0,
+                    id: 'golongan_obat',
+                    label: 'Golongan Obat',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [
+                            { name: 'Obat Bebas', value: 'Obat Bebas' },
+                            { name: 'Obat Bebas Terbatas', value: 'Obat Bebas Terbatas' },
+                            { name: 'Obat Keras', value: 'Obat Keras' },
+                            { name: 'Obat Golongan Narkotika', value: 'Obat Golongan Narkotika' },
+                            { name: 'Obat Fitofarmaka', value: 'Obat Fitofarmaka' },
+                            { name: 'Obat Herbal Terstandar', value: 'Obat Herbal Terstandar' },
+                            { name: 'Obat Herbal', value: 'Obat Herbal' },
+                        ],
+                        optionName: 'name',
+                        optionValue: 'value',
+                        autoDisplayFirst: false,
+
+                    },
+                    value: '',
                 },
                 {
-                    id: 'uuid',
-                    label: 'UUID',
-                    hidden: true,
+                    id: 'kategori_obat',
+                    label: 'Kategori Obat',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [
+                            { name: 'Obat Darurat / Urgensi', value: 'Obat Darurat / Urgensi' },
+                            { name: 'Obat High Alert', value: 'Obat High Alert' },
+                            { name: 'LASA', value: 'LASA' },
+                        ],
+                        optionName: 'name',
+                        optionValue: 'value',
+                        autoDisplayFirst: false,
+
+                    },
+                    value: '',
+                },
+                {
+                    id: 'catatan',
+                    label: 'Catatan',
                     required: false,
                     type: 'text',
-                    value: "",
+                    value: '',
+                    hidden: true
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-5 grid-cols-1',
+            class: 'grid-rows-2 grid-cols-2',
+            state: 'write',
+            defaultValue: null,
+        };
+
+        this.FormHargaJualProps = {
+            id: 'form_harga_jual',
+            fields: [
+                {
+                    id: 'satuan',
+                    label: 'Satuan',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [
+                            { name: 'Aerosol Metered Dose', value: 'Aerosol Metered Dose' },
+                            { name: 'Aerosol Spray', value: 'Aerosol Spray' },
+                            { name: 'Blister', value: 'Blister' },
+                            { name: 'Botol', value: 'Botol' },
+                            { name: 'Cairan Mata', value: 'Cairan Mata' },
+                            { name: 'Cairan Steril', value: 'Cairan Steril' },
+                            { name: 'Eliksir', value: 'Eliksir' },
+                            { name: 'Emulsi', value: 'Emulsi' },
+                            { name: 'Enema', value: 'Enema' },
+                            { name: 'Gas', value: 'Gas' },
+                            { name: 'Gel', value: 'Gel' },
+                            { name: 'Gel Mata', value: 'Gel Mata' },
+                            { name: 'Granula', value: 'Granula' },
+                            { name: 'Implant', value: 'Implant' },
+                            { name: 'Infus', value: 'Infus' },
+                            { name: 'Intra Uterine Device (IUD)', value: 'Intra Uterine Device (IUD)' },
+                            { name: 'Jerigen', value: 'Jerigen' },
+                            { name: 'Kaplet', value: 'Kaplet' },
+                            { name: 'Kaplet Kunyah', value: 'Kaplet Kunyah' },
+                            { name: 'Kaplet Pelepasan Lambat', value: 'Kaplet Pelepasan Lambat' },
+                            { name: 'Kaplet Salut Enterik', value: 'Kaplet Salut Enterik' },
+                            { name: 'Kaplet Salut Gula', value: 'Kaplet Salut Gula' },
+                            { name: 'Kaplet Salut Selaput', value: 'Kaplet Salut Selaput' },
+                            { name: 'Kapsul', value: 'Kapsul' },
+                            { name: 'Kapsul Lunak', value: 'Kapsul Lunak' },
+                            { name: 'Kapsul Pelepasan Lambat', value: 'Kapsul Pelepasan Lambat' },
+                            { name: 'Kit', value: 'Kit' },
+                            { name: 'Krim', value: 'Krim' },
+                            { name: 'Larutan', value: 'Larutan' },
+                            { name: 'Larutan Inhalasi', value: 'Larutan Inhalasi' },
+                            { name: 'Larutan Injeksi', value: 'Larutan Injeksi' },
+                            { name: 'Obat Kumur', value: 'Obat Kumur' },
+                            { name: 'Oral Spray', value: 'Oral Spray' },
+                            { name: 'Orodispersible Film', value: 'Orodispersible Film' },
+                            { name: 'Ovula', value: 'Ovula' },
+                            { name: 'Pasang', value: 'Pasang' },
+                            { name: 'Pasta', value: 'Pasta' },
+                            { name: 'Patch', value: 'Patch' },
+                            { name: 'Pessary', value: 'Pessary' },
+                            { name: 'Pieces', value: 'Pieces' },
+                            { name: 'Salep', value: 'Salep' },
+                            { name: 'Salep Mata', value: 'Salep Mata' },
+                            { name: 'Sampo', value: 'Sampo' },
+                            { name: 'Semprot Hidung', value: 'Semprot Hidung' },
+                            { name: 'Serbuk Effervescent', value: 'Serbuk Effervescent' },
+                            { name: 'Serbuk Infus', value: 'Serbuk Infus' },
+                            { name: 'Serbuk Inhaler', value: 'Serbuk Inhaler' },
+                            { name: 'Serbuk Injeksi', value: 'Serbuk Injeksi' },
+                            { name: 'Serbuk Injeksi Liofilisasi', value: 'Serbuk Injeksi Liofilisasi' },
+                            { name: 'Serbuk Obat Luar / Serbuk Tabur', value: 'Serbuk Obat Luar / Serbuk Tabur' },
+                            { name: 'Serbuk Oral', value: 'Serbuk Oral' },
+                            { name: 'Set', value: 'Set' },
+                            { name: 'Sirup', value: 'Sirup' },
+                            { name: 'Sirup Kering', value: 'Sirup Kering' },
+                            { name: 'Subdermal Implants', value: 'Subdermal Implants' },
+                            { name: 'Supositoria', value: 'Supositoria' },
+                            { name: 'Suspensi', value: 'Suspensi' },
+                            { name: 'Suspensi / Cairan Obat Luar', value: 'Suspensi / Cairan Obat Luar' },
+                            { name: 'Suspensi Inhalasi', value: 'Suspensi Inhalasi' },
+                            { name: 'Suspensi Injeksi', value: 'Suspensi Injeksi' },
+                            { name: 'Tablet', value: 'Tablet' },
+                            { name: 'Tablet Cepat Larut', value: 'Tablet Cepat Larut' },
+                            { name: 'Tablet Disintegrasi Oral', value: 'Tablet Disintegrasi Oral' },
+                            { name: 'Tablet Dispersibel', value: 'Tablet Dispersibel' },
+                            { name: 'Tablet Effervescent', value: 'Tablet Effervescent' },
+                            { name: 'Tablet Hisap', value: 'Tablet Hisap' },
+                            { name: 'Tablet Kunyah', value: 'Tablet Kunyah' },
+                            { name: 'Tablet Pelepasan Lambat', value: 'Tablet Pelepasan Lambat' },
+                            { name: 'Tablet Salut Enterik', value: 'Tablet Salut Enterik' },
+                            { name: 'Tablet Salut Gula', value: 'Tablet Salut Gula' },
+                            { name: 'Tablet Salut Selaput', value: 'Tablet Salut Selaput' },
+                            { name: 'Tablet Sublingual', value: 'Tablet Sublingual' },
+                            { name: 'Tablet Vaginal', value: 'Tablet Vaginal' },
+                            { name: 'Tetes Hidung', value: 'Tetes Hidung' },
+                            { name: 'Tetes Mata', value: 'Tetes Mata' },
+                            { name: 'Tetes Mata Dan Telinga', value: 'Tetes Mata Dan Telinga' },
+                            { name: 'Tetes Oral (Oral Drops)', value: 'Tetes Oral (Oral Drops)' },
+                            { name: 'Tetes Telinga', value: 'Tetes Telinga' },
+                            { name: 'Topical Spray', value: 'Topical Spray' },
+                            { name: 'Tulle/Plester Obat', value: 'Tulle/Plester Obat' },
+                            { name: 'Units', value: 'Units' },
+                            { name: 'Vaginal Cream', value: 'Vaginal Cream' },
+                            { name: 'Vaginal Gel', value: 'Vaginal Gel' }
+                        ],
+                        optionName: 'name',
+                        optionValue: 'value',
+                        autoDisplayFirst: false
+                    },
+                    value: '',
+                },
+                {
+                    id: 'harga_jual',
+                    label: 'Harga Jual',
+                    required: true,
+                    type: 'number',
+                    value: '',
+                },
+            ],
+            style: 'not_inline',
+            class: 'grid-rows-1 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
@@ -187,9 +392,9 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             });
     }
 
-    private getAllKfa(keyword: string) {
+    private getAllKfa(payload: any) {
         this._itemService
-            .getAllIcd9(keyword)
+            .getAllIcd9(payload)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {
@@ -280,9 +485,20 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         }
     }
 
-    saveItem(data: any) {
+    saveItem() {
+        const payload = {
+            ...this.FormComps.FormGroup.value,
+            ...this.FormResultKfaComps.FormGroup.value,
+            catatan: this.Catatan,
+            notif_exp_day: this.IsNotifExp,
+            is_notf_exp: this.NotifExpDay,
+            ...this.FormHargaJualComps.FormGroup.value
+        };
+
+        delete payload.uuid;
+
         this._store
-            .dispatch(new SetupItemActions.CreateItem(data))
+            .dispatch(new SetupItemActions.CreateItem(payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_item.success) {
@@ -293,9 +509,18 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             })
     }
 
-    updateItem(data: any) {
+    updateItem() {
+        const payload = {
+            ...this.FormComps.FormGroup.value,
+            ...this.FormResultKfaComps.FormGroup.value,
+            catatan: this.Catatan,
+            notif_exp_day: this.IsNotifExp,
+            is_notf_exp: this.NotifExpDay,
+            ...this.FormHargaJualComps.FormGroup.value
+        };
+
         this._store
-            .dispatch(new SetupItemActions.UpdateItem(data))
+            .dispatch(new SetupItemActions.UpdateItem(payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_item.success) {

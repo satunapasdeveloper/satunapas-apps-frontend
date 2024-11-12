@@ -7,22 +7,152 @@
     </div>
 
     <!-- Form -->
-    <div *ngIf="PageState == 'form'" class="flex flex-col w-6/12 p-3 bg-white rounded-lg shadow-sm">
-        <div class="grid w-full">
-            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+    <div *ngIf="PageState == 'form'" class="flex flex-row w-full justify-start items-start gap-3 relative">
+        <div class="flex flex-col w-8/12">
+            <!-- Form Tambah Item -->
+            <div class="grid w-full p-3 bg-white rounded-lg shadow-sm mb-3">
+                <p
+                    class="text-lg text-gray-700 font-semibold mb-3 pb-1 border-b border-t-0 border-x-0 border-solid border-gray-200">
+                    Tambah Item
+                </p>
+
+                <div class="grid w-full mb-3">
+                    <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+                </div>
+
+                <div class="grid w-full">
+                    <app-dynamic-form #FormResultKfaComps [props]="FormResultKfaProps"></app-dynamic-form>
+
+                    <div class="flex flex-col w-full mt-4 gap-1">
+                        <p class="text-sm font-medium text-gray-700">
+                            Catatan Item
+                        </p>
+                        <textarea pInputTextarea class="p-inputtext-sm w-full" rows="3"
+                            [(ngModel)]="Catatan"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Notifikasi Kadaluarsa -->
+            <div class="grid w-full p-3 bg-white rounded-lg shadow-sm mb-3">
+                <p
+                    class="text-lg text-gray-700 font-semibold mb-3 pb-1 border-b border-t-0 border-x-0 border-solid border-gray-200">
+                    Pengaturan Notifikasi Kedaluwarsa
+                </p>
+
+                <div class="grid grid-cols-2 gap-2 w-full items-center mb-3">
+                    <div class="flex flex-col gap-1">
+                        <div class="flex gap-2 items-center">
+                            <p-inputSwitch [(ngModel)]="IsNotifExp" />
+                            <p class="text-sm text-gray-600">Notifikasi Kedaluwarsa</p>
+                        </div>
+                        <p class="text-xs text-gray-700 font-medium">
+                            Tampilkan notifikasi jika obat mendekati tanggal kedaluwarsa
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <p class="text-sm text-gray-700 font-semibold">Waktu Notifikasi</p>
+                        <div class="flex gap-2 items-center mb-1">
+                            <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="NotifExpDay"
+                                [disabled]="!IsNotifExp"></p-inputNumber>
+                            <p class="text-sm text-gray-600">Hari</p>
+                        </div>
+                        <p class="text-xs text-gray-600">
+                            Notifikasi ditampilkan jika tanggal kedaluwarsa kurang
+                            dari {{ NotifExpDay }} hari
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Harga Jual -->
+            <div class="grid w-full p-3 bg-white rounded-lg shadow-sm mb-3">
+                <p
+                    class="text-lg text-gray-700 font-semibold mb-3 pb-1 border-b border-t-0 border-x-0 border-solid border-gray-200">
+                    Pengaturan Harga Jual
+                </p>
+
+                <div class="grid w-full mb-3">
+                    <app-dynamic-form #FormHargaJualComps [props]="FormHargaJualProps"></app-dynamic-form>
+                </div>
+            </div>
         </div>
 
-        <div class="flex w-full justify-end mt-4 gap-4">
-            <p-button severity="secondary" label="Kembali" styleClass="p-button-sm" (onClick)="handleBackToList()">
-            </p-button>
+        <div class="flex flex-col w-[28.5%] gap-3 items-start fixed right-[35px]">
+            <!-- Button -->
+            <div class="grid grid-cols-2 gap-4 w-full p-3 bg-white rounded-lg shadow-sm">
+                <p-button severity="secondary" label="Kembali" styleClass="p-button-sm w-full"
+                    (onClick)="handleBackToList()">
+                </p-button>
 
-            <p-button *ngIf="FormState == 'insert'" severity="info" label="Simpan" styleClass="p-button-sm"
-                (onClick)="saveItem(FormComps.FormGroup.value)">
-            </p-button>
+                <p-button *ngIf="FormState == 'insert'" severity="info" label="Simpan" styleClass="p-button-sm w-full"
+                    (onClick)="saveItem()">
+                </p-button>
 
-            <p-button *ngIf="FormState == 'update'" severity="warning" label="Update" styleClass="p-button-sm"
-                (onClick)="updateItem(FormComps.FormGroup.value)">
-            </p-button>
+                <p-button *ngIf="FormState == 'update'" severity="warning" label="Update"
+                    styleClass="p-button-sm w-full" (onClick)="updateItem()">
+                </p-button>
+            </div>
+
+            <!-- Form Informasi Item -->
+            <div *ngIf="SelectedObat" class="grid w-full p-3 bg-white rounded-lg shadow-sm mb-3">
+                <p class="text-lg text-gray-700 font-semibold mb-0">
+                    Informasi Item
+                </p>
+
+                <p class="text-sm text-gray-600 mb-3 pb-1 border-b border-t-0 border-x-0 border-solid border-gray-200">
+                    by Kamus Farmasi & Alat Kesehatan
+                </p>
+
+                <div class="flex flex-col gap-2 w-full mb-3">
+                    <div class="flex flex-col gap-0">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Nama Obat
+                        </p>
+                        <p class="text-sm text-gray-700">
+                            {{ SelectedObat.product_name }}
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-0">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Produsen
+                        </p>
+                        <p class="text-sm text-gray-700">
+                            {{ SelectedObat.produsen }}
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-0">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Nama Generik
+                        </p>
+                        <p class="text-sm text-gray-700">
+                            {{ SelectedObat.nama_dagang }}
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-0">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Bentuk
+                        </p>
+                        <p class="text-sm text-gray-700">
+                            {{ SelectedObat.bentuk }}
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-0">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Kandungan Zat Aktif
+                        </p>
+                        <p *ngFor="let item of SelectedObat.kandungan; let last = last"
+                            class="text-sm text-gray-700 {{ last ? '' : 'mb-1' }}">
+                            {{ item }}
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

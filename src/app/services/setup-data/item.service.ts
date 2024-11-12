@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpBaseResponse } from 'src/app/model/http/http-request.model';
 import { environment } from 'src/environments/environment';
 import { HttpRequestService } from '../http/http-request.service';
@@ -22,12 +22,37 @@ export class ItemService {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Item/GetByUuid/${uuid}`);
     }
 
-    getAllIcd9(keyword?: string): Observable<ItemModel.GetAllKfa> {
-        const payload = {
-            cari: keyword ? keyword : ""
-        };
+    getAllIcd9(payload: any): Observable<ItemModel.GetAllKfa> {
+        return this._httpRequestService
+            .postRequest(`${environment.webApiUrl}/satunapas/Item/GetKfa`, payload)
+            .pipe(
+                map((result) => {
+                    let response = {
+                        responseResult: result.responseResult,
+                        statusCode: result.statusCode,
+                        message: result.message,
+                        data: []
+                    };
 
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetKfa`, payload);
+                    response.data = result.data.items.data ? result.data.items.data.map((item: any) => {
+                        return {
+                            kategori: item.farmalkes_type.code == 'medicine' ? 'obat' : 'alkes',
+                            kode_kfa: item.kfa_code,
+                            satuan: item.uom.name,
+                            nama_item: item.name,
+                            produsen: item.manufacturer,
+                            nama_dagang: item.nama_dagang,
+                            product_name: item.product_template.name,
+                            bentuk: item.dosage_form.name,
+                            kandungan: item.active_ingredients.map((ingredients: any) => {
+                                return `${ingredients.zat_aktif} : ${ingredients.kekuatan_zat_aktif}`
+                            })
+                        }
+                    }) : [];
+
+                    return response;
+                })
+            )
     }
 
     create(payload: ItemModel.CreateItem): Observable<HttpBaseResponse> {
