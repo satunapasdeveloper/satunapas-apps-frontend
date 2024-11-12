@@ -2,13 +2,31 @@ import { HttpBaseResponse } from "../../http/http-request.model"
 
 export namespace ItemModel {
     export interface IItem {
+        id_item: string
         uuid: string
         kategori: string
         nama_item: string
         kode_kfa: string
         satuan: string
         harga_jual: string
+        harga_beli: any
+        hpp_average: any
         is_active: boolean
+        is_delete: boolean
+        kandungan: number
+        satuan_obat: string
+        code: any
+        rxperts_code: any
+        produsen: any
+        golongan_obat: any
+        kategori_obat: any
+        catatan: any
+        notif_exp_day: any
+        is_notf_exp: boolean
+        created_at: any
+        updated_at: string
+        created_by: any
+        updated_by: any
     }
 
     export interface IKfa {

@@ -162,6 +162,8 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                         }
                     },
                     onChange: (args) => {
+                        args.code = args.kode_kfa;
+
                         this.FormComps.FormGroup.get('kategori')?.setValue(args ? args.kategori : null);
                         this.FormResultKfaComps.FormGroup.patchValue(args);
 
@@ -197,9 +199,24 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     readonly: true
                 },
                 {
+                    id: 'nama_dagang',
+                    label: 'Nama Dagang',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: true
+                },
+                {
+                    id: 'code',
+                    label: 'Kode Item',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                },
+                {
                     id: 'golongan_obat',
                     label: 'Golongan Obat',
-                    required: true,
+                    required: false,
                     type: 'select',
                     dropdownProps: {
                         options: [
@@ -221,7 +238,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                 {
                     id: 'kategori_obat',
                     label: 'Kategori Obat',
-                    required: true,
+                    required: false,
                     type: 'select',
                     dropdownProps: {
                         options: [
@@ -246,7 +263,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-2 grid-cols-2',
+            class: 'grid-rows-3 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
@@ -461,6 +478,14 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 if (result.responseResult) {
                     console.log(result.data);
+
+                    this.FormComps.FormGroup.patchValue(result.data);
+                    this.FormResultKfaComps.FormGroup.patchValue(result.data);
+                    this.FormHargaJualComps.FormGroup.patchValue(result.data);
+
+                    this.Catatan = result.data.catatan;
+                    this.IsNotifExp = result.data.is_notf_exp;
+                    this.NotifExpDay = result.data.notif_exp_day;
                 }
             })
     }
@@ -512,8 +537,8 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             ...this.FormComps.FormGroup.value,
             ...this.FormResultKfaComps.FormGroup.value,
             catatan: this.Catatan,
-            notif_exp_day: this.IsNotifExp,
-            is_notf_exp: this.NotifExpDay,
+            notif_exp_day: this.NotifExpDay,
+            is_notf_exp: this.IsNotifExp,
             ...this.FormHargaJualComps.FormGroup.value
         };
 
@@ -536,8 +561,8 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             ...this.FormComps.FormGroup.value,
             ...this.FormResultKfaComps.FormGroup.value,
             catatan: this.Catatan,
-            notif_exp_day: this.IsNotifExp,
-            is_notf_exp: this.NotifExpDay,
+            notif_exp_day: this.NotifExpDay,
+            is_notf_exp: this.IsNotifExp,
             ...this.FormHargaJualComps.FormGroup.value
         };
 
