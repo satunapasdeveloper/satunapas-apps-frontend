@@ -479,6 +479,14 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                 if (result.responseResult) {
                     console.log(result.data);
 
+                    result.data.kategori = result.data.kategori == 'OBAT' || result.data.kategori == 'obat' ? 'obat' : 'alkes';
+
+                    this.FormProps.fields[2].dropdownProps.options = [
+                        {
+                            nama_item: result.data.nama_item
+                        }
+                    ];
+
                     this.FormComps.FormGroup.patchValue(result.data);
                     this.FormResultKfaComps.FormGroup.patchValue(result.data);
                     this.FormHargaJualComps.FormGroup.patchValue(result.data);
