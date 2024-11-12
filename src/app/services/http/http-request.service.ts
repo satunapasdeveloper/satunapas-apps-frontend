@@ -29,8 +29,10 @@ export class HttpRequestService {
 
         let query = {};
 
-        if (queryString) {
+        if (Array.isArray(queryString)) {
             query = Object.assign({}, ...queryString);
+        } else {
+            query = queryString;
         }
 
         return this._httpClient.get<HttpBaseResponse>(url, {

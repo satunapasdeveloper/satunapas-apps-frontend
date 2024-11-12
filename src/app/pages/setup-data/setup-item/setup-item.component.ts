@@ -17,6 +17,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { ItemStokService } from 'src/app/services/setup-data/item-stok.service';
 
 @Component({
     selector: 'app-setup-item',
@@ -57,7 +58,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             { field: 'nama_item', headerName: 'Nama Item', },
             { field: 'kategori', headerName: 'Kategori', },
             { field: 'satuan', headerName: 'Satuan', },
-            { field: 'harga_jual', headerName: 'Harga Jual', format: 'currency' },
+            { field: 'stock', headerName: 'Stock', format: 'number', class: 'text-end' },
             { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
@@ -67,9 +68,14 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         showSearch: true,
         showSort: false,
         searchKeyword: 'nama_item',
-        searchPlaceholder: 'Cari Nama Item Disini'
+        searchPlaceholder: 'Cari Nama Item Disini',
+        totalRows: 0,
     };
     GridSelectedData: any;
+
+    First: number = 0;
+
+    Rows: number = 10;
 
     FormState: 'insert' | 'update' = 'insert';
 
@@ -95,6 +101,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         private _store: Store,
         private _itemService: ItemService,
         private _messageService: MessageService,
+        private _itemStokService: ItemStokService,
         private _confirmationService: ConfirmationService,
     ) {
 
@@ -372,7 +379,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.getAll();
+        this.getAll({ page: 1, count: 5 });
     }
 
     ngOnDestroy(): void {
@@ -380,14 +387,14 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         this.Destroy$.complete();
     }
 
-    private getAll() {
-        this._store
-            .select(SetupItemState.itemEntities)
+    private getAll(query: any) {
+        this._itemStokService
+            .getAll(query)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get data from setup item =>", result);
-                    this.GridProps.dataSource = result;
+                    this.GridProps.dataSource = result.data.rows;
+                    this.GridProps.totalRows = result.data.totalRows;
                 }
             });
     }
@@ -436,11 +443,26 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         this.FormState = 'update';
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            this.getAllKfa(args.nama_item);
+            this.getAllKfa({ kategori: args.kategori == 'OBAT' || args.kategori == 'obat' ? 'obat' : 'alkes', cari: args.nama_item } as any);
             setTimeout(() => {
-                this.FormComps.FormGroup.patchValue(args);
+                this.getDetailItem(args.uuid);
             }, 500);
         }, 100);
+    }
+
+    onPageChanged(args: any): void {
+        this.getAll({ count: args.rows, page: args.page + 1 });
+    }
+
+    private getDetailItem(uuid: string) {
+        this._itemService
+            .getById(uuid)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    console.log(result.data);
+                }
+            })
     }
 
     onToolbarClicked(args: any): void {
