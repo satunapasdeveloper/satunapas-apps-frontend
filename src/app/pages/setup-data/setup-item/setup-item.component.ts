@@ -126,6 +126,25 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         totalRows: 0,
     };
 
+    ShowDialogBatchNumber = false;
+
+    GridBatchNumberProps: GridModel.IGrid = {
+        id: 'BatchNumber',
+        column: [
+            { field: 'batch', headerName: 'Batch', class: 'font-semibold' },
+            { field: 'expired_date', headerName: 'Expired Date', format: 'date', },
+            { field: 'stock', headerName: 'Stok', format: 'number', class: 'text-end', }
+        ],
+        dataSource: [],
+        height: "calc(100vh - 14.5rem)",
+        showPaging: false,
+        showSearch: false,
+        showSort: false,
+        searchKeyword: 'nama_item',
+        searchPlaceholder: 'Cari Nama Item Disini',
+        totalRows: 0,
+    };
+
     constructor(
         private _store: Store,
         private _itemService: ItemService,
@@ -578,6 +597,11 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             this.GridSelectedData = args.data;
             this.getKartuStok({ page: 1, count: 5, id_item: args.data.id_item });
         }
+
+        if (args.type == 'lihat batch') {
+            this.GridSelectedData = args.data;
+            this.getBatchNumber(args.data.id_item);
+        }
     }
 
     private getKartuStok(payload: any) {
@@ -593,6 +617,19 @@ export class SetupItemComponent implements OnInit, OnDestroy {
 
                     this.GridKartuStokProps.dataSource = result.data.rows;
                     this.GridKartuStokProps.totalRows = result.data.totalRows;
+                }
+            })
+    }
+
+    private getBatchNumber(id_item: any) {
+        this._itemStokService
+            .getById(id_item)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.ShowDialogBatchNumber = true;
+                    this.GridBatchNumberProps.dataSource = [];
+                    this.GridBatchNumberProps.dataSource = result.data;
                 }
             })
     }
