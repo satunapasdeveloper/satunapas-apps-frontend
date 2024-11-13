@@ -103,6 +103,81 @@ const routes: Routes = [
         ]
     },
     {
+        path: 'inventory',
+        children: [
+            {
+                path: 'barang-masuk',
+                children: [
+                    {
+                        path: 'history',
+                        loadComponent: async () => (await import('./pages/inventory/barang-masuk/history-barang-masuk/history-barang-masuk.component')).HistoryBarangMasukComponent,
+                        data: {
+                            title: 'History Barang Masuk',
+                            breadcrumbs: [
+                                "Beranda", "Inventory", "Barang Masuk", "History"
+                            ]
+                        },
+                    },
+                    {
+                        path: 'detail/:id',
+                        loadComponent: async () => (await import('./pages/inventory/barang-masuk/detail-barang-masuk/detail-barang-masuk.component')).DetailBarangMasukComponent,
+                        data: {
+                            title: 'Detail Barang Masuk',
+                            breadcrumbs: [
+                                "Beranda", "Inventory", "Barang Masuk", "Detail"
+                            ]
+                        },
+                    },
+                    {
+                        path: 'input',
+                        loadComponent: async () => (await import('./pages/inventory/barang-masuk/input-barang-masuk/input-barang-masuk.component')).InputBarangMasukComponent,
+                        data: {
+                            title: 'Input Barang Masuk',
+                            breadcrumbs: [
+                                "Beranda", "Inventory", "Barang Masuk", "Input"
+                            ]
+                        },
+                    },
+                ]
+            },
+            {
+                path: 'barang-keluar',
+                children: [
+                    {
+                        path: 'history',
+                        loadComponent: async () => (await import('./pages/inventory/barang-keluar/history-barang-keluar/history-barang-keluar.component')).HistoryBarangKeluarComponent,
+                        data: {
+                            title: 'History Barang Keluar',
+                            breadcrumbs: [
+                                "Beranda", "Inventory", "Barang Keluar", "History"
+                            ]
+                        },
+                    },
+                    {
+                        path: 'detail/:id',
+                        loadComponent: async () => (await import('./pages/inventory/barang-keluar/detail-barang-keluar/detail-barang-keluar.component')).DetailBarangKeluarComponent,
+                        data: {
+                            title: 'Detail Barang Keluar',
+                            breadcrumbs: [
+                                "Beranda", "Inventory", "Barang Keluar", "Detail"
+                            ]
+                        },
+                    },
+                    {
+                        path: 'input',
+                        loadComponent: async () => (await import('./pages/inventory/barang-keluar/input-barang-keluar/input-barang-keluar.component')).InputBarangKeluarComponent,
+                        data: {
+                            title: 'Input Barang Keluar',
+                            breadcrumbs: [
+                                "Beranda", "Inventory", "Barang Keluar", "Input"
+                            ]
+                        },
+                    },
+                ]
+            },
+        ]
+    },
+    {
         path: 'layanan-dokumen',
         children: [
             {
