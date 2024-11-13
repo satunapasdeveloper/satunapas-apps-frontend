@@ -18,6 +18,8 @@ import { FormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ItemStokService } from 'src/app/services/setup-data/item-stok.service';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
     selector: 'app-setup-item',
@@ -30,9 +32,11 @@ import { ItemStokService } from 'src/app/services/setup-data/item-stok.service';
         ButtonModule,
         InputTextareaModule,
         ConfirmDialogModule,
+        DialogModule,
         FormsModule,
         InputSwitchModule,
         InputNumberModule,
+        InputTextModule,
     ],
     templateUrl: './setup-item.component.html',
     styleUrl: './setup-item.component.scss'
@@ -63,7 +67,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', "Ubah Status", 'Detail'],
+        toolbar: ['Delete', "Ubah Status", 'Detail', 'Kartu Stok', 'Lihat Batch'],
         showPaging: true,
         showSearch: true,
         showSort: false,
@@ -71,11 +75,8 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         searchPlaceholder: 'Cari Nama Item Disini',
         totalRows: 0,
     };
+
     GridSelectedData: any;
-
-    First: number = 0;
-
-    Rows: number = 10;
 
     FormState: 'insert' | 'update' = 'insert';
 
@@ -96,6 +97,34 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     FormHargaJualProps: FormModel.IForm;
 
     KfaKeywordSearch$ = new BehaviorSubject(null);
+
+    ShowDialogKartuStok = false;
+
+    GridKartuStokProps: GridModel.IGrid = {
+        id: 'KartuStokItem',
+        column: [
+            { field: 'batch', headerName: 'Batch', class: 'font-semibold text-xs' },
+            { field: 'no_ref', headerName: 'No. Ref', class: 'text-xs' },
+            { field: 'keterangan', headerName: 'Keterangan', class: 'text-xs' },
+            { field: 'saldo_awal', headerName: 'Saldo Awal', format: 'number', class: 'text-end text-xs', },
+            { field: 'nilai_awal', headerName: 'Nilai Awal', format: 'currency', class: 'text-end text-xs' },
+            { field: 'saldo_masuk', headerName: 'Saldo Masuk', format: 'number', class: 'text-end text-xs' },
+            { field: 'nilai_masuk', headerName: 'Nilai Masuk', format: 'currency', class: 'text-end text-xs' },
+            { field: 'saldo_keluar', headerName: 'Saldo Keluar', format: 'number', class: 'text-end text-xs' },
+            { field: 'nilai_keluar', headerName: 'Nilai Keluar', format: 'currency', class: 'text-end text-xs' },
+            { field: 'saldo_akhir', headerName: 'Saldo Akhir', format: 'number', class: 'text-end text-xs' },
+            { field: 'nilai_akhir', headerName: 'Nilai Akhir', format: 'currency', class: 'text-end text-xs' },
+            { field: 'created_at', headerName: 'Waktu Entry', format: 'date', class: 'text-xs' },
+        ],
+        dataSource: [],
+        height: "calc(100vh - 14.5rem)",
+        showPaging: true,
+        showSearch: false,
+        showSort: false,
+        searchKeyword: 'nama_item',
+        searchPlaceholder: 'Cari Nama Item Disini',
+        totalRows: 0,
+    };
 
     constructor(
         private _store: Store,
@@ -467,8 +496,14 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         }, 100);
     }
 
-    onPageChanged(args: any): void {
-        this.getAll({ count: args.rows, page: args.page + 1 });
+    onPageChanged(args: any, type: 'list_item' | 'riwayat_kartu_stok'): void {
+        if (type == 'list_item') {
+            this.getAll({ count: args.rows, page: args.page + 1 });
+        }
+
+        if (type == 'riwayat_kartu_stok') {
+            this.getKartuStok({ count: args.rows, page: args.page + 1, id_item: this.GridSelectedData.id_item })
+        }
     }
 
     private getDetailItem(uuid: string) {
@@ -538,6 +573,28 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+
+        if (args.type == 'kartu stok') {
+            this.GridSelectedData = args.data;
+            this.getKartuStok({ page: 1, count: 5, id_item: args.data.id_item });
+        }
+    }
+
+    private getKartuStok(payload: any) {
+        this._itemStokService
+            .getRiwayatKartuStok(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.ShowDialogKartuStok = true;
+
+                    this.GridKartuStokProps.dataSource = [];
+                    this.GridKartuStokProps.totalRows = 0;
+
+                    this.GridKartuStokProps.dataSource = result.data.rows;
+                    this.GridKartuStokProps.totalRows = result.data.totalRows;
+                }
+            })
     }
 
     saveItem() {

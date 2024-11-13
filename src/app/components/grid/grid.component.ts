@@ -105,6 +105,12 @@ export class GridComponent implements OnInit {
                     case 'Mulai Periksa':
                         icon = 'pi pi-play';
                         break;
+                    case 'Kartu Stok':
+                        icon = 'pi pi-file';
+                        break;
+                    case 'Lihat Batch':
+                        icon = 'pi pi-link';
+                        break;
                     default:
                         break;
                 }

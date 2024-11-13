@@ -16,4 +16,12 @@ export class ItemStokService {
     getAll(query: any): Observable<any> {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/item_stock/getAll`, query);
     }
+
+    getById(id_item: string): Observable<any> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/item_stock/getById/${id_item}`);
+    }
+
+    getRiwayatKartuStok(query: any): Observable<any> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/item_stock/getHistoryCard`, query);
+    }
 }

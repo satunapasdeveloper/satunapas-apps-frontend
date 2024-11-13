@@ -3,7 +3,7 @@
     <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
         <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
             (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)"
-            (pageChanged)="onPageChanged($event)">
+            (pageChanged)="onPageChanged($event, 'list_item')">
         </app-grid>
     </div>
 
@@ -157,5 +157,57 @@
         </div>
     </div>
 
+    <!-- Kartu Stok Dialog -->
+    <p-dialog header="Kartu Stok" [modal]="true" [(visible)]="ShowDialogKartuStok" [style]="{ width: '95vw' }"
+        [breakpoints]="{ '1199px': '95vw', '575px': '90vw' }" [maximizable]="true" [draggable]="false"
+        [resizable]="false">
+        <div *ngIf="GridSelectedData as data" class="grid w-full">
+            <!-- Title -->
+            <div class="flex flex-col gap-1 w-full mb-3">
+                <p class="text-base text-gray-700 font-medium">
+                    {{ data.nama_item }}
+                </p>
+                <p class="text-sm text-gray-700">
+                    Sisa Stok : <span class="text-blue-500 font-semibold">{{ data.stock }}</span>
+                </p>
+            </div>
+
+            <!-- Headers -->
+            <div class="flex gap-3 w-full mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <!-- Kode Item -->
+                <div class="flex flex-col gap-1 w-4/12">
+                    <p class="text-sm text-gray-700 font-medium">
+                        Kode Item
+                    </p>
+                    <input type="text" pInputText [readonly]="true" class="w-full p-inputtext-sm" [value]="data.code">
+                </div>
+
+                <!-- Kode KFA -->
+                <div class="flex flex-col gap-1 w-4/12">
+                    <p class="text-sm text-gray-700 font-medium">
+                        Kode KFA
+                    </p>
+                    <input type="text" pInputText [readonly]="true" class="w-full p-inputtext-sm"
+                        [value]="data.kode_kfa">
+                </div>
+
+                <!-- Satuan -->
+                <div class="flex flex-col gap-1 w-4/12">
+                    <p class="text-sm text-gray-700 font-medium">
+                        Satuan
+                    </p>
+                    <input type="text" pInputText [readonly]="true" class="w-full p-inputtext-sm" [value]="data.satuan">
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="grid w-full">
+                <app-grid [props]="GridKartuStokProps" (pageChanged)="onPageChanged($event, 'riwayat_kartu_stok')">
+                </app-grid>
+            </div>
+        </div>
+    </p-dialog>
+
+    <!-- Confirmation Dialog -->
     <p-confirmDialog />
 </app-dashboard>
