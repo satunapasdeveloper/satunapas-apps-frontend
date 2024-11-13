@@ -85,6 +85,28 @@ export class AuthenticationService {
             url: '/rekam-medis/data'
         },
         {
+            id: '6',
+            caption: 'Inventory',
+            icon: 'pi pi-warehouse',
+            toggle_child: false,
+            sidebarChild: [
+                {
+                    id: '61',
+                    caption: 'Barang Masuk',
+                    icon: 'pi pi-arrow-down-left-and-arrow-up-right-to-center',
+                    toggle_child: false,
+                    url: '/inventory/barang-masuk/history'
+                },
+                {
+                    id: '62',
+                    caption: 'Barang Keluar',
+                    icon: 'pi pi-arrow-up-right-and-arrow-down-left-from-center',
+                    toggle_child: false,
+                    url: '/inventory/barang-keluar/history'
+                },
+            ]
+        },
+        {
             id: '7',
             caption: 'Layanan Dokumen',
             icon: 'pi pi-file-o',
