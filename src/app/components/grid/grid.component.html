@@ -2,7 +2,7 @@
     class="flex items-center justify-between w-full mb-4 pt-2 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
     <div class="flex w-5/12">
         <input #KeywordSearch type="text" pInputText class="w-full p-inputtext-sm"
-            [placeholder]="props.searchPlaceholder">
+            [placeholder]="props.searchPlaceholder" (keyup.enter)="onSearchKeyword(KeywordSearch.value)">
     </div>
 
     <div class="flex gap-3">

@@ -61,11 +61,13 @@ export class GridComponent implements OnInit {
 
     ngOnInit(): void {
         this.onGridReady();
+
+        setTimeout(() => {
+            this.gridDatasource = this.props.dataSource;
+        }, 2000);
     }
 
     onGridReady(): void {
-        this.gridDatasource = this.props.dataSource;
-
         const column = this.props.column.map((item) => {
             return {
                 id: item.field,
@@ -87,6 +89,7 @@ export class GridComponent implements OnInit {
                     case 'Edit':
                         icon = 'pi pi-file-edit';
                         break;
+                    case 'Cancel':
                     case 'Delete':
                         icon = 'pi pi-trash';
                         break;
@@ -141,7 +144,9 @@ export class GridComponent implements OnInit {
     }
 
     onSearchKeyword(search: string) {
-        const originalDatasource = JSON.parse(JSON.stringify(this.props.dataSource));
+        console.log("search =>", search);
+
+        const originalDatasource = JSON.parse(JSON.stringify([...this.gridDatasource]));
 
         if (search) {
             this.props.dataSource = originalDatasource.filter((item: any) => {
@@ -149,8 +154,9 @@ export class GridComponent implements OnInit {
             });
         } else {
             this.props.dataSource = originalDatasource;
-            this.gridDatasource = originalDatasource;
         };
+
+        console.log("original datasource =>", originalDatasource);
     }
 
     onAksiClicked(type: string, data: any) {
