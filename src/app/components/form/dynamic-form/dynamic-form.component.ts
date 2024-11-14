@@ -188,7 +188,7 @@ export class DynamicFormComponent implements OnInit {
             data = fields.dropdownProps.options.find((item: any) => { return item[fields.dropdownProps.optionValue] == args.value });
         }
 
-        return fields.onChange?.(data);
+        return fields.onChange?.(data ? data : args.value);
     }
 
     handleFilterDropdown(args: any, fields: FormModel.IFormFields): any {

@@ -144,8 +144,6 @@ export class GridComponent implements OnInit {
     }
 
     onSearchKeyword(search: string) {
-        console.log("search =>", search);
-
         const originalDatasource = JSON.parse(JSON.stringify([...this.gridDatasource]));
 
         if (search) {
@@ -155,8 +153,6 @@ export class GridComponent implements OnInit {
         } else {
             this.props.dataSource = originalDatasource;
         };
-
-        console.log("original datasource =>", originalDatasource);
     }
 
     onAksiClicked(type: string, data: any) {
