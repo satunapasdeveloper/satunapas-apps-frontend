@@ -6,7 +6,7 @@
 
     <!-- Detail -->
     <div class="grid w-10/12 p-3 bg-white rounded-md shadow-sm mb-3">
-        <app-grid [props]="GridProps" (aksiClicked)="onToolbarClicked($event)">
+        <app-grid [props]="GridProps">
         </app-grid>
     </div>
 
@@ -40,26 +40,21 @@
     </div>
 
     <!-- Dialog Add / Edit Item -->
-    <!-- <p-dialog [header]="FormState == 'insert' ? 'Tambah Item' : 'Edit Item'" [modal]="true" [draggable]="false"
-        [maximizable]="false" [(visible)]="ShowDialogFormDetail" [style]="{ width: '50rem' }">
+    <p-dialog header="Batalkan Barang Masuk" [modal]="true" [draggable]="false" [maximizable]="false"
+        [(visible)]="ShowDialogBatal" [style]="{ width: '35rem' }">
 
-        <div class="grid w-full mb-5">
-            <app-dynamic-form #FormPencarianItemComps [props]="FormPencarianItemProps"></app-dynamic-form>
-        </div>
-
-        <div class="grid w-full mb-5">
-            <app-dynamic-form #FormDetailComps [props]="FormDetailProps"></app-dynamic-form>
+        <div class="grid w-full gap-1 mb-5">
+            <p class="text-sm font-semibold text-gray-700">
+                Alasan Pembatalan
+            </p>
+            <textarea #AlasanPembatalan pInputTextarea rows="3" class="w-full p-inputtext-sm"></textarea>
         </div>
 
         <div class="flex justify-end gap-2">
-            <p-button label="Tutup" severity="secondary" styleClass="p-button-sm"
-                (onClick)="ShowDialogFormDetail = false" />
+            <p-button label="Tutup" severity="secondary" styleClass="p-button-sm" (onClick)="ShowDialogBatal = false" />
 
-            <p-button *ngIf="FormState == 'insert'" label="Simpan" severity="info" styleClass="p-button-sm"
-                (onClick)="handleSaveFormDetail()" />
-
-            <p-button *ngIf="FormState == 'update'" label="Update" severity="warning" styleClass="p-button-sm"
-                (onClick)="handleUpdateFormDetail()" />
+            <p-button label="Simpan" severity="info" styleClass="p-button-sm"
+                (onClick)="handleSavePembatalan(AlasanPembatalan.value)" />
         </div>
-    </p-dialog> -->
+    </p-dialog>
 </app-dashboard>

@@ -46,7 +46,7 @@ export class HistoryBarangMasukComponent implements OnInit, OnDestroy {
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Detail', 'Cancel'],
+        toolbar: ['Detail'],
         showPaging: true,
         showSearch: true,
         showSort: false,

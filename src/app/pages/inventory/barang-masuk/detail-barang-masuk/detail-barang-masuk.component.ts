@@ -5,6 +5,7 @@ import { Store } from '@ngxs/store';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
@@ -12,6 +13,7 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { BarangMasukModel } from 'src/app/model/pages/inventory/barang-masuk.model';
 import { BarangMasukService } from 'src/app/services/inventory/barang-masuk.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 
@@ -25,17 +27,12 @@ import { UtilityService } from 'src/app/services/utility/utility.service';
         DynamicFormComponent,
         ButtonModule,
         DialogModule,
+        InputTextareaModule
     ],
     templateUrl: './detail-barang-masuk.component.html',
     styleUrl: './detail-barang-masuk.component.scss'
 })
 export class DetailBarangMasukComponent implements OnInit, OnDestroy {
-    handleOpenDialogFormDetail(arg0: boolean) {
-        throw new Error('Method not implemented.');
-    }
-    onToolbarClicked($event: any) {
-        throw new Error('Method not implemented.');
-    }
 
     Destroy$ = new Subject();
 
@@ -76,6 +73,8 @@ export class DetailBarangMasukComponent implements OnInit, OnDestroy {
     JumlahItem = 0;
     GrandTotal = 0;
 
+    ShowDialogBatal = false;
+
     constructor(
         private _store: Store,
         private _router: Router,
@@ -90,20 +89,38 @@ export class DetailBarangMasukComponent implements OnInit, OnDestroy {
                 {
                     id: 'tanggal',
                     label: 'Tanggal',
-                    required: true,
-                    type: 'date',
+                    required: false,
+                    type: 'text',
                     value: '',
+                    readonly: true,
                 },
                 {
                     id: 'no_surat_jalan',
                     label: 'No. Surat Jalan',
-                    required: true,
+                    required: false,
                     type: 'text',
                     value: '',
+                    readonly: true,
+                },
+                {
+                    id: 'created_at',
+                    label: 'Waktu Entry',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: true,
+                },
+                {
+                    id: 'status',
+                    label: 'Status',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: true,
                 },
             ],
             style: 'inline',
-            class: 'grid-rows-1 grid-cols-2',
+            class: 'grid-rows-2 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
@@ -126,10 +143,18 @@ export class DetailBarangMasukComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {
-                    (<any>result.data.tanggal) = new Date(result.data.tanggal)
+                    (<any>result.data.tanggal) = this._utilityService.onFormatDate(new Date(result.data.tanggal), 'DD-MMM-yyyy');
+                    (<any>result.data.created_at) = this._utilityService.onFormatDate(new Date(result.data.created_at), 'DD-MM-yyyy HH:mm');
 
                     this.FormComps.FormGroup.patchValue(result.data);
-                    this.GridProps.dataSource = result.data.detail.map((item) => {
+                    this.GridProps.dataSource = result.data.detail.map((item: any) => {
+                        (<any>item.qty) = parseInt(item.qty);
+                        (<any>item.harga_beli) = parseFloat(item.harga_beli);
+                        (<any>item.sub_total) = (parseInt(item.harga_beli) * parseInt(item.qty));
+
+                        this.JumlahItem += parseInt(item.qty);
+                        this.GrandTotal += parseFloat(item.sub_total);
+
                         return {
                             ...item,
                             nama_item: item.item.nama_item
@@ -148,6 +173,28 @@ export class DetailBarangMasukComponent implements OnInit, OnDestroy {
 
         if (data.id == 'cancel') {
             // this.handleSubmitForm();
+            this.ShowDialogBatal = true;
         };
+    }
+
+    handleSavePembatalan(reason_canceled: string) {
+        const payload: BarangMasukModel.Cancel = {
+            id_barang_masuk: this._activateRoute.snapshot.params['id'],
+            reason_canceled: reason_canceled
+        };
+
+        this._barangMasukService
+            .cancel(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Data berhasil dibatalkan' });
+
+                    setTimeout(() => {
+                        this.handleClickButtonNavigation({ id: 'back' });
+                    }, 1000);
+                }
+            })
     }
 }
