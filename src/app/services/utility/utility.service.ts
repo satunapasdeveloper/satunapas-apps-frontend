@@ -89,6 +89,14 @@ export class UtilityService {
         return format ? moment(date).format(format) : moment(date).format('yyyy-mm-DD');
     }
 
+    FormatNumber(number: any, prefix?: string): any {
+        if (number) {
+            return prefix ? prefix + number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '.00' : number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        } else {
+            return number;
+        }
+    }
+
     onCountJumlahHari(start: Date, end: Date): any {
         const startDate = moment(start),
             endDate = moment(end);

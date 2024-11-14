@@ -175,6 +175,45 @@ const routes: Routes = [
                     },
                 ]
             },
+            {
+                path: 'stok-opname',
+                children: [
+                    {
+                        path: 'history',
+                        loadComponent: async () => (await import('./pages/inventory/stok-opname/history-stok-opname/history-stok-opname.component')).HistoryStokOpnameComponent,
+                        data: {
+                            title: 'History Stok Opname',
+                            breadcrumbs: [
+                                "Beranda", "Inventory", "Stok Opname", "History"
+                            ]
+                        },
+                    },
+                    {
+                        path: 'detail/:id',
+                        loadComponent: async () => (await import('./pages/inventory/stok-opname/detail-stok-opname/detail-stok-opname.component')).DetailStokOpnameComponent,
+                        data: {
+                            title: 'Detail Stok Opname',
+                            breadcrumbs: [
+                                "Beranda", "Inventory", "Stok Opname", "Detail"
+                            ]
+                        },
+                    },
+                    {
+                        path: 'input',
+                        loadComponent: async () => (await import('./pages/inventory/stok-opname/input-stok-opname/input-stok-opname.component')).InputStokOpnameComponent,
+                        data: {
+                            title: 'Input Stok Opname',
+                            breadcrumbs: [
+                                "Beranda", "Inventory", "Stok Opname", "Input"
+                            ]
+                        },
+                    },
+                    {
+                        path: 'print/:id',
+                        loadComponent: async () => (await import('./pages/inventory/stok-opname/print-out-stok-opname/print-out-stok-opname.component')).PrintOutStokOpnameComponent,
+                    },
+                ]
+            },
         ]
     },
     {

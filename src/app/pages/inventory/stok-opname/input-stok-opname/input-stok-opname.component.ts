@@ -15,11 +15,12 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { BarangKeluarService } from 'src/app/services/inventory/barang-keluar.service';
+import { StokOpnameService } from 'src/app/services/inventory/stok-opname.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 import { SetupItemState } from 'src/app/store/setup-data/item';
 
 @Component({
-    selector: 'app-input-barang-keluar',
+    selector: 'app-input-stok-opname',
     standalone: true,
     imports: [
         CommonModule,
@@ -31,10 +32,10 @@ import { SetupItemState } from 'src/app/store/setup-data/item';
         DialogModule,
         DropdownModule,
     ],
-    templateUrl: './input-barang-keluar.component.html',
-    styleUrl: './input-barang-keluar.component.scss'
+    templateUrl: './input-stok-opname.component.html',
+    styleUrl: './input-stok-opname.component.scss'
 })
-export class InputBarangKeluarComponent implements OnInit, OnDestroy {
+export class InputStokOpnameComponent implements OnInit, OnDestroy {
 
     Destroy$ = new Subject();
 
@@ -67,10 +68,10 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'gridDetailBarangMasuk',
         column: [
-            { field: 'nama_item', headerName: 'Nama Item', class: 'font-semibiold text-xs' },
-            { field: 'qty', headerName: 'Qty', format: 'number' },
-            { field: 'harga_jual', headerName: 'Harga Jual', format: 'currency' },
-            { field: 'subtotal', headerName: 'Total', format: 'currency' },
+            { field: 'nama_item', headerName: 'Nama Item', class: 'font-semibold text-xs' },
+            { field: 'stock', headerName: 'Stok', format: 'number', class: 'text-end text-xs' },
+            { field: 'harga_jual', headerName: 'Harga Jual', format: 'currency', class: 'text-end text-xs' },
+            { field: 'hpp_average', headerName: 'HPP Average', format: 'currency', class: 'text-end text-xs' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
@@ -82,16 +83,12 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
         searchPlaceholder: 'Cari Nama Item Disini'
     };
 
-    JumlahItem = 0;
-
-    GrandTotal = 0;
-
     constructor(
         private _store: Store,
         private _router: Router,
         private _messageService: MessageService,
         private _utilityService: UtilityService,
-        private _barangKeluarService: BarangKeluarService,
+        private _stokOpnameService: StokOpnameService,
     ) {
         this.FormProps = {
             id: 'form_header_barang_keluar',
@@ -133,8 +130,8 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
                             title: 'kode_kfa',
                             subtitle: 'nama_item',
                             subtitle_key: 'Nama Item',
-                            description: 'produsen',
-                            description_key: 'Produsen'
+                            description: 'stock',
+                            description_key: 'Stock'
                         }
                     },
                     onChange: (args: any) => {
@@ -195,34 +192,26 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
                     readonly: true
                 },
                 {
-                    id: 'qty',
-                    label: 'Qty',
-                    required: true,
-                    type: 'number',
+                    id: 'stock',
+                    label: 'Stock',
+                    required: false,
+                    type: 'text',
                     value: '',
-                    onChange: (args: any) => {
-                        const qty = parseInt(args);
-                        const harga_jual = parseFloat(this.FormDetailComps.FormGroup.get('harga_jual')?.value);
-                        this.FormDetailComps.FormGroup.get('subtotal')?.setValue(qty * harga_jual);
-                    }
+                    readonly: true,
                 },
                 {
                     id: 'harga_jual',
                     label: 'Harga Jual',
-                    required: true,
-                    type: 'number',
+                    required: false,
+                    type: 'text',
                     value: '',
-                    onChange: (args: any) => {
-                        const harga_jual = parseInt(args);
-                        const qty = parseFloat(this.FormDetailComps.FormGroup.get('qty')?.value);
-                        this.FormDetailComps.FormGroup.get('subtotal')?.setValue(qty * harga_jual);
-                    }
+                    readonly: true,
                 },
                 {
-                    id: 'subtotal',
-                    label: 'Total',
+                    id: 'hpp_average',
+                    label: 'HPP Average',
                     required: true,
-                    type: 'number',
+                    type: 'text',
                     value: '',
                     readonly: true,
                 },
@@ -245,7 +234,7 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'back') {
-            this._router.navigateByUrl('/inventory/barang-keluar/history');
+            this._router.navigateByUrl('/inventory/stok-opname/history');
         };
 
         if (data.id == 'save') {
@@ -260,17 +249,19 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
 
         if (args.type == 'delete') {
             const newDatasource = this.GridProps.dataSource.filter(item => item.urut != args.data.urut);
+
+            console.log("datasource new =>", newDatasource);
+
             this.GridProps.dataSource = newDatasource;
-            this.onCountFooter();
         }
     }
 
     private getAllItem() {
-        this._store
-            .select(SetupItemState.itemEntities)
+        this._stokOpnameService
+            .getAllItem()
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                this.FormPencarianItemProps.fields[0].dropdownProps.options = result;
+                this.FormPencarianItemProps.fields[0].dropdownProps.options = result.data;
             })
     }
 
@@ -286,6 +277,23 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
         }
     }
 
+    handleAmbilSemuaItem() {
+        this._stokOpnameService
+            .getAllItem()
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.GridProps.dataSource = [];
+                    this.GridProps.dataSource = result.data.map((item: any, index: number) => {
+                        return {
+                            urut: index + 1,
+                            ...item
+                        }
+                    });
+                }
+            })
+    }
+
     handleSaveFormDetail() {
         const payload = {
             urut: this.GridProps.dataSource.length + 1,
@@ -297,7 +305,6 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
         this.FormPencarianItemComps.FormGroup.reset();
         this.FormDetailComps.FormGroup.reset();
         this.ShowDialogFormDetail = false;
-        this.onCountFooter();
     }
 
     handleUpdateFormDetail() {
@@ -312,20 +319,6 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
         this.FormPencarianItemComps.FormGroup.reset();
         this.FormDetailComps.FormGroup.reset();
         this.ShowDialogFormDetail = false;
-        this.onCountFooter();
-    }
-
-    private onCountFooter() {
-        this.JumlahItem = 0;
-        this.GrandTotal = 0;
-
-        this.GridProps.dataSource.forEach((item: any) => {
-            item.qty = parseInt(item.qty);
-            item.subtotal = parseInt(item.subtotal);
-
-            this.JumlahItem += item.qty;
-            this.GrandTotal += item.subtotal;
-        })
     }
 
     private handleSubmitForm() {
@@ -334,18 +327,17 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
 
         const payload = {
             ...header,
-            grand_total: this.GrandTotal,
             detail: this.GridProps.dataSource.map((item: any) => {
                 return {
-                    id_item: item.id_item.id_item,
-                    qty: item.qty,
-                    harga_jual: item.harga_jual,
-                    subtotal: item.subtotal
+                    id_item: parseInt(item.id_item),
+                    qty_sistem: item.stock,
+                    hpp_sistem: item.hpp_average,
+                    harga_jual_sistem: item.harga_jual
                 }
             })
         };
 
-        this._barangKeluarService
+        this._stokOpnameService
             .create(payload)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {

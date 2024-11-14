@@ -1,0 +1,152 @@
+<div *ngIf="Data" id="printMutasiKeluar" class="grid p-5 gap-0">
+    <div class="flex flex-col gap-0 mb-3">
+        <p class="text-lg font-semibold text-center">
+            Stok Opname
+        </p>
+
+        <!-- Faktur PO -->
+        <div class="flex w-full gap-2">
+            <div class="w-3/12">
+                <p class="text-xs text-gray-700">
+                    No. Faktur
+                </p>
+            </div>
+            <div class="w-9/12">
+                <p class="text-xs text-gray-700">
+                    : {{ Data.no_trans }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Tanggal PO -->
+        <div class="flex w-full gap-2">
+            <div class="w-3/12">
+                <p class="text-xs text-gray-700">
+                    Tgl. Stok Opname
+                </p>
+            </div>
+            <div class="w-9/12">
+                <p class="text-xs text-gray-700">
+                    : {{ Data.tanggal }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Tanggal Kirim -->
+        <div class="flex w-full gap-2">
+            <div class="w-3/12">
+                <p class="text-xs text-gray-700">
+                    Keterangan
+                </p>
+            </div>
+            <div class="w-9/12">
+                <p class="text-xs text-gray-700">
+                    : {{ Data.keterangan }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Kepada Yth -->
+        <div class="flex w-full gap-2">
+            <div class="w-3/12">
+                <p class="text-xs text-gray-700">
+                    Tgl. Validasi
+                </p>
+            </div>
+            <div class="w-9/12">
+                <p class="text-xs text-gray-700">
+                    : {{ _utilityService.onFormatDate(Data.validated_at, 'yyyy-MM-DD') }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Kepada Yth -->
+        <div class="flex w-full gap-2">
+            <div class="w-3/12">
+                <p class="text-xs text-gray-700">
+                    User Validasi
+                </p>
+            </div>
+            <div class="w-9/12">
+                <p class="text-xs text-gray-700">
+                    : {{ Data.validated_by }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Kepada Yth -->
+        <div class="flex w-full gap-2">
+            <div class="w-3/12">
+                <p class="text-xs text-gray-700">
+                    Keterangan Validasi
+                </p>
+            </div>
+            <div class="w-9/12">
+                <p class="text-xs text-gray-700">
+                    : {{ Data.keterangan_validasi }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Kepada Yth -->
+        <div class="flex w-full gap-2">
+            <div class="w-3/12">
+                <p class="text-xs text-gray-700">
+                    Status Stok Opname
+                </p>
+            </div>
+            <div class="w-9/12">
+                <p class="text-xs text-gray-700">
+                    : {{ Data.status }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid mb-1">
+        <app-grid [props]="GridProps">
+        </app-grid>
+    </div>
+
+    <!-- Total -->
+    <div class="flex flex-row justify-end w-full px-3 pb-2 mb-1">
+        <div class="w-4/12">
+            <p class="text-xs text-gray-700 text-end">
+                Total Selisih Qty
+            </p>
+        </div>
+        <div class="w-2/12">
+            <p class="text-xs text-gray-700 text-end">
+                {{ _utilityService.FormatNumber(Data.total_selisih_qty, '') }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Total -->
+    <div class="flex flex-row justify-end w-full px-3 pb-2 mb-1">
+        <div class="w-4/12">
+            <p class="text-xs text-gray-700 text-end">
+                Total Selisih Harga Jual
+            </p>
+        </div>
+        <div class="w-2/12">
+            <p class="text-xs text-gray-700 text-end">
+                {{ _utilityService.FormatNumber(Data.total_selisih_harga_jual, '') }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Total -->
+    <div class="flex flex-row justify-end w-full">
+        <div class="w-4/12">
+            <p class="text-xs text-gray-700 text-end">
+                Total Selisih HPP
+            </p>
+        </div>
+        <div class="w-2/12">
+            <p class="text-xs text-gray-700 text-end">
+                {{ _utilityService.FormatNumber(Data.total_selisih_hpp, 'Rp. ') }}
+            </p>
+        </div>
+    </div>
+</div>

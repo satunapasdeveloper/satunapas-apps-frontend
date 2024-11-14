@@ -104,6 +104,13 @@ export class AuthenticationService {
                     toggle_child: false,
                     url: '/inventory/barang-keluar/history'
                 },
+                {
+                    id: '63',
+                    caption: 'Stok Opname',
+                    icon: 'pi pi-barcode',
+                    toggle_child: false,
+                    url: '/inventory/stok-opname/history'
+                },
             ]
         },
         {
