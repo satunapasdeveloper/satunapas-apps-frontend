@@ -15,8 +15,6 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { BarangKeluarService } from 'src/app/services/inventory/barang-keluar.service';
-import { BarangMasukService } from 'src/app/services/inventory/barang-masuk.service';
-import { ItemStokService } from 'src/app/services/setup-data/item-stok.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 import { SetupItemState } from 'src/app/store/setup-data/item';
 
@@ -261,7 +259,7 @@ export class InputBarangKeluarComponent implements OnInit, OnDestroy {
         }
 
         if (args.type == 'delete') {
-            const newDatasource = this.GridProps.dataSource.filter(item => item.urut != args.urut);
+            const newDatasource = this.GridProps.dataSource.filter(item => item.urut != args.data.urut);
             this.GridProps.dataSource = newDatasource;
             this.onCountFooter();
         }

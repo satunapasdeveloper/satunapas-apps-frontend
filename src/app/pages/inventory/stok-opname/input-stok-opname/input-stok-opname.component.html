@@ -1,1 +1,49 @@
-<p>input-stok-opname works!</p>
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Header -->
+    <div class="grid w-10/12 p-3 bg-white rounded-md shadow-sm mb-3">
+        <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+    </div>
+
+    <!-- Detail -->
+    <div class="grid w-10/12 p-3 bg-white rounded-md shadow-sm mb-3">
+        <div class="flex w-full gap-3 pb-3 mb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <p-button severity="info" styleClass="p-button-sm" label="Tambah Item"
+                (onClick)="handleOpenDialogFormDetail(false)">
+            </p-button>
+
+            <p-button severity="secondary" styleClass="p-button-sm" label="Ambil Semua Item"
+                (onClick)="handleAmbilSemuaItem()">
+            </p-button>
+        </div>
+
+        <app-grid [props]="GridProps" (aksiClicked)="onToolbarClicked($event)">
+        </app-grid>
+    </div>
+
+    <!-- Dialog Add / Edit Item -->
+    <p-dialog [header]="FormState == 'insert' ? 'Tambah Item' : 'Edit Item'" [modal]="true" [draggable]="false"
+        [maximizable]="false" [(visible)]="ShowDialogFormDetail" [style]="{ width: '50rem' }">
+
+        <!-- Pencarian Obat -->
+        <div class="grid w-full mb-5">
+            <app-dynamic-form #FormPencarianItemComps [props]="FormPencarianItemProps"></app-dynamic-form>
+        </div>
+
+        <!-- Details -->
+        <div class="grid w-full mb-5">
+            <app-dynamic-form #FormDetailComps [props]="FormDetailProps"></app-dynamic-form>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-end gap-2">
+            <p-button label="Tutup" severity="secondary" styleClass="p-button-sm"
+                (onClick)="ShowDialogFormDetail = false" />
+
+            <p-button *ngIf="FormState == 'insert'" label="Simpan" severity="info" styleClass="p-button-sm"
+                (onClick)="handleSaveFormDetail()" />
+
+            <p-button *ngIf="FormState == 'update'" label="Update" severity="warning" styleClass="p-button-sm"
+                (onClick)="handleUpdateFormDetail()" />
+        </div>
+    </p-dialog>
+</app-dashboard>
