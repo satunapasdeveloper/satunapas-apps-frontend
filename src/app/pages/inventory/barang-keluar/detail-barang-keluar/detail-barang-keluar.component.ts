@@ -14,9 +14,7 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { BarangKeluarModel } from 'src/app/model/pages/inventory/barang-keluar.model';
-import { BarangMasukModel } from 'src/app/model/pages/inventory/barang-masuk.model';
 import { BarangKeluarService } from 'src/app/services/inventory/barang-keluar.service';
-import { BarangMasukService } from 'src/app/services/inventory/barang-masuk.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 
 @Component({
