@@ -3,7 +3,10 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TableModule } from 'primeng/table';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
@@ -24,6 +27,9 @@ import { UtilityService } from 'src/app/services/utility/utility.service';
         InputTextModule,
         TableModule,
         FormsModule,
+        ButtonModule,
+        DialogModule,
+        InputTextareaModule
     ],
     templateUrl: './detail-stok-opname.component.html',
     styleUrl: './detail-stok-opname.component.scss'
@@ -80,7 +86,7 @@ export class DetailStokOpnameComponent implements OnInit, OnDestroy {
 
     total_selisih_harga_jual = 0;
 
-    ShowDialogBatal = false;
+    ShowDialogValidasi = false;
 
     constructor(
         private _router: Router,
@@ -182,7 +188,7 @@ export class DetailStokOpnameComponent implements OnInit, OnDestroy {
         };
 
         if (data.id == 'validasi') {
-            this.handleValidasi(this._activateRoute.snapshot.params['id']);
+            this.ShowDialogValidasi = true;
         };
 
         if (data.id == 'cetak') {
@@ -217,9 +223,14 @@ export class DetailStokOpnameComponent implements OnInit, OnDestroy {
         };
     }
 
-    handleValidasi(id_stock_opname: string) {
+    handleValidasi(keterangan_validasi: string) {
+        const payload = {
+            id_barang_masuk: this._activateRoute.snapshot.params['id'],
+            reason_canceled: keterangan_validasi
+        };
+
         this._stokOpnameService
-            .validasi(id_stock_opname)
+            .validasi(payload)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {

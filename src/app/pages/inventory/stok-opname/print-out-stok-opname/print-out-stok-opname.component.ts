@@ -85,7 +85,7 @@ export class PrintOutStokOpnameComponent implements OnInit {
                     });
 
                     setTimeout(() => {
-                        // window.print();
+                        window.print();
                     }, 1000);
                 }
             })

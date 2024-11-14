@@ -85,4 +85,24 @@
             </div>
         </div>
     </div>
+
+    <!-- Dialog Add / Edit Item -->
+    <p-dialog header="Validasi Stok Opname" [modal]="true" [draggable]="false" [maximizable]="false"
+        [(visible)]="ShowDialogValidasi" [style]="{ width: '35rem' }">
+
+        <div class="grid w-full gap-1 mb-5">
+            <p class="text-sm font-semibold text-gray-700">
+                Keterangan Validasi
+            </p>
+            <textarea #AlasanPembatalan pInputTextarea rows="3" class="w-full p-inputtext-sm"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <p-button label="Tutup" severity="secondary" styleClass="p-button-sm"
+                (onClick)="ShowDialogValidasi = false" />
+
+            <p-button label="Simpan" severity="info" styleClass="p-button-sm"
+                (onClick)="handleValidasi(AlasanPembatalan.value)" />
+        </div>
+    </p-dialog>
 </app-dashboard>

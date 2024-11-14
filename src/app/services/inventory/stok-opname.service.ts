@@ -34,7 +34,7 @@ export class StokOpnameService {
         return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/stock_opname/update`, payload);
     }
 
-    validasi(id_stock_opname: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/stock_opname/validasi/${id_stock_opname}`, null);
+    validasi(payload: any): Observable<HttpBaseResponse> {
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/stock_opname/validasi`, payload);
     }
 }
