@@ -208,6 +208,10 @@ const routes: Routes = [
                             ]
                         },
                     },
+                    {
+                        path: 'print/:id',
+                        loadComponent: async () => (await import('./pages/inventory/stok-opname/print-out-stok-opname/print-out-stok-opname.component')).PrintOutStokOpnameComponent,
+                    },
                 ]
             },
         ]

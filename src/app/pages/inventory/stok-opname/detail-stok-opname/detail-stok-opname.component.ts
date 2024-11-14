@@ -185,6 +185,10 @@ export class DetailStokOpnameComponent implements OnInit, OnDestroy {
             this.handleValidasi(this._activateRoute.snapshot.params['id']);
         };
 
+        if (data.id == 'cetak') {
+            this._router.navigateByUrl(`/inventory/stok-opname/print/${this._activateRoute.snapshot.params['id']}`);
+        };
+
         if (data.id == 'update') {
             const payload = {
                 ...this.FormComps.FormGroup.value,
