@@ -106,6 +106,16 @@ const routes: Routes = [
         path: 'inventory',
         children: [
             {
+                path: 'setup-item',
+                loadComponent: async () => (await import('./pages/setup-data/setup-item/setup-item.component')).SetupItemComponent,
+                data: {
+                    title: 'Setup Item',
+                    breadcrumbs: [
+                        "Beranda", "Inventory", "Setup Item"
+                    ]
+                },
+            },
+            {
                 path: 'barang-masuk',
                 children: [
                     {
