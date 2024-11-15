@@ -27,13 +27,6 @@ export class AuthenticationService {
                     url: '/setup-data/setup-poli'
                 },
                 {
-                    id: '12',
-                    caption: 'Setup Item',
-                    icon: 'pi pi-clone',
-                    toggle_child: false,
-                    url: '/setup-data/setup-item'
-                },
-                {
                     id: '13',
                     caption: 'Setup Tindakan Medis',
                     icon: 'pi pi-arrows-alt',
@@ -90,6 +83,13 @@ export class AuthenticationService {
             icon: 'pi pi-warehouse',
             toggle_child: false,
             sidebarChild: [
+                {
+                    id: '12',
+                    caption: 'Setup Item',
+                    icon: 'pi pi-clone',
+                    toggle_child: false,
+                    url: '/inventory/setup-item'
+                },
                 {
                     id: '61',
                     caption: 'Barang Masuk',

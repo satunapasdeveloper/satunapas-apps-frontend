@@ -161,7 +161,7 @@ export class DetailStokOpnameComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {
-                    (<any>result.data.tanggal) = this._utilityService.onFormatDate(new Date(result.data.tanggal), 'DD-MMM-yyyy');
+                    (<any>result.data.tanggal) = new Date(result.data.tanggal);
 
                     this.FormComps.FormGroup.patchValue(result.data);
 

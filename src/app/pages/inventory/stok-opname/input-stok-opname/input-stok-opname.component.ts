@@ -249,9 +249,6 @@ export class InputStokOpnameComponent implements OnInit, OnDestroy {
 
         if (args.type == 'delete') {
             const newDatasource = this.GridProps.dataSource.filter(item => item.urut != args.data.urut);
-
-            console.log("datasource new =>", newDatasource);
-
             this.GridProps.dataSource = newDatasource;
         }
     }
@@ -297,7 +294,7 @@ export class InputStokOpnameComponent implements OnInit, OnDestroy {
     handleSaveFormDetail() {
         const payload = {
             urut: this.GridProps.dataSource.length + 1,
-            ...this.FormPencarianItemComps.FormGroup.value,
+            id_item: this.FormPencarianItemComps.FormGroup.get('id_item')?.value.id_item,
             ...this.FormDetailComps.FormGroup.value,
         };
 
@@ -309,7 +306,7 @@ export class InputStokOpnameComponent implements OnInit, OnDestroy {
 
     handleUpdateFormDetail() {
         const payload = {
-            ...this.FormPencarianItemComps.FormGroup.value,
+            id_item: this.FormPencarianItemComps.FormGroup.get('id_item')?.value.id_item,
             ...this.FormDetailComps.FormGroup.value,
         };
 
