@@ -202,13 +202,13 @@ export class DetailStokOpnameComponent implements OnInit, OnDestroy {
                     return {
                         id_stock_opname_detail: item.id_stock_opname_detail,
                         id_item: item.id_item,
+                        qty_fisik: item.qty_fisik,
                         qty_sistem: item.qty_sistem,
-                        qty_fisik: item.qty_fisik
+                        hpp_sistem: item.hpp_sistem,
+                        harga_jual_sistem: item.harga_jual_sistem,
                     }
                 })
             };
-
-            console.log("payload =>", payload);
 
             this._stokOpnameService
                 .update(payload)
