@@ -206,11 +206,14 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
     }
 
     private getAllIc9(keyword: string) {
+        console.log("keyword =>", keyword);
+
         this._tindakanMedisService
             .getAllIcd9(keyword)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {
+                    console.log("icd 9 =>", result.data);
                     const index = this.FormProps.fields.findIndex(item => item.id == 'kode_icd9');
                     this.FormProps.fields[index].dropdownProps.options = result.data;
                 }
@@ -250,11 +253,17 @@ export class SetupTindakanMedisComponent implements OnInit, OnDestroy {
         this.FormState = 'update';
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            this.getAllIc9(args.nama_item);
+            this.getAllIc9(args.nama_icd_9);
+
+            const payload = {
+                ...args,
+                kode_icd9: args.kode_icd_9,
+            }
+
             setTimeout(() => {
-                this.FormComps.FormGroup.patchValue(args);
+                this.FormComps.FormGroup.patchValue(payload);
             }, 500);
-        }, 100);
+        }, 200);
     }
 
     onToolbarClicked(args: any): void {
