@@ -45,6 +45,7 @@ export class BillingComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {
+                    console.log("data =>", result.data);
                     this.Billing = result.data;
                 }
             })
