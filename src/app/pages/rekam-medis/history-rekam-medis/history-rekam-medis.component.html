@@ -59,6 +59,7 @@
             groupRowsBy="id_dokter">
             <ng-template pTemplate="header">
                 <tr>
+                    <th class="text-sm">Tgl. Visit</th>
                     <th class="text-sm">No. Antrian</th>
                     <th class="text-sm">No. Rekam Medis</th>
                     <th class="text-sm">Poli</th>
@@ -84,6 +85,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-antrian>
                 <tr>
+                    <td class="text-sm">{{ antrian.tanggal_visit }}</td>
                     <td class="text-sm">{{ antrian.no_antrian }}</td>
                     <td class="text-sm">{{ antrian.no_rekam_medis }}</td>
                     <td class="text-sm">{{ antrian.poli }}</td>

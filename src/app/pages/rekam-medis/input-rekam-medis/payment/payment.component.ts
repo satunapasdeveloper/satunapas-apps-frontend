@@ -67,5 +67,11 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
     handleSave() {
         this.onSave.emit(this.tagihan);
+
+        const data = {
+            "status": false,
+            "message": "string",
+            "data": null
+        }
     }
 }
