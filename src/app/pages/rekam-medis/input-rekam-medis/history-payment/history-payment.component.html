@@ -110,8 +110,12 @@
                     </p>
                 </div>
                 <div class="w-3/12">
-                    <p class="text-sm text-end">
+                    <p *ngIf="Invoice.debitur != 'BPJS'" class="text-sm text-end">
                         {{ item.total_harga | currency: 'Rp. ' }}
+                    </p>
+
+                    <p *ngIf="Invoice.debitur == 'BPJS'" class="text-sm text-end">
+                        {{ 0 | currency: 'Rp. ' }}
                     </p>
                 </div>
             </div>
@@ -141,8 +145,12 @@
                     </p>
                 </div>
                 <div class="w-3/12">
-                    <p class="text-sm text-end">
+                    <p *ngIf="Invoice.debitur != 'BPJS'" class="text-sm text-end">
                         {{ item.total_harga | currency: 'Rp. ' }}
+                    </p>
+
+                    <p *ngIf="Invoice.debitur == 'BPJS'" class="text-sm text-end">
+                        {{ 0 | currency: 'Rp. ' }}
                     </p>
                 </div>
             </div>
@@ -173,8 +181,12 @@
                     </p>
                 </div>
                 <div class="w-3/12">
-                    <p class="text-sm text-end">
+                    <p *ngIf="Invoice.debitur != 'BPJS'" class="text-sm text-end">
                         {{ item.total_harga | currency: 'Rp. ' }}
+                    </p>
+
+                    <p *ngIf="Invoice.debitur == 'BPJS'" class="text-sm text-end">
+                        {{ 0 | currency: 'Rp. ' }}
                     </p>
                 </div>
             </div>
@@ -197,8 +209,12 @@
                         </p>
                     </div>
                     <div class="w-8/12">
-                        <p class="text-sm text-end">
+                        <p *ngIf="Invoice.debitur != 'BPJS'" class="text-sm text-end">
                             {{ billing.subtotal | currency: 'Rp. ' }}
+                        </p>
+
+                        <p *ngIf="Invoice.debitur == 'BPJS'" class="text-sm text-end">
+                            {{ 0 | currency: 'Rp. ' }}
                         </p>
                     </div>
                 </div>
@@ -211,8 +227,12 @@
                         </p>
                     </div>
                     <div class="w-8/12">
-                        <p class="text-sm text-end">
+                        <p *ngIf="Invoice.debitur != 'BPJS'" class="text-sm text-end">
                             {{ billing.diskon | currency: 'Rp. ' }}
+                        </p>
+
+                        <p *ngIf="Invoice.debitur == 'BPJS'" class="text-sm text-end">
+                            {{ 0 | currency: 'Rp. ' }}
                         </p>
                     </div>
                 </div>
@@ -225,8 +245,12 @@
                         </p>
                     </div>
                     <div class="w-8/12">
-                        <p class="text-sm text-end">
+                        <p *ngIf="Invoice.debitur != 'BPJS'" class="text-sm text-end">
                             {{ billing.total | currency: 'Rp. ' }}
+                        </p>
+
+                        <p *ngIf="Invoice.debitur == 'BPJS'" class="text-sm text-end">
+                            {{ 0 | currency: 'Rp. ' }}
                         </p>
                     </div>
                 </div>
