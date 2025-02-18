@@ -231,20 +231,20 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
                     harga: parseFloat(item.harga),
                     subtotal: parseFloat(item.subtotal),
                     aturan_pakai: item.aturan_pakai ? item.aturan_pakai : '',
-                    waktu: item.waktu,
-                    waktu_spesifik: item.waktu_spesifik,
-                    rute_pemberian: item.rute_pemberian,
+                    waktu: item.waktu_pemberian_obat,
+                    waktu_spesifik: item.waktu_spesifik_pemberian_obat,
+                    rute_pemberian: item.rute_pemberian_obat,
                 }
             }),
             racikan: this.ResepComps.ResepRacikan.map((item) => {
                 return {
-                    nama_obat: item.nama_obat,
+                    nama_obat: item.nama_racikan,
                     qty: 1,
                     aturan_pakai: item.aturan_pakai ? item.aturan_pakai : '',
-                    waktu: item.waktu,
-                    waktu_spesifik: item.waktu_spesifik,
-                    rute_pemberian: item.rute_pemberian,
-                    racikan: item.racikan ? item.racikan.map((obat: any) => {
+                    waktu: item.waktu_pemberian_obat,
+                    waktu_spesifik: item.waktu_spesifik_pemberian_obat,
+                    rute_pemberian: item.rute_pemberian_obat,
+                    racikan: item.obats ? item.obats.map((obat: any) => {
                         return {
                             id_item: parseFloat(obat.id_item),
                             nama_obat: obat.nama_obat,

@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
+import { MessageService } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
@@ -86,6 +87,7 @@ export class HistoryRekamMedisComponent implements OnInit, OnDestroy {
     constructor(
         private _store: Store,
         private _router: Router,
+        private _messageService: MessageService,
         private _pendaftaranService: PendaftaranService,
     ) { }
 
@@ -276,7 +278,12 @@ export class HistoryRekamMedisComponent implements OnInit, OnDestroy {
     }
 
     handleGoToInputRekamMedis(args: any): void {
-        localStorage.setItem('_SPSH_', JSON.stringify(args));
-        this._router.navigateByUrl(`/rekam-medis/baru?id=${args.id_pendaftaran}`)
+        if (args.pre_assessment) {
+            localStorage.setItem('_SPSH_', JSON.stringify(args));
+            this._router.navigateByUrl(`/rekam-medis/baru?id=${args.id_pendaftaran}`)
+        } else {
+            this._messageService.clear();
+            this._messageService.add({ severity: 'warn', summary: 'Oops', detail: 'Pasien Belum Assesment' })
+        }
     }
 }

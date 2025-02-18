@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -101,6 +101,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
     constructor(
         private _store: Store,
         private _router: Router,
+        private _messageService: MessageService,
         private _rekamMedisService: RekamMedisService,
         private _pendaftaranService: PendaftaranService,
         private _confirmationService: ConfirmationService,
@@ -244,11 +245,16 @@ export class AntrianComponent implements OnInit, OnDestroy {
     }
 
     handleGoToInputRekamMedis(args: any): void {
-        this.onUpdateStatusPasien(args.id_pendaftaran, 4);
-        setTimeout(() => {
-            localStorage.setItem('_SPSH_', JSON.stringify(args));
-            this._router.navigateByUrl(`/rekam-medis/baru?id=${args.id_pendaftaran}`)
-        }, 500);
+        if (args.pre_assessment) {
+            this.onUpdateStatusPasien(args.id_pendaftaran, 4);
+            setTimeout(() => {
+                localStorage.setItem('_SPSH_', JSON.stringify(args));
+                this._router.navigateByUrl(`/rekam-medis/baru?id=${args.id_pendaftaran}`)
+            }, 500);
+        } else {
+            this._messageService.clear();
+            this._messageService.add({ severity: 'warn', summary: 'Oops', detail: 'Pasien Belum Assesment' })
+        }
     }
 
     handleCancelAntrian(args: any): void {

@@ -185,6 +185,7 @@ export class DialogResepNonRacikanComponent implements OnInit, OnDestroy {
 
     handleSave(data: any) {
         if (this.FormResep.valid) {
+            console.log("data =>", data);
             this.onSave.emit({ state: this.FormState, index: this.ObatEditedIndex, data: data });
             this.handleCloseDialog();
         }
