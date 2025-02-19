@@ -305,6 +305,8 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
     handleOpenDialogPayment() {
         let billing = this.BillingComps.Billing;
         billing.tanggal = formatDate(new Date(), 'dd-MM-yyyy', 'EN');
+        billing.subtotal = this.SelectedPasien.debitur == 'BPJS' ? 0 : billing.subtotal;
+        billing.total = this.SelectedPasien.debitur == 'BPJS' ? 0 : billing.total;
 
         this.PaymentComps.tagihan = billing;
         this.PaymentComps.ShowDialogPayment = true
@@ -337,6 +339,7 @@ export class InputRekamMedisComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 this.SelectedPasien = result;
                 this._rekamMedisService.SelectedPasien$.next(this.SelectedPasien);
+                console.log("selected pasien =>", this.SelectedPasien);
                 this._cdr.detectChanges();
             })
     }
