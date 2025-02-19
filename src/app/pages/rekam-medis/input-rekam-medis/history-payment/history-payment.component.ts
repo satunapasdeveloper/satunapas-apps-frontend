@@ -56,6 +56,7 @@ export class HistoryPaymentComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 this.Invoice = result as BillingModel.IHistoryPembayaran;
+                console.log("invoice =>", this.Invoice);
             })
     }
 
