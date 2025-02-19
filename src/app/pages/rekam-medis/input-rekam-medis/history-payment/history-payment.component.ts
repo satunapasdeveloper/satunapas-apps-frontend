@@ -51,12 +51,15 @@ export class HistoryPaymentComponent implements OnInit, OnDestroy {
     }
 
     getHistoryPayment() {
-        this._store
-            .select(RekamMedisState.rekamMedisHistoryPayment)
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                this.Invoice = result as BillingModel.IHistoryPembayaran;
-                console.log("invoice =>", this.Invoice);
+        const id = this._activatedRoute.snapshot.queryParams['id'];
+
+        this._rekamMedisService
+            .getAllHistoryPembayaran(id)
+            .subscribe((result: any) => {
+                if (result.responseResult) {
+                    this.Invoice = result.data.filter((item: any) => item.id_pendaftaran == id)[0];
+                    console.log("invoice =>", this.Invoice);
+                }
             })
     }
 
